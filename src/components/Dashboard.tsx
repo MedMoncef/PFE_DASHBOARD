@@ -1,170 +1,85 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { Box, Card, CardContent, Typography, LinearProgress, Grid } from '@mui/material';
 import PeopleIcon from '@mui/icons-material/People';
-import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import StoreIcon from '@mui/icons-material/Store';
-import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
-import NotificationsIcon from '@mui/icons-material/Notifications';
-import { LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip } from 'recharts';
-import { AppBar, Toolbar, Typography, Box, IconButton, Avatar, Button, Menu, MenuItem, CardContent, Card } from '@mui/material';
-
-const data = [
-  { name: 'Jan', value: 400 },
-  { name: 'Feb', value: 300 },
-  { name: 'Mar', value: 500 },
-  { name: 'Apr', value: 200 },
-  { name: 'May', value: 600 },
-];
+import TableTime from '@/components/Tools/TableTime';
+import styles from '@/styles/Title.module.css';
+import KingBedIcon from '@mui/icons-material/KingBed';
+import BookmarksIcon from '@mui/icons-material/Bookmarks';
 
 const Dashboard = () => {
-  const [anchorEl, setAnchorEl] = useState(null);
-
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-  
   return (
     <Box sx={{ flexGrow: 1, backgroundColor: 'white' }}>
-      {/* AppBar for NavBar */}
-      <AppBar position="static" sx={{backgroundImage: "url('/background.jpg')"}}>
-      <Toolbar sx={{ justifyContent: 'space-between', backgroundColor: 'rgba(0, 0, 0, 0.7)' }}>
-        <Typography
-          variant="h6"
-          component="div"
-          sx={{
-            flexGrow: 1,
-            animation: 'fadeIn 0.5s forwards',
-            '@keyframes fadeIn': {
-              from: { opacity: 0 },
-              to: { opacity: 1 },
-            },
-          }}
-        >
-          <span style={{ fontWeight: 700, fontSize: '24px' }}>
-            Harbor <span style={{ color: '#f5e4c3' }}>Hotel</span>
-          </span>
-        </Typography>
-
-        <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          <IconButton color="inherit" onClick={handleClick}>
-            <NotificationsIcon />
-          </IconButton>
-          <Menu
-            anchorEl={anchorEl}
-            open={Boolean(anchorEl)}
-            onClose={handleClose}
-          >
-            <MenuItem onClick={handleClose}>Notification 1</MenuItem>
-            <MenuItem onClick={handleClose}>Notification 2</MenuItem>
-            <MenuItem onClick={handleClose}>Notification 3</MenuItem>
-          </Menu>
-          <Avatar sx={{ marginLeft: 2 }}>A</Avatar>
-          <Button
-            variant="text"
-            color="inherit"
-            sx={{ marginLeft: 2, textTransform: 'none' }}
-          >
-            Logout
-          </Button>
-        </Box>
-      </Toolbar>
-    </AppBar>
-
-      {/* Dashboard content */}
+      <div className={styles.title}>
+        <h2>Hotel Information</h2>
+      </div>
       <Box sx={{ p: 3 }}>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2, flexWrap: 'wrap' }}>
-          {/* Users Card */}
-          <Card sx={{ minWidth: 275, backgroundColor: '#f0f4f8', borderRadius: '12px' }}>
-            <CardContent>
-              <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                <PeopleIcon sx={{ fontSize: '2.5rem', marginRight: '8px', color: '#3f51b5' }} />
-                <Typography variant="h6" component="div">
-                  Staff
-                </Typography>
+        <Grid container spacing={2}>
+          
+          <Grid item xs={12} sm={6} md={4}>
+            <Card sx={{ display: 'flex' }}>
+              <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+                <CardContent sx={{ flex: '1 0 auto' }}>
+                  <Typography component="div" variant="h5">
+                    Staff Available
+                  </Typography>
+                  <Typography variant="subtitle1" color="text.secondary" component="div">
+                    19
+                  </Typography>
+                </CardContent>
+                <Box sx={{ pb: 2, marginLeft: '20px' }}>
+                  <LinearProgress variant="determinate" value={91} />
+                </Box>
               </Box>
-              <Typography variant="h4" component="div" sx={{ fontWeight: 'bold' }}>
-                500
-              </Typography>
-            </CardContent>
-            <LineChart width={250} height={100} data={data}>
-              <Line type="monotone" dataKey="value" stroke="#3f51b5" />
-              <CartesianGrid stroke="#ccc" strokeDasharray="3 3" />
-              <XAxis dataKey="name" />
-              <YAxis />
-              <Tooltip />
-            </LineChart>
-          </Card>
+              <PeopleIcon sx={{ fontSize: '8rem', margin: '10px', color: '#3f51b5' }} />
+            </Card>
+          </Grid>
 
-          {/* Products Card */}
-          <Card sx={{ minWidth: 275, backgroundColor: '#f0f4f8', borderRadius: '12px' }}>
-            <CardContent>
-              <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                <StoreIcon sx={{ fontSize: '2.5rem', marginRight: '8px', color: '#4caf50' }} />
-                <Typography variant="h6" component="div">
-                  Rooms
-                </Typography>
+          <Grid item xs={12} sm={6} md={4}>
+            <Card sx={{ display: 'flex' }}>
+              <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+                <CardContent sx={{ flex: '1 0 auto' }}>
+                  <Typography component="div" variant="h5">
+                    Rooms Available
+                  </Typography>
+                  <Typography variant="subtitle1" color="text.secondary" component="div">
+                    5
+                  </Typography>
+                </CardContent>
+                <Box sx={{ pb: 2, marginLeft: '20px' }}>
+                  <LinearProgress variant="determinate" value={90} />
+                </Box>
               </Box>
-              <Typography variant="h4" component="div" sx={{ fontWeight: 'bold' }}>
-                1000
-              </Typography>
-            </CardContent>
-            <LineChart width={250} height={100} data={data}>
-              <Line type="monotone" dataKey="value" stroke="#4caf50" />
-              <CartesianGrid stroke="#ccc" strokeDasharray="3 3" />
-              <XAxis dataKey="name" />
-              <YAxis />
-              <Tooltip />
-            </LineChart>
-          </Card>
+              <KingBedIcon sx={{ fontSize: '8rem', margin: '10px', color: '#3f51b5' }} />
+            </Card>
+          </Grid>
 
-          {/* Orders Card */}
-          <Card sx={{ minWidth: 275, backgroundColor: '#f0f4f8', borderRadius: '12px' }}>
-            <CardContent>
-              <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                <ShoppingCartIcon sx={{ fontSize: '2.5rem', marginRight: '8px', color: '#f44336' }} />
-                <Typography variant="h6" component="div">
-                  Reservations
-                </Typography>
+          <Grid item xs={12} sm={6} md={4}>
+            <Card sx={{ display: 'flex' }}>
+              <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+                <CardContent sx={{ flex: '1 0 auto' }}>
+                  <Typography component="div" variant="h5">
+                    Valid Reservations
+                  </Typography>
+                  <Typography variant="subtitle1" color="text.secondary" component="div">
+                    26
+                  </Typography>
+                </CardContent>
+                <Box sx={{ pb: 2, marginLeft: '20px' }}>
+                  <LinearProgress variant="determinate" value={74} />
+                </Box>
               </Box>
-              <Typography variant="h4" component="div" sx={{ fontWeight: 'bold' }}>
-                200
-              </Typography>
-            </CardContent>
-            <LineChart width={250} height={100} data={data}>
-              <Line type="monotone" dataKey="value" stroke="#f44336" />
-              <CartesianGrid stroke="#ccc" strokeDasharray="3 3" />
-              <XAxis dataKey="name" />
-              <YAxis />
-              <Tooltip />
-            </LineChart>
-          </Card>
+              <BookmarksIcon sx={{ fontSize: '8rem', margin: '10px', color: '#3f51b5' }} />
+            </Card>
+          </Grid>
 
-          {/* Revenue Card */}
-          <Card sx={{ minWidth: 275, backgroundColor: '#f0f4f8', borderRadius: '12px' }}>
-            <CardContent>
-              <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                <AttachMoneyIcon sx={{ fontSize: '2.5rem', marginRight: '8px', color: '#ffb300' }} />
-                <Typography variant="h6" component="div">
-                    
-                </Typography>
-              </Box>
-              <Typography variant="h4" component="div" sx={{ fontWeight: 'bold' }}>
-                $10,000
-              </Typography>
-            </CardContent>
-            <LineChart width={250} height={100} data={data}>
-              <Line type="monotone" dataKey="value" stroke="#ffb300" />
-              <CartesianGrid stroke="#ccc" strokeDasharray="3 3" />
-              <XAxis dataKey="name" />
-              <YAxis />
-              <Tooltip />
-            </LineChart>
-          </Card>
-        </Box>
+        </Grid>
       </Box>
+
+      <div className={styles.title}>
+        <h2>Time Table</h2>
+      </div>
+
+        <TableTime />
     </Box>
   );
 };

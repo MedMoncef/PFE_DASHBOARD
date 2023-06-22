@@ -1,0 +1,8 @@
+/* styles.css */
+
+@media screen and (max-width: 768px) {
+    /* Styles for smaller screens */
+    .MuiToolbar-root {
+      flex-direction: column;
+    }
+  }  

@@ -1,0 +1,14 @@
+.title {
+    text-align: center;
+    margin-top: 5%;
+    margin-bottom: 1%;
+  }
+  
+  .title h2 {
+    font-size: 14px;
+    font-family: "Nunito Sans", Arial, sans-serif;
+    position: relative;
+    letter-spacing: 4px;
+    color: rgb(21, 101, 192);
+    text-transform: uppercase;
+  }

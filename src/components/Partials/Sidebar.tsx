@@ -7,7 +7,6 @@ import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 import ConnectWithoutContactIcon from '@mui/icons-material/ConnectWithoutContact';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
-import StarBorder from '@mui/icons-material/StarBorder';
 import Collapse from '@mui/material/Collapse';
 import BookIcon from '@mui/icons-material/Book';
 import ContactPhoneIcon from '@mui/icons-material/ContactPhone';
@@ -30,21 +29,19 @@ const Sidebar = () => {
     setOpen(!open);
   };
 
+  const handleClickIcon = () => {
+    setOpen(true);
+  };
+
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
   };
 
-  useEffect(() => {
-    const isWideWindow = window.innerWidth > 768;
-    setIsOpen(isWideWindow);
-    setOpen(isWideWindow);
-  }, []);
-
   return (
 <Box
   sx={{
-    width: isOpen ? 300 : 75,
-    height: '150vh',
+    width: isOpen ? 'auto' : 75,
+    height: 'auto',
     backgroundImage: "url('/background.jpg')",
     backgroundSize: 'cover',
     transition: 'width 0.3s',
@@ -78,15 +75,6 @@ const Sidebar = () => {
             </ListItem>
 
             <ListItem>
-              <ListItemButton component="a" href="dashboard.html">
-                <ListItemIcon sx={{ color: 'white' }}>
-                  <AccountCircleIcon />
-                </ListItemIcon>
-                <ListItemText primary="User Profile" />
-              </ListItemButton>
-            </ListItem>
-
-            <ListItem>
               <ListItemButton onClick={handleClick}>
                 <ListItemIcon sx={{ color: 'white' }}>
                   <FormatListBulletedIcon />
@@ -100,7 +88,7 @@ const Sidebar = () => {
               <List component="div" disablePadding>
 
                 <ListItem>
-                  <ListItemButton sx={{ pl: 4 }}>
+                  <ListItemButton sx={{ pl: 4 }} component="a" href="Tables/blog">
                     <ListItemIcon sx={{ color: 'white' }}>
                       <BookIcon />
                     </ListItemIcon>
@@ -204,6 +192,15 @@ const Sidebar = () => {
             <ListItem>
               <ListItemButton component="a" href="dashboard.html">
                 <ListItemIcon sx={{ color: 'white' }}>
+                  <AccountCircleIcon />
+                </ListItemIcon>
+                <ListItemText primary="User Profile" />
+              </ListItemButton>
+            </ListItem>
+
+            <ListItem>
+              <ListItemButton component="a" href="dashboard.html">
+                <ListItemIcon sx={{ color: 'white' }}>
                   <ConnectWithoutContactIcon />
                 </ListItemIcon>
                 <ListItemText primary="Send a Message" />
@@ -227,113 +224,20 @@ const Sidebar = () => {
       </ListItem>
 
       <ListItem>
-        <ListItemButton component="a" href="dashboard.html">
-          <ListItemIcon sx={{ color: 'white' }}>
-            <AccountCircleIcon />
-          </ListItemIcon>
-        </ListItemButton>
-      </ListItem>
-
-      <ListItem>
-        <ListItemButton onClick={handleClick}>
+        <ListItemButton onClick={() => { toggleSidebar(); handleClickIcon(); }}>
           <ListItemIcon sx={{ color: 'white' }}>
             <FormatListBulletedIcon />
           </ListItemIcon>
         </ListItemButton>
       </ListItem>
 
-      <Collapse in={open} timeout="auto" unmountOnExit>
-        <List component="div" disablePadding>
-
-          <ListItem>
-            <ListItemButton>
-              <ListItemIcon sx={{ color: 'white' }}>
-                <BookIcon />
-              </ListItemIcon>
-            </ListItemButton>
-          </ListItem>
-
-          <ListItem>
-            <ListItemButton>
-              <ListItemIcon sx={{ color: 'white' }}>
-                <ContactPhoneIcon />
-              </ListItemIcon>
-            </ListItemButton>
-          </ListItem>
-
-          <ListItem>
-            <ListItemButton>
-              <ListItemIcon sx={{ color: 'white' }}>
-                <RestaurantMenuIcon />
-              </ListItemIcon>
-            </ListItemButton>
-          </ListItem>
-
-          <ListItem>
-            <ListItemButton>
-              <ListItemIcon sx={{ color: 'white' }}>
-                <NotificationsActiveIcon />
-              </ListItemIcon>
-            </ListItemButton>
-          </ListItem>
-
-          <ListItem>
-            <ListItemButton>
-              <ListItemIcon sx={{ color: 'white' }}>
-                <WorkIcon />
-              </ListItemIcon>
-            </ListItemButton>
-          </ListItem>
-
-          <ListItem>
-            <ListItemButton>
-              <ListItemIcon sx={{ color: 'white' }}>
-                <BookmarksIcon />
-              </ListItemIcon>
-            </ListItemButton>
-          </ListItem>
-
-          <ListItem>
-            <ListItemButton>
-              <ListItemIcon sx={{ color: 'white' }}>
-                <PreviewIcon />
-              </ListItemIcon>
-            </ListItemButton>
-          </ListItem>
-
-          <ListItem>
-            <ListItemButton>
-              <ListItemIcon sx={{ color: 'white' }}>
-                <KingBedIcon />
-              </ListItemIcon>
-            </ListItemButton>
-          </ListItem>
-
-          <ListItem>
-            <ListItemButton>
-              <ListItemIcon sx={{ color: 'white' }}>
-                <ImageIcon />
-              </ListItemIcon>
-            </ListItemButton>
-          </ListItem>
-
-          <ListItem>
-            <ListItemButton>
-              <ListItemIcon sx={{ color: 'white' }}>
-                <MarkUnreadChatAltIcon />
-              </ListItemIcon>
-            </ListItemButton>
-          </ListItem>
-
-          <ListItem>
-            <ListItemButton>
-              <ListItemIcon sx={{ color: 'white' }}>
-                <PersonIcon />
-              </ListItemIcon>
-            </ListItemButton>
-          </ListItem>
-        </List>
-      </Collapse>
+      <ListItem>
+        <ListItemButton component="a" href="dashboard.html">
+          <ListItemIcon sx={{ color: 'white' }}>
+            <AccountCircleIcon />
+          </ListItemIcon>
+        </ListItemButton>
+      </ListItem>
 
       <ListItem>
         <ListItemButton component="a" href="dashboard.html">
