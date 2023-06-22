@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Box, List, ListItem, ListItemText, ListItemIcon, Typography, ListItemButton, Fade } from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import { Box, List, ListItemText, ListItemIcon, ListItemButton, Fade, ListItem } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import PieChartIcon from '@mui/icons-material/PieChart';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
@@ -24,7 +24,7 @@ import PersonIcon from '@mui/icons-material/Person';
 
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [open, setOpen] = React.useState(true);
+  const [open, setOpen] = useState(false);
 
   const handleClick = () => {
     setOpen(!open);
@@ -34,257 +34,318 @@ const Sidebar = () => {
     setIsOpen(!isOpen);
   };
 
+  useEffect(() => {
+    const isWideWindow = window.innerWidth > 768;
+    setIsOpen(isWideWindow);
+    setOpen(isWideWindow);
+  }, []);
+
   return (
-    <Box
-      sx={{
-        width: isOpen ? 275 : 64,
-        height: '125vh',
-        backgroundImage: "url('/background.jpg')",
-        backgroundSize: 'cover',
-        transition: 'width 0.2s',
-        position: 'relative',
-      }}
-    >
-      <Box
-        sx={{
-          width: '100%',
-          height: '100%',
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          backgroundColor: 'rgba(0, 0, 0, 0.7)',
-        }}
-      />
-      <Box sx={{ p: 3, position: 'relative', zIndex: 1 }}>
-        <MenuIcon onClick={toggleSidebar} />
-        {isOpen && (
-          <>
-            <Fade in={isOpen} timeout={500}>
-              <List sx={{ position: 'relative', zIndex: 1 }}>
-                <ListItemButton component="a" href="/">
-                  <ListItemIcon sx={{ color: 'white' }}>
-                    <PieChartIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="Home Page" />
-                </ListItemButton>
+<Box
+  sx={{
+    width: isOpen ? 300 : 75,
+    height: '150vh',
+    backgroundImage: "url('/background.jpg')",
+    backgroundSize: 'cover',
+    transition: 'width 0.3s',
+    position: 'relative',
+  }}
+>
+  <Box
+    sx={{
+      width: '100%',
+      height: '100%',
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    }}
+  />
+  <Box sx={{ p: 3, position: 'relative', zIndex: 1 }}>
+    <MenuIcon onClick={toggleSidebar} />
+    {isOpen && (
+      <>
+        <Fade in={isOpen} timeout={500}>
+          <List sx={{ position: 'relative', zIndex: 1 }}>
 
-                <ListItemButton component="a" href="dashboard.html">
-                  <ListItemIcon sx={{ color: 'white' }}>
-                    <AccountCircleIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="User Profile" />
-                </ListItemButton>
+            <ListItem>
+              <ListItemButton component="a" href="/">
+                <ListItemIcon sx={{ color: 'white' }}>
+                  <PieChartIcon />
+                </ListItemIcon>
+                <ListItemText primary="Home Page" />
+              </ListItemButton>
+            </ListItem>
 
-                <ListItemButton onClick={handleClick}>
-                  <ListItemIcon sx={{ color: 'white' }}>
-                    <FormatListBulletedIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="Table List" />
-                  {open ? <ExpandLess /> : <ExpandMore />}
-                </ListItemButton>
-                <Collapse in={open} timeout="auto" unmountOnExit>
-                  <List component="div" disablePadding>
-                    <ListItemButton sx={{ pl: 4 }}>
-                      <ListItemIcon sx={{ color: 'white' }}>
-                        <BookIcon />
-                      </ListItemIcon>
-                      <ListItemText primary="Blog" />
-                    </ListItemButton>
+            <ListItem>
+              <ListItemButton component="a" href="dashboard.html">
+                <ListItemIcon sx={{ color: 'white' }}>
+                  <AccountCircleIcon />
+                </ListItemIcon>
+                <ListItemText primary="User Profile" />
+              </ListItemButton>
+            </ListItem>
 
-                    <ListItemButton sx={{ pl: 4 }}>
-                      <ListItemIcon sx={{ color: 'white' }}>
-                        <ContactPhoneIcon />
-                      </ListItemIcon>
-                      <ListItemText primary="Contact Client" />
-                    </ListItemButton>
+            <ListItem>
+              <ListItemButton onClick={handleClick}>
+                <ListItemIcon sx={{ color: 'white' }}>
+                  <FormatListBulletedIcon />
+                </ListItemIcon>
+                <ListItemText primary="Table List" />
+                {open ? <ExpandLess /> : <ExpandMore />}
+              </ListItemButton>
+            </ListItem>
 
-                    <ListItemButton sx={{ pl: 4 }}>
-                      <ListItemIcon sx={{ color: 'white' }}>
-                        <RestaurantMenuIcon />
-                      </ListItemIcon>
-                      <ListItemText primary="Menu" />
-                    </ListItemButton>
+            <Collapse in={open} timeout="auto" unmountOnExit>
+              <List component="div" disablePadding>
 
-                    <ListItemButton sx={{ pl: 4 }}>
-                      <ListItemIcon sx={{ color: 'white' }}>
-                        <NotificationsActiveIcon />
-                      </ListItemIcon>
-                      <ListItemText primary="Notification" />
-                    </ListItemButton>
+                <ListItem>
+                  <ListItemButton sx={{ pl: 4 }}>
+                    <ListItemIcon sx={{ color: 'white' }}>
+                      <BookIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="Blog" />
+                  </ListItemButton>
+                </ListItem>
 
-                    <ListItemButton sx={{ pl: 4 }}>
-                      <ListItemIcon sx={{ color: 'white' }}>
-                        <WorkIcon />
-                      </ListItemIcon>
-                      <ListItemText primary="Work Post" />
-                    </ListItemButton>
+                <ListItem>
+                  <ListItemButton sx={{ pl: 4 }}>
+                    <ListItemIcon sx={{ color: 'white' }}>
+                      <ContactPhoneIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="Contact Client" />
+                  </ListItemButton>
+                </ListItem>
 
-                    <ListItemButton sx={{ pl: 4 }}>
-                      <ListItemIcon sx={{ color: 'white' }}>
-                        <BookmarksIcon />
-                      </ListItemIcon>
-                      <ListItemText primary="Reservation" />
-                    </ListItemButton>
+                <ListItem>
+                  <ListItemButton sx={{ pl: 4 }}>
+                    <ListItemIcon sx={{ color: 'white' }}>
+                      <RestaurantMenuIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="Menu" />
+                  </ListItemButton>
+                </ListItem>
 
-                    <ListItemButton sx={{ pl: 4 }}>
-                      <ListItemIcon sx={{ color: 'white' }}>
-                        <PreviewIcon />
-                      </ListItemIcon>
-                      <ListItemText primary="Review" />
-                    </ListItemButton>
+                <ListItem>
+                  <ListItemButton sx={{ pl: 4 }}>
+                    <ListItemIcon sx={{ color: 'white' }}>
+                      <NotificationsActiveIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="Notification" />
+                  </ListItemButton>
+                </ListItem>
 
-                    <ListItemButton sx={{ pl: 4 }}>
-                      <ListItemIcon sx={{ color: 'white' }}>
-                        <KingBedIcon />
-                      </ListItemIcon>
-                      <ListItemText primary="Room" />
-                    </ListItemButton>
+                <ListItem>
+                  <ListItemButton sx={{ pl: 4 }}>
+                    <ListItemIcon sx={{ color: 'white' }}>
+                      <WorkIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="Work Post" />
+                  </ListItemButton>
+                </ListItem>
 
-                    <ListItemButton sx={{ pl: 4 }}>
-                      <ListItemIcon sx={{ color: 'white' }}>
-                        <ImageIcon />
-                      </ListItemIcon>
-                      <ListItemText primary="Slider" />
-                    </ListItemButton>
+                <ListItem>
+                  <ListItemButton sx={{ pl: 4 }}>
+                    <ListItemIcon sx={{ color: 'white' }}>
+                      <BookmarksIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="Reservation" />
+                  </ListItemButton>
+                </ListItem>
 
-                    <ListItemButton sx={{ pl: 4 }}>
-                      <ListItemIcon sx={{ color: 'white' }}>
-                        <MarkUnreadChatAltIcon />
-                      </ListItemIcon>
-                      <ListItemText primary="Testimony" />
-                    </ListItemButton>
+                <ListItem>
+                  <ListItemButton sx={{ pl: 4 }}>
+                    <ListItemIcon sx={{ color: 'white' }}>
+                      <PreviewIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="Review" />
+                  </ListItemButton>
+                </ListItem>
 
-                    <ListItemButton sx={{ pl: 4 }}>
-                      <ListItemIcon sx={{ color: 'white' }}>
-                        <PersonIcon />
-                      </ListItemIcon>
-                      <ListItemText primary="User" />
-                    </ListItemButton>
+                <ListItem>
+                  <ListItemButton sx={{ pl: 4 }}>
+                    <ListItemIcon sx={{ color: 'white' }}>
+                      <KingBedIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="Room" />
+                  </ListItemButton>
+                </ListItem>
 
-                  </List>
-                </Collapse>
+                <ListItem>
+                  <ListItemButton sx={{ pl: 4 }}>
+                    <ListItemIcon sx={{ color: 'white' }}>
+                      <ImageIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="Slider" />
+                  </ListItemButton>
+                </ListItem>
 
-                <ListItemButton component="a" href="dashboard.html">
-                  <ListItemIcon sx={{ color: 'white' }}>
-                    <ConnectWithoutContactIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="Send a Message" />
-                </ListItemButton>
+                <ListItem>
+                  <ListItemButton sx={{ pl: 4 }}>
+                    <ListItemIcon sx={{ color: 'white' }}>
+                      <MarkUnreadChatAltIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="Testimony" />
+                  </ListItemButton>
+                </ListItem>
+
+                <ListItem>
+                  <ListItemButton sx={{ pl: 4 }}>
+                    <ListItemIcon sx={{ color: 'white' }}>
+                      <PersonIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="User" />
+                  </ListItemButton>
+                </ListItem>
 
               </List>
-            </Fade>
-          </>
-        )}
-      </Box>
-      {!isOpen && (
-        <List sx={{ position: 'relative', zIndex: 1 }}>
-          <ListItemButton component="a" href="dashboard.html">
-            <ListItemIcon sx={{ color: 'white' }}>
-              <PieChartIcon />
-            </ListItemIcon>
-          </ListItemButton>
+            </Collapse>
 
-          <ListItemButton component="a" href="dashboard.html">
-            <ListItemIcon sx={{ color: 'white' }}>
-              <AccountCircleIcon />
-            </ListItemIcon>
-          </ListItemButton>
+            <ListItem>
+              <ListItemButton component="a" href="dashboard.html">
+                <ListItemIcon sx={{ color: 'white' }}>
+                  <ConnectWithoutContactIcon />
+                </ListItemIcon>
+                <ListItemText primary="Send a Message" />
+              </ListItemButton>
+            </ListItem>
 
-          <ListItemButton onClick={handleClick}>
-            <ListItemIcon sx={{ color: 'white' }}>
-              <FormatListBulletedIcon />
-            </ListItemIcon>
-          </ListItemButton>
-          <Collapse in={open} timeout="auto" unmountOnExit>
-            <List component="div" disablePadding>
+          </List>
+        </Fade>
+      </>
+    )}
+  </Box>
+  {!isOpen && (
+    <List sx={{ position: 'relative', zIndex: 1 }}>
+
+      <ListItem>
+        <ListItemButton component="a" href="dashboard.html">
+          <ListItemIcon sx={{ color: 'white' }}>
+            <PieChartIcon />
+          </ListItemIcon>
+        </ListItemButton>
+      </ListItem>
+
+      <ListItem>
+        <ListItemButton component="a" href="dashboard.html">
+          <ListItemIcon sx={{ color: 'white' }}>
+            <AccountCircleIcon />
+          </ListItemIcon>
+        </ListItemButton>
+      </ListItem>
+
+      <ListItem>
+        <ListItemButton onClick={handleClick}>
+          <ListItemIcon sx={{ color: 'white' }}>
+            <FormatListBulletedIcon />
+          </ListItemIcon>
+        </ListItemButton>
+      </ListItem>
+
+      <Collapse in={open} timeout="auto" unmountOnExit>
+        <List component="div" disablePadding>
+
+          <ListItem>
             <ListItemButton>
-                      <ListItemIcon sx={{ color: 'white' }}>
-                        <BookIcon />
-                      </ListItemIcon>
-                      <ListItemText />
-                    </ListItemButton>
+              <ListItemIcon sx={{ color: 'white' }}>
+                <BookIcon />
+              </ListItemIcon>
+            </ListItemButton>
+          </ListItem>
 
-                    <ListItemButton>
-                      <ListItemIcon sx={{ color: 'white' }}>
-                        <ContactPhoneIcon />
-                      </ListItemIcon>
-                      <ListItemText />
-                    </ListItemButton>
+          <ListItem>
+            <ListItemButton>
+              <ListItemIcon sx={{ color: 'white' }}>
+                <ContactPhoneIcon />
+              </ListItemIcon>
+            </ListItemButton>
+          </ListItem>
 
-                    <ListItemButton>
-                      <ListItemIcon sx={{ color: 'white' }}>
-                        <RestaurantMenuIcon />
-                      </ListItemIcon>
-                      <ListItemText />
-                    </ListItemButton>
+          <ListItem>
+            <ListItemButton>
+              <ListItemIcon sx={{ color: 'white' }}>
+                <RestaurantMenuIcon />
+              </ListItemIcon>
+            </ListItemButton>
+          </ListItem>
 
-                    <ListItemButton>
-                      <ListItemIcon sx={{ color: 'white' }}>
-                        <NotificationsActiveIcon />
-                      </ListItemIcon>
-                      <ListItemText />
-                    </ListItemButton>
+          <ListItem>
+            <ListItemButton>
+              <ListItemIcon sx={{ color: 'white' }}>
+                <NotificationsActiveIcon />
+              </ListItemIcon>
+            </ListItemButton>
+          </ListItem>
 
-                    <ListItemButton>
-                      <ListItemIcon sx={{ color: 'white' }}>
-                        <WorkIcon />
-                      </ListItemIcon>
-                      <ListItemText />
-                    </ListItemButton>
+          <ListItem>
+            <ListItemButton>
+              <ListItemIcon sx={{ color: 'white' }}>
+                <WorkIcon />
+              </ListItemIcon>
+            </ListItemButton>
+          </ListItem>
 
-                    <ListItemButton>
-                      <ListItemIcon sx={{ color: 'white' }}>
-                        <BookmarksIcon />
-                      </ListItemIcon>
-                      <ListItemText />
-                    </ListItemButton>
+          <ListItem>
+            <ListItemButton>
+              <ListItemIcon sx={{ color: 'white' }}>
+                <BookmarksIcon />
+              </ListItemIcon>
+            </ListItemButton>
+          </ListItem>
 
-                    <ListItemButton>
-                      <ListItemIcon sx={{ color: 'white' }}>
-                        <PreviewIcon />
-                      </ListItemIcon>
-                      <ListItemText />
-                    </ListItemButton>
+          <ListItem>
+            <ListItemButton>
+              <ListItemIcon sx={{ color: 'white' }}>
+                <PreviewIcon />
+              </ListItemIcon>
+            </ListItemButton>
+          </ListItem>
 
-                    <ListItemButton>
-                      <ListItemIcon sx={{ color: 'white' }}>
-                        <KingBedIcon />
-                      </ListItemIcon>
-                      <ListItemText />
-                    </ListItemButton>
+          <ListItem>
+            <ListItemButton>
+              <ListItemIcon sx={{ color: 'white' }}>
+                <KingBedIcon />
+              </ListItemIcon>
+            </ListItemButton>
+          </ListItem>
 
-                    <ListItemButton>
-                      <ListItemIcon sx={{ color: 'white' }}>
-                        <ImageIcon />
-                      </ListItemIcon>
-                      <ListItemText />
-                    </ListItemButton>
+          <ListItem>
+            <ListItemButton>
+              <ListItemIcon sx={{ color: 'white' }}>
+                <ImageIcon />
+              </ListItemIcon>
+            </ListItemButton>
+          </ListItem>
 
-                    <ListItemButton>
-                      <ListItemIcon sx={{ color: 'white' }}>
-                        <MarkUnreadChatAltIcon />
-                      </ListItemIcon>
-                      <ListItemText />
-                    </ListItemButton>
+          <ListItem>
+            <ListItemButton>
+              <ListItemIcon sx={{ color: 'white' }}>
+                <MarkUnreadChatAltIcon />
+              </ListItemIcon>
+            </ListItemButton>
+          </ListItem>
 
-                    <ListItemButton>
-                      <ListItemIcon sx={{ color: 'white' }}>
-                        <PersonIcon />
-                      </ListItemIcon>
-                      <ListItemText />
-                    </ListItemButton>
-            </List>
-          </Collapse>
-
-          <ListItemButton component="a" href="dashboard.html">
-            <ListItemIcon sx={{ color: 'white' }}>
-              <ConnectWithoutContactIcon />
-            </ListItemIcon>
-          </ListItemButton>
-
+          <ListItem>
+            <ListItemButton>
+              <ListItemIcon sx={{ color: 'white' }}>
+                <PersonIcon />
+              </ListItemIcon>
+            </ListItemButton>
+          </ListItem>
         </List>
-      )}
-    </Box>
+      </Collapse>
+
+      <ListItem>
+        <ListItemButton component="a" href="dashboard.html">
+          <ListItemIcon sx={{ color: 'white' }}>
+            <ConnectWithoutContactIcon />
+          </ListItemIcon>
+        </ListItemButton>
+      </ListItem>
+
+    </List>
+  )}
+</Box>
   );
 };
 

@@ -1,21 +1,11 @@
-import React from 'react';
-import {
-  Box,
-  Typography,
-  Card,
-  CardContent,
-  AppBar,
-  Toolbar,
-  IconButton,
-  Avatar,
-  Button,
-} from '@mui/material';
+import React, { useState } from 'react';
 import PeopleIcon from '@mui/icons-material/People';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import StoreIcon from '@mui/icons-material/Store';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import { LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip } from 'recharts';
+import { AppBar, Toolbar, Typography, Box, IconButton, Avatar, Button, Menu, MenuItem, CardContent, Card } from '@mui/material';
 
 const data = [
   { name: 'Jan', value: 400 },
@@ -26,45 +16,62 @@ const data = [
 ];
 
 const Dashboard = () => {
+  const [anchorEl, setAnchorEl] = useState(null);
+
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+  
   return (
     <Box sx={{ flexGrow: 1, backgroundColor: 'white' }}>
       {/* AppBar for NavBar */}
       <AppBar position="static" sx={{backgroundImage: "url('/background.jpg')"}}>
-        <Toolbar sx={{ justifyContent: 'space-between', backgroundColor: 'rgba(0, 0, 0, 0.7)' }}>
-          {/* Logo */}
-          <Typography
-            variant="h6"
-            component="div"
-            sx={{
-              flexGrow: 1,
-              animation: 'fadeIn 0.5s forwards',
-              '@keyframes fadeIn': {
-                from: { opacity: 0 },
-                to: { opacity: 1 },
-              },
-            }}
-          >
-            <span style={{ fontWeight: 700, fontSize: '24px' }}>
-              Harbor <span style={{ color: '#f5e4c3' }}>Hotel</span>
-            </span>
-          </Typography>
+      <Toolbar sx={{ justifyContent: 'space-between', backgroundColor: 'rgba(0, 0, 0, 0.7)' }}>
+        <Typography
+          variant="h6"
+          component="div"
+          sx={{
+            flexGrow: 1,
+            animation: 'fadeIn 0.5s forwards',
+            '@keyframes fadeIn': {
+              from: { opacity: 0 },
+              to: { opacity: 1 },
+            },
+          }}
+        >
+          <span style={{ fontWeight: 700, fontSize: '24px' }}>
+            Harbor <span style={{ color: '#f5e4c3' }}>Hotel</span>
+          </span>
+        </Typography>
 
-          {/* Icons */}
-          <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            <IconButton color="inherit">
-              <NotificationsIcon />
-            </IconButton>
-            <Avatar sx={{ marginLeft: 2 }}>A</Avatar>
-            <Button
-              variant="text"
-              color="inherit"
-              sx={{ marginLeft: 2, textTransform: 'none' }}
-            >
-              Logout
-            </Button>
-          </Box>
-        </Toolbar>
-      </AppBar>
+        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+          <IconButton color="inherit" onClick={handleClick}>
+            <NotificationsIcon />
+          </IconButton>
+          <Menu
+            anchorEl={anchorEl}
+            open={Boolean(anchorEl)}
+            onClose={handleClose}
+          >
+            <MenuItem onClick={handleClose}>Notification 1</MenuItem>
+            <MenuItem onClick={handleClose}>Notification 2</MenuItem>
+            <MenuItem onClick={handleClose}>Notification 3</MenuItem>
+          </Menu>
+          <Avatar sx={{ marginLeft: 2 }}>A</Avatar>
+          <Button
+            variant="text"
+            color="inherit"
+            sx={{ marginLeft: 2, textTransform: 'none' }}
+          >
+            Logout
+          </Button>
+        </Box>
+      </Toolbar>
+    </AppBar>
 
       {/* Dashboard content */}
       <Box sx={{ p: 3 }}>
@@ -75,7 +82,7 @@ const Dashboard = () => {
               <Box sx={{ display: 'flex', alignItems: 'center' }}>
                 <PeopleIcon sx={{ fontSize: '2.5rem', marginRight: '8px', color: '#3f51b5' }} />
                 <Typography variant="h6" component="div">
-                  Users
+                  Staff
                 </Typography>
               </Box>
               <Typography variant="h4" component="div" sx={{ fontWeight: 'bold' }}>
@@ -97,7 +104,7 @@ const Dashboard = () => {
               <Box sx={{ display: 'flex', alignItems: 'center' }}>
                 <StoreIcon sx={{ fontSize: '2.5rem', marginRight: '8px', color: '#4caf50' }} />
                 <Typography variant="h6" component="div">
-                  Products
+                  Rooms
                 </Typography>
               </Box>
               <Typography variant="h4" component="div" sx={{ fontWeight: 'bold' }}>
@@ -119,7 +126,7 @@ const Dashboard = () => {
               <Box sx={{ display: 'flex', alignItems: 'center' }}>
                 <ShoppingCartIcon sx={{ fontSize: '2.5rem', marginRight: '8px', color: '#f44336' }} />
                 <Typography variant="h6" component="div">
-                  Orders
+                  Reservations
                 </Typography>
               </Box>
               <Typography variant="h4" component="div" sx={{ fontWeight: 'bold' }}>
@@ -141,7 +148,7 @@ const Dashboard = () => {
               <Box sx={{ display: 'flex', alignItems: 'center' }}>
                 <AttachMoneyIcon sx={{ fontSize: '2.5rem', marginRight: '8px', color: '#ffb300' }} />
                 <Typography variant="h6" component="div">
-                  Revenue
+                    
                 </Typography>
               </Box>
               <Typography variant="h4" component="div" sx={{ fontWeight: 'bold' }}>
