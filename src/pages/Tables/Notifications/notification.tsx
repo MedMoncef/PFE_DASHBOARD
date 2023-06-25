@@ -1,7 +1,7 @@
-import TableMenu from '@/components/Tools/Menus/tableMenu';
+import NotificationsTable from '@/components/Tools/Notifications/tableMessage';
 import Head from 'next/head';
 
-const menu = () => {
+const notification = () => {
   return (
   <>
       <Head>
@@ -11,9 +11,10 @@ const menu = () => {
       <link rel="icon" href="/favicon.ico" />
     </Head>
 
-      <TableMenu />
+    <NotificationsTable />
+
   </>
   );
 };
 
-export default menu;
+export default notification;

@@ -21,14 +21,14 @@ import {
 import { useRouter } from 'next/router';
 import styles from '@/styles/Title.module.css';
 
-const API_URL = 'http://localhost:7000/contacts';
+const API_URL = 'http://localhost:7000/testimony';
 
-interface Contact {
+interface Testimony {
   _id: string;
-  Nom: string;
-  Email: string;
-  Sujet: string;
-  Message: string;
+  comment: string;
+  name: string;
+  image: string;
+  title: string;
 }
 
 enum SortOrder {
@@ -38,7 +38,7 @@ enum SortOrder {
 }
 
 interface SortState {
-  field: keyof Contact | '';
+  field: keyof Testimony | '';
   order: SortOrder;
 }
 
@@ -47,12 +47,12 @@ const initialSortState: SortState = {
   order: SortOrder.NONE,
 };
 
-const ContactTable = () => {
-  const [contacts, setContacts] = useState<Contact[]>([]);
-  const [initialContacts, setInitialContacts] = useState<Contact[]>([]);
+const TestimoniesTable = () => {
+  const [testimonies, setTestimonies] = useState<Testimony[]>([]);
+  const [initialTestimonies, setInitialTestimonies] = useState<Testimony[]>([]);
   const [sortState, setSortState] = useState<SortState>(initialSortState);
   const [open, setOpen] = useState(false);
-  const [contactToDelete, setContactToDelete] = useState<Contact | null>(null);
+  const [testimonyToDelete, setTestimonyToDelete] = useState<Testimony | null>(null);
   const router = useRouter();
 
   const AscArrow = () => <span> &#9650; </span>; // Upwards arrow
@@ -65,15 +65,15 @@ const ContactTable = () => {
   const fetchData = async () => {
     try {
       const response = await axios.get(API_URL);
-      setContacts(response.data);
-      setInitialContacts(response.data);
+      setTestimonies(response.data);
+      setInitialTestimonies(response.data);
     } catch (error) {
       console.error(error);
     }
   };
 
-  const handleClickOpen = (contact: Contact) => {
-    setContactToDelete(contact);
+  const handleClickOpen = (testimony: Testimony) => {
+    setTestimonyToDelete(testimony);
     setOpen(true);
   };
 
@@ -81,12 +81,12 @@ const ContactTable = () => {
     setOpen(false);
   };
 
-  const deleteContact = async () => {
+  const deleteTestimony = async () => {
     try {
-      if (contactToDelete) {
-        await axios.delete(`${API_URL}/${contactToDelete._id}`);
-        setContacts(prevContacts =>
-          prevContacts.filter(contact => contact._id !== contactToDelete._id)
+      if (testimonyToDelete) {
+        await axios.delete(`${API_URL}/${testimonyToDelete._id}`);
+        setTestimonies(prevTestimonies =>
+          prevTestimonies.filter(testimony => testimony._id !== testimonyToDelete._id)
         );
       }
     } catch (error) {
@@ -96,9 +96,9 @@ const ContactTable = () => {
     }
   };
 
-  const sortData = (field: keyof Contact) => {
+  const sortData = (field: keyof Testimony) => {
     let order = sortState.order;
-    let sortedContacts = [...contacts];
+    let sortedTestimonies = [...testimonies];
 
     if (sortState.field !== field) {
       order = SortOrder.ASC;
@@ -107,9 +107,9 @@ const ContactTable = () => {
     }
 
     if (order === SortOrder.NONE) {
-      setContacts(initialContacts);
+      setTestimonies(initialTestimonies);
     } else {
-      sortedContacts.sort((a, b) => {
+      sortedTestimonies.sort((a, b) => {
         const valA = a[field];
         const valB = b[field];
 
@@ -117,14 +117,10 @@ const ContactTable = () => {
           return order === SortOrder.ASC ? valA.localeCompare(valB) : valB.localeCompare(valA);
         }
 
-        if (typeof valA === 'number' && typeof valB === 'number') {
-          return order === SortOrder.ASC ? valA - valB : valB - valA;
-        }
-
         return 0;
       });
 
-      setContacts(sortedContacts);
+      setTestimonies(sortedTestimonies);
     }
 
     setSortState({ field, order });
@@ -141,13 +137,13 @@ const ContactTable = () => {
       }}
     >
       <div className={styles.title}>
-        <h2>Contact List</h2>
+        <h2>Testimony List</h2>
       </div>
 
       <Grid container justifyContent="center" alignItems="center" sx={{ marginBottom: 2 }}>
         <Grid item>
-          <Button variant="outlined" onClick={() => router.push('/admin/contacts/create')}>
-            Create a Contact
+          <Button variant="outlined" onClick={() => router.push('/admin/testimonies/create')}>
+            Create a Testimony
           </Button>
         </Grid>
       </Grid>
@@ -162,27 +158,27 @@ const ContactTable = () => {
                   sortState.order !== SortOrder.NONE &&
                   (sortState.order === SortOrder.ASC ? <AscArrow /> : <DescArrow />)}
               </TableCell>
-              <TableCell sx={{ cursor: 'pointer' }} onClick={() => sortData('Nom')}>
+              <TableCell sx={{ cursor: 'pointer' }} onClick={() => sortData('comment')}>
+                Comment
+                {sortState.field === 'comment' &&
+                  sortState.order !== SortOrder.NONE &&
+                  (sortState.order === SortOrder.ASC ? <AscArrow /> : <DescArrow />)}
+              </TableCell>
+              <TableCell sx={{ cursor: 'pointer' }} onClick={() => sortData('name')}>
                 Name
-                {sortState.field === 'Nom' &&
+                {sortState.field === 'name' &&
                   sortState.order !== SortOrder.NONE &&
                   (sortState.order === SortOrder.ASC ? <AscArrow /> : <DescArrow />)}
               </TableCell>
-              <TableCell sx={{ cursor: 'pointer' }} onClick={() => sortData('Email')}>
-                Email
-                {sortState.field === 'Email' &&
+              <TableCell sx={{ cursor: 'pointer' }} onClick={() => sortData('image')}>
+                Image
+                {sortState.field === 'image' &&
                   sortState.order !== SortOrder.NONE &&
                   (sortState.order === SortOrder.ASC ? <AscArrow /> : <DescArrow />)}
               </TableCell>
-              <TableCell sx={{ cursor: 'pointer' }} onClick={() => sortData('Sujet')}>
-                Subject
-                {sortState.field === 'Sujet' &&
-                  sortState.order !== SortOrder.NONE &&
-                  (sortState.order === SortOrder.ASC ? <AscArrow /> : <DescArrow />)}
-              </TableCell>
-              <TableCell sx={{ cursor: 'pointer' }} onClick={() => sortData('Message')}>
-                Message
-                {sortState.field === 'Message' &&
+              <TableCell sx={{ cursor: 'pointer' }} onClick={() => sortData('title')}>
+                Title
+                {sortState.field === 'title' &&
                   sortState.order !== SortOrder.NONE &&
                   (sortState.order === SortOrder.ASC ? <AscArrow /> : <DescArrow />)}
               </TableCell>
@@ -190,23 +186,23 @@ const ContactTable = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {contacts.map(contact => (
-              <TableRow key={contact._id}>
-                <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{contact._id}</TableCell>
-                <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{contact.Nom}</TableCell>
-                <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{contact.Email}</TableCell>
-                <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{contact.Sujet}</TableCell>
-                <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{contact.Message}</TableCell>
+            {testimonies.map(testimony => (
+              <TableRow key={testimony._id}>
+                <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{testimony._id}</TableCell>
+                <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{testimony.comment}</TableCell>
+                <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{testimony.name}</TableCell>
+                <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{testimony.image}</TableCell>
+                <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{testimony.title}</TableCell>
                 <TableCell sx={{ maxWidth: 120, overflow: 'auto' }}>
-                  <Button onClick={() => handleClickOpen(contact)} color="secondary">
+                  <Button onClick={() => handleClickOpen(testimony)} color="secondary">
                     Delete
                   </Button>
-                  <Link href={`/Contacts/${contact._id}`} passHref>
+                  <Link href={`/Testimonies/${testimony._id}`} passHref>
                     <Button component="a" color="primary">
                       Detail
                     </Button>
                   </Link>
-                  <Link href={`/Contacts/edit/${contact._id}`} passHref>
+                  <Link href={`/Testimonies/edit/${testimony._id}`} passHref>
                     <Button component="a" color="primary">
                       Edit
                     </Button>
@@ -219,17 +215,17 @@ const ContactTable = () => {
       </TableContainer>
 
       <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>Delete contact?</DialogTitle>
+        <DialogTitle>Delete testimony?</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            Are you sure you want to delete the contact with ID: {contactToDelete?._id}?
+            Are you sure you want to delete the testimony with ID: {testimonyToDelete?._id}?
           </DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose} color="primary">
             Cancel
           </Button>
-          <Button onClick={deleteContact} color="secondary" autoFocus>
+          <Button onClick={deleteTestimony} color="secondary" autoFocus>
             Delete
           </Button>
         </DialogActions>
@@ -238,4 +234,4 @@ const ContactTable = () => {
   );
 };
 
-export default ContactTable;
+export default TestimoniesTable;

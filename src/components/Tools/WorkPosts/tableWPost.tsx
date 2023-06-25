@@ -21,14 +21,12 @@ import {
 import { useRouter } from 'next/router';
 import styles from '@/styles/Title.module.css';
 
-const API_URL = 'http://localhost:7000/contacts';
+const API_URL = 'http://localhost:7000/post';
 
-interface Contact {
+interface WorkPost {
   _id: string;
-  Nom: string;
-  Email: string;
-  Sujet: string;
-  Message: string;
+  Name: string;
+  Salaire: number;
 }
 
 enum SortOrder {
@@ -38,7 +36,7 @@ enum SortOrder {
 }
 
 interface SortState {
-  field: keyof Contact | '';
+  field: keyof WorkPost | '';
   order: SortOrder;
 }
 
@@ -47,12 +45,12 @@ const initialSortState: SortState = {
   order: SortOrder.NONE,
 };
 
-const ContactTable = () => {
-  const [contacts, setContacts] = useState<Contact[]>([]);
-  const [initialContacts, setInitialContacts] = useState<Contact[]>([]);
+const WorkPostsTable = () => {
+  const [workPosts, setWorkPosts] = useState<WorkPost[]>([]);
+  const [initialWorkPosts, setInitialWorkPosts] = useState<WorkPost[]>([]);
   const [sortState, setSortState] = useState<SortState>(initialSortState);
   const [open, setOpen] = useState(false);
-  const [contactToDelete, setContactToDelete] = useState<Contact | null>(null);
+  const [workPostToDelete, setWorkPostToDelete] = useState<WorkPost | null>(null);
   const router = useRouter();
 
   const AscArrow = () => <span> &#9650; </span>; // Upwards arrow
@@ -65,15 +63,15 @@ const ContactTable = () => {
   const fetchData = async () => {
     try {
       const response = await axios.get(API_URL);
-      setContacts(response.data);
-      setInitialContacts(response.data);
+      setWorkPosts(response.data);
+      setInitialWorkPosts(response.data);
     } catch (error) {
       console.error(error);
     }
   };
 
-  const handleClickOpen = (contact: Contact) => {
-    setContactToDelete(contact);
+  const handleClickOpen = (workPost: WorkPost) => {
+    setWorkPostToDelete(workPost);
     setOpen(true);
   };
 
@@ -81,12 +79,12 @@ const ContactTable = () => {
     setOpen(false);
   };
 
-  const deleteContact = async () => {
+  const deleteWorkPost = async () => {
     try {
-      if (contactToDelete) {
-        await axios.delete(`${API_URL}/${contactToDelete._id}`);
-        setContacts(prevContacts =>
-          prevContacts.filter(contact => contact._id !== contactToDelete._id)
+      if (workPostToDelete) {
+        await axios.delete(`${API_URL}/${workPostToDelete._id}`);
+        setWorkPosts(prevWorkPosts =>
+          prevWorkPosts.filter(workPost => workPost._id !== workPostToDelete._id)
         );
       }
     } catch (error) {
@@ -96,9 +94,9 @@ const ContactTable = () => {
     }
   };
 
-  const sortData = (field: keyof Contact) => {
+  const sortData = (field: keyof WorkPost) => {
     let order = sortState.order;
-    let sortedContacts = [...contacts];
+    let sortedWorkPosts = [...workPosts];
 
     if (sortState.field !== field) {
       order = SortOrder.ASC;
@@ -107,9 +105,9 @@ const ContactTable = () => {
     }
 
     if (order === SortOrder.NONE) {
-      setContacts(initialContacts);
+      setWorkPosts(initialWorkPosts);
     } else {
-      sortedContacts.sort((a, b) => {
+      sortedWorkPosts.sort((a, b) => {
         const valA = a[field];
         const valB = b[field];
 
@@ -124,7 +122,7 @@ const ContactTable = () => {
         return 0;
       });
 
-      setContacts(sortedContacts);
+      setWorkPosts(sortedWorkPosts);
     }
 
     setSortState({ field, order });
@@ -141,13 +139,13 @@ const ContactTable = () => {
       }}
     >
       <div className={styles.title}>
-        <h2>Contact List</h2>
+        <h2>Work Post List</h2>
       </div>
 
       <Grid container justifyContent="center" alignItems="center" sx={{ marginBottom: 2 }}>
         <Grid item>
-          <Button variant="outlined" onClick={() => router.push('/admin/contacts/create')}>
-            Create a Contact
+          <Button variant="outlined" onClick={() => router.push('/admin/workposts/create')}>
+            Create a Work Post
           </Button>
         </Grid>
       </Grid>
@@ -162,27 +160,15 @@ const ContactTable = () => {
                   sortState.order !== SortOrder.NONE &&
                   (sortState.order === SortOrder.ASC ? <AscArrow /> : <DescArrow />)}
               </TableCell>
-              <TableCell sx={{ cursor: 'pointer' }} onClick={() => sortData('Nom')}>
+              <TableCell sx={{ cursor: 'pointer' }} onClick={() => sortData('Name')}>
                 Name
-                {sortState.field === 'Nom' &&
+                {sortState.field === 'Name' &&
                   sortState.order !== SortOrder.NONE &&
                   (sortState.order === SortOrder.ASC ? <AscArrow /> : <DescArrow />)}
               </TableCell>
-              <TableCell sx={{ cursor: 'pointer' }} onClick={() => sortData('Email')}>
-                Email
-                {sortState.field === 'Email' &&
-                  sortState.order !== SortOrder.NONE &&
-                  (sortState.order === SortOrder.ASC ? <AscArrow /> : <DescArrow />)}
-              </TableCell>
-              <TableCell sx={{ cursor: 'pointer' }} onClick={() => sortData('Sujet')}>
-                Subject
-                {sortState.field === 'Sujet' &&
-                  sortState.order !== SortOrder.NONE &&
-                  (sortState.order === SortOrder.ASC ? <AscArrow /> : <DescArrow />)}
-              </TableCell>
-              <TableCell sx={{ cursor: 'pointer' }} onClick={() => sortData('Message')}>
-                Message
-                {sortState.field === 'Message' &&
+              <TableCell sx={{ cursor: 'pointer' }} onClick={() => sortData('Salaire')}>
+                Salary
+                {sortState.field === 'Salaire' &&
                   sortState.order !== SortOrder.NONE &&
                   (sortState.order === SortOrder.ASC ? <AscArrow /> : <DescArrow />)}
               </TableCell>
@@ -190,23 +176,21 @@ const ContactTable = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {contacts.map(contact => (
-              <TableRow key={contact._id}>
-                <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{contact._id}</TableCell>
-                <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{contact.Nom}</TableCell>
-                <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{contact.Email}</TableCell>
-                <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{contact.Sujet}</TableCell>
-                <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{contact.Message}</TableCell>
+            {workPosts.map(workPost => (
+              <TableRow key={workPost._id}>
+                <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{workPost._id}</TableCell>
+                <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{workPost.Name}</TableCell>
+                <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{workPost.Salaire}</TableCell>
                 <TableCell sx={{ maxWidth: 120, overflow: 'auto' }}>
-                  <Button onClick={() => handleClickOpen(contact)} color="secondary">
+                  <Button onClick={() => handleClickOpen(workPost)} color="secondary">
                     Delete
                   </Button>
-                  <Link href={`/Contacts/${contact._id}`} passHref>
+                  <Link href={`/WorkPosts/${workPost._id}`} passHref>
                     <Button component="a" color="primary">
                       Detail
                     </Button>
                   </Link>
-                  <Link href={`/Contacts/edit/${contact._id}`} passHref>
+                  <Link href={`/WorkPosts/edit/${workPost._id}`} passHref>
                     <Button component="a" color="primary">
                       Edit
                     </Button>
@@ -219,17 +203,17 @@ const ContactTable = () => {
       </TableContainer>
 
       <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>Delete contact?</DialogTitle>
+        <DialogTitle>Delete work post?</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            Are you sure you want to delete the contact with ID: {contactToDelete?._id}?
+            Are you sure you want to delete the work post with ID: {workPostToDelete?._id}?
           </DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose} color="primary">
             Cancel
           </Button>
-          <Button onClick={deleteContact} color="secondary" autoFocus>
+          <Button onClick={deleteWorkPost} color="secondary" autoFocus>
             Delete
           </Button>
         </DialogActions>
@@ -238,4 +222,4 @@ const ContactTable = () => {
   );
 };
 
-export default ContactTable;
+export default WorkPostsTable;

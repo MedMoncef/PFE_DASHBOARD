@@ -1,4 +1,4 @@
-import TableBlog from '@/components/Tools/Blogs/TableBlog';
+import TableBlog from '@/components/Tools/Blogs/tableBlog';
 import Head from 'next/head';
 
 const blog = () => {

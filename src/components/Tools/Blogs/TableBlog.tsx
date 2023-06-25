@@ -23,6 +23,12 @@ import styles from '@/styles/Title.module.css';
 
 const API_URL = 'http://localhost:7000/blogs';
 
+enum SortOrder {
+  NONE = 'NONE',
+  ASC = 'ASC',
+  DESC = 'DESC',
+}
+
 interface BlogPost {
   _id: string;
   Image: string;
@@ -31,11 +37,39 @@ interface BlogPost {
   DateU: Date;
 }
 
+interface SortState {
+  field: keyof BlogPost;
+  order: SortOrder;
+}
+
+const initialSortState: SortState = {
+  field: '',
+  order: SortOrder.NONE,
+};
+
 const BlogTable = () => {
   const [blogPosts, setBlogPosts] = useState<BlogPost[]>([]);
+  const [initialBlogs, setInitialBlogs] = useState<BlogPost[]>([]);
   const [open, setOpen] = useState(false);
   const [postToDelete, setPostToDelete] = useState<BlogPost | null>(null);
   const router = useRouter();
+  const [sortState, setSortState] = useState<SortState>(initialSortState);
+  const AscArrow = () => <span> &#9650; </span>; // Upwards arrow
+  const DescArrow = () => <span> &#9660; </span>; // Downwards arrow
+
+  const fetchData = async () => {
+    try {
+      const response = await axios.get(API_URL);
+      setBlogPosts(response.data);
+      setInitialBlogs(response.data); // Set initial data
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   const handleClickOpen = (post: BlogPost) => {
     setPostToDelete(post);
@@ -61,18 +95,39 @@ const BlogTable = () => {
     }
   };
 
-  const fetchData = async () => {
-    try {
-      const response = await axios.get(API_URL);
-      setBlogPosts(response.data);
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  const sortData = (field: keyof BlogPost) => {
+    let order = sortState.order;
+    let sortedBlogs = [...blogPosts];
 
-  useEffect(() => {
-    fetchData();
-  }, []);
+    if (sortState.field !== field) {
+      order = SortOrder.ASC;
+    } else {
+      order = sortState.order === SortOrder.ASC ? SortOrder.DESC : SortOrder.ASC;
+    }
+
+    if (order === SortOrder.NONE) {
+      setBlogPosts(initialBlogs);
+    } else {
+      sortedBlogs.sort((a, b) => {
+        const valA = a[field];
+        const valB = b[field];
+
+        if (typeof valA === 'string' && typeof valB === 'string') {
+          return order === SortOrder.ASC ? valA.localeCompare(valB) : valB.localeCompare(valA);
+        }
+
+        if (typeof valA === 'number' && typeof valB === 'number') {
+          return order === SortOrder.ASC ? valA - valB : valB - valA;
+        }
+
+        return 0;
+      });
+
+      setBlogPosts(sortedBlogs);
+    }
+
+    setSortState({ field, order });
+  };
 
   return (
     <Box
@@ -100,11 +155,31 @@ const BlogTable = () => {
         <Table stickyHeader aria-label="collapsible table">
           <TableHead>
             <TableRow>
-              <TableCell>ID</TableCell>
-              <TableCell>Image</TableCell>
-              <TableCell>Title</TableCell>
-              <TableCell>Content</TableCell>
-              <TableCell>Date</TableCell>
+              <TableCell sx={{ cursor: 'pointer' }} onClick={() => sortData('_id')}>
+                ID
+                {sortState.field === '_id' &&
+                  (sortState.order === SortOrder.ASC ? <AscArrow /> : <DescArrow />)}
+              </TableCell>
+              <TableCell sx={{ cursor: 'pointer' }} onClick={() => sortData('Image')}>
+                Image
+                {sortState.field === 'Image' &&
+                  (sortState.order === SortOrder.ASC ? <AscArrow /> : <DescArrow />)}
+              </TableCell>
+              <TableCell sx={{ cursor: 'pointer' }} onClick={() => sortData('Titre')}>
+                Title
+                {sortState.field === 'Titre' &&
+                  (sortState.order === SortOrder.ASC ? <AscArrow /> : <DescArrow />)}
+              </TableCell>
+              <TableCell sx={{ cursor: 'pointer' }} onClick={() => sortData('Content')}>
+                Content
+                {sortState.field === 'Content' &&
+                  (sortState.order === SortOrder.ASC ? <AscArrow /> : <DescArrow />)}
+              </TableCell>
+              <TableCell sx={{ cursor: 'pointer' }} onClick={() => sortData('DateU')}>
+                Date
+                {sortState.field === 'DateU' &&
+                  (sortState.order === SortOrder.ASC ? <AscArrow /> : <DescArrow />)}
+              </TableCell>
               <TableCell>Actions</TableCell>
             </TableRow>
           </TableHead>
@@ -112,7 +187,9 @@ const BlogTable = () => {
             {blogPosts.map((post) => (
               <TableRow key={post._id}>
                 <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{post._id}</TableCell>
-                <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}><img src={`/images/Blog/${post.Image}`} alt={post.Nom} /></TableCell>
+                <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>
+                  <img src={`/images/Blog/${post.Image}`} alt={post.Nom} />
+                </TableCell>
                 <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{post.Titre}</TableCell>
                 <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{post.Content}</TableCell>
                 <TableCell>{new Date(post.DateU).toLocaleDateString()}</TableCell>

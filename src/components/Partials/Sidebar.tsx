@@ -98,7 +98,7 @@ const Sidebar = () => {
   return (
     <Box
       sx={{
-        width: isOpen ? 'auto' : 75,
+        width: isOpen ? 320 : 75,
         height: 'auto',
         backgroundImage: "url('/background.jpg')",
         backgroundSize: 'cover',
@@ -148,7 +148,7 @@ const Sidebar = () => {
                         <ListItemIcon sx={{ color: 'white' }}>
                           <BookIcon />
                         </ListItemIcon>
-                        <ListItemText primary="Blog" />
+                        <ListItemText primary="Blogs" />
                       </ListItemButton>
                     </ListItem>
 
@@ -157,7 +157,7 @@ const Sidebar = () => {
                         <ListItemIcon sx={{ color: 'white' }}>
                           <ContactPhoneIcon />
                         </ListItemIcon>
-                        <ListItemText primary="Contact Client" />
+                        <ListItemText primary="Contacts Clients" />
                       </ListItemButton>
                     </ListItem>
 
@@ -166,7 +166,7 @@ const Sidebar = () => {
                         <ListItemIcon sx={{ color: 'white' }}>
                           <RestaurantMenuIcon />
                         </ListItemIcon>
-                        <ListItemText primary="Menu" />
+                        <ListItemText primary="Menus" />
                       </ListItemButton>
                     </ListItem>
 
@@ -175,7 +175,7 @@ const Sidebar = () => {
                         <ListItemIcon sx={{ color: 'white' }}>
                           <NotificationsActiveIcon />
                         </ListItemIcon>
-                        <ListItemText primary="Notification" />
+                        <ListItemText primary="Notifications" />
                       </ListItemButton>
                     </ListItem>
 
@@ -184,7 +184,7 @@ const Sidebar = () => {
                         <ListItemIcon sx={{ color: 'white' }}>
                           <WorkIcon />
                         </ListItemIcon>
-                        <ListItemText primary="Work Post" />
+                        <ListItemText primary="Work Posts" />
                       </ListItemButton>
                     </ListItem>
 
@@ -193,7 +193,7 @@ const Sidebar = () => {
                         <ListItemIcon sx={{ color: 'white' }}>
                           <BookmarksIcon />
                         </ListItemIcon>
-                        <ListItemText primary="Reservation" />
+                        <ListItemText primary="Reservations" />
                       </ListItemButton>
                     </ListItem>
 
@@ -202,7 +202,7 @@ const Sidebar = () => {
                         <ListItemIcon sx={{ color: 'white' }}>
                           <PreviewIcon />
                         </ListItemIcon>
-                        <ListItemText primary="Review" />
+                        <ListItemText primary="Reviews" />
                       </ListItemButton>
                     </ListItem>
 
@@ -211,7 +211,7 @@ const Sidebar = () => {
                         <ListItemIcon sx={{ color: 'white' }}>
                           <KingBedIcon />
                         </ListItemIcon>
-                        <ListItemText primary="Room" />
+                        <ListItemText primary="Rooms" />
                       </ListItemButton>
                     </ListItem>
 
@@ -220,7 +220,7 @@ const Sidebar = () => {
                         <ListItemIcon sx={{ color: 'white' }}>
                           <NightShelterIcon />
                         </ListItemIcon>
-                        <ListItemText primary="Room Type" />
+                        <ListItemText primary="Room Types" />
                       </ListItemButton>
                     </ListItem>
 
@@ -229,7 +229,7 @@ const Sidebar = () => {
                         <ListItemIcon sx={{ color: 'white' }}>
                           <ImageIcon />
                         </ListItemIcon>
-                        <ListItemText primary="Slider" />
+                        <ListItemText primary="Sliders" />
                       </ListItemButton>
                     </ListItem>
 
@@ -238,7 +238,7 @@ const Sidebar = () => {
                         <ListItemIcon sx={{ color: 'white' }}>
                           <MarkUnreadChatAltIcon />
                         </ListItemIcon>
-                        <ListItemText primary="Testimony" />
+                        <ListItemText primary="Testimonies" />
                       </ListItemButton>
                     </ListItem>
 
@@ -247,7 +247,7 @@ const Sidebar = () => {
                         <ListItemIcon sx={{ color: 'white' }}>
                           <PersonIcon />
                         </ListItemIcon>
-                        <ListItemText primary="User" />
+                        <ListItemText primary="Users" />
                       </ListItemButton>
                     </ListItem>
                   </List>

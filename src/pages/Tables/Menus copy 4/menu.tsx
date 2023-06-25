@@ -1,7 +1,7 @@
 import TableMenu from '@/components/Tools/Menus/tableMenu';
 import Head from 'next/head';
 
-const menu = () => {
+const blog = () => {
   return (
   <>
       <Head>
@@ -16,4 +16,4 @@ const menu = () => {
   );
 };
 
-export default menu;
+export default blog;

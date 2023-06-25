@@ -21,14 +21,13 @@ import {
 import { useRouter } from 'next/router';
 import styles from '@/styles/Title.module.css';
 
-const API_URL = 'http://localhost:7000/contacts';
+const API_URL = 'http://localhost:7000/messages';
 
-interface Contact {
+interface Notification {
   _id: string;
-  Nom: string;
-  Email: string;
   Sujet: string;
   Message: string;
+  ID_Sent: string;
 }
 
 enum SortOrder {
@@ -38,7 +37,7 @@ enum SortOrder {
 }
 
 interface SortState {
-  field: keyof Contact | '';
+  field: keyof Notification | '';
   order: SortOrder;
 }
 
@@ -47,12 +46,12 @@ const initialSortState: SortState = {
   order: SortOrder.NONE,
 };
 
-const ContactTable = () => {
-  const [contacts, setContacts] = useState<Contact[]>([]);
-  const [initialContacts, setInitialContacts] = useState<Contact[]>([]);
+const NotificationsTable = () => {
+  const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [initialNotifications, setInitialNotifications] = useState<Notification[]>([]);
   const [sortState, setSortState] = useState<SortState>(initialSortState);
   const [open, setOpen] = useState(false);
-  const [contactToDelete, setContactToDelete] = useState<Contact | null>(null);
+  const [notificationToDelete, setNotificationToDelete] = useState<Notification | null>(null);
   const router = useRouter();
 
   const AscArrow = () => <span> &#9650; </span>; // Upwards arrow
@@ -65,15 +64,15 @@ const ContactTable = () => {
   const fetchData = async () => {
     try {
       const response = await axios.get(API_URL);
-      setContacts(response.data);
-      setInitialContacts(response.data);
+      setNotifications(response.data);
+      setInitialNotifications(response.data);
     } catch (error) {
       console.error(error);
     }
   };
 
-  const handleClickOpen = (contact: Contact) => {
-    setContactToDelete(contact);
+  const handleClickOpen = (notification: Notification) => {
+    setNotificationToDelete(notification);
     setOpen(true);
   };
 
@@ -81,12 +80,12 @@ const ContactTable = () => {
     setOpen(false);
   };
 
-  const deleteContact = async () => {
+  const deleteNotification = async () => {
     try {
-      if (contactToDelete) {
-        await axios.delete(`${API_URL}/${contactToDelete._id}`);
-        setContacts(prevContacts =>
-          prevContacts.filter(contact => contact._id !== contactToDelete._id)
+      if (notificationToDelete) {
+        await axios.delete(`${API_URL}/${notificationToDelete._id}`);
+        setNotifications(prevNotifications =>
+          prevNotifications.filter(notification => notification._id !== notificationToDelete._id)
         );
       }
     } catch (error) {
@@ -96,9 +95,9 @@ const ContactTable = () => {
     }
   };
 
-  const sortData = (field: keyof Contact) => {
+  const sortData = (field: keyof Notification) => {
     let order = sortState.order;
-    let sortedContacts = [...contacts];
+    let sortedNotifications = [...notifications];
 
     if (sortState.field !== field) {
       order = SortOrder.ASC;
@@ -107,9 +106,9 @@ const ContactTable = () => {
     }
 
     if (order === SortOrder.NONE) {
-      setContacts(initialContacts);
+      setNotifications(initialNotifications);
     } else {
-      sortedContacts.sort((a, b) => {
+      sortedNotifications.sort((a, b) => {
         const valA = a[field];
         const valB = b[field];
 
@@ -124,7 +123,7 @@ const ContactTable = () => {
         return 0;
       });
 
-      setContacts(sortedContacts);
+      setNotifications(sortedNotifications);
     }
 
     setSortState({ field, order });
@@ -141,13 +140,13 @@ const ContactTable = () => {
       }}
     >
       <div className={styles.title}>
-        <h2>Contact List</h2>
+        <h2>Notification List</h2>
       </div>
 
       <Grid container justifyContent="center" alignItems="center" sx={{ marginBottom: 2 }}>
         <Grid item>
-          <Button variant="outlined" onClick={() => router.push('/admin/contacts/create')}>
-            Create a Contact
+          <Button variant="outlined" onClick={() => router.push('/admin/notifications/create')}>
+            Create a Notification
           </Button>
         </Grid>
       </Grid>
@@ -159,18 +158,6 @@ const ContactTable = () => {
               <TableCell sx={{ cursor: 'pointer' }} onClick={() => sortData('_id')}>
                 ID
                 {sortState.field === '_id' &&
-                  sortState.order !== SortOrder.NONE &&
-                  (sortState.order === SortOrder.ASC ? <AscArrow /> : <DescArrow />)}
-              </TableCell>
-              <TableCell sx={{ cursor: 'pointer' }} onClick={() => sortData('Nom')}>
-                Name
-                {sortState.field === 'Nom' &&
-                  sortState.order !== SortOrder.NONE &&
-                  (sortState.order === SortOrder.ASC ? <AscArrow /> : <DescArrow />)}
-              </TableCell>
-              <TableCell sx={{ cursor: 'pointer' }} onClick={() => sortData('Email')}>
-                Email
-                {sortState.field === 'Email' &&
                   sortState.order !== SortOrder.NONE &&
                   (sortState.order === SortOrder.ASC ? <AscArrow /> : <DescArrow />)}
               </TableCell>
@@ -186,27 +173,32 @@ const ContactTable = () => {
                   sortState.order !== SortOrder.NONE &&
                   (sortState.order === SortOrder.ASC ? <AscArrow /> : <DescArrow />)}
               </TableCell>
+              <TableCell sx={{ cursor: 'pointer' }} onClick={() => sortData('ID_Sent')}>
+                Sent By
+                {sortState.field === 'ID_Sent' &&
+                  sortState.order !== SortOrder.NONE &&
+                  (sortState.order === SortOrder.ASC ? <AscArrow /> : <DescArrow />)}
+              </TableCell>
               <TableCell>Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {contacts.map(contact => (
-              <TableRow key={contact._id}>
-                <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{contact._id}</TableCell>
-                <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{contact.Nom}</TableCell>
-                <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{contact.Email}</TableCell>
-                <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{contact.Sujet}</TableCell>
-                <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{contact.Message}</TableCell>
+            {notifications.map(notification => (
+              <TableRow key={notification._id}>
+                <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{notification._id}</TableCell>
+                <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{notification.Sujet}</TableCell>
+                <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{notification.Message}</TableCell>
+                <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{notification.ID_Sent}</TableCell>
                 <TableCell sx={{ maxWidth: 120, overflow: 'auto' }}>
-                  <Button onClick={() => handleClickOpen(contact)} color="secondary">
+                  <Button onClick={() => handleClickOpen(notification)} color="secondary">
                     Delete
                   </Button>
-                  <Link href={`/Contacts/${contact._id}`} passHref>
+                  <Link href={`/Notifications/${notification._id}`} passHref>
                     <Button component="a" color="primary">
                       Detail
                     </Button>
                   </Link>
-                  <Link href={`/Contacts/edit/${contact._id}`} passHref>
+                  <Link href={`/Notifications/edit/${notification._id}`} passHref>
                     <Button component="a" color="primary">
                       Edit
                     </Button>
@@ -219,17 +211,17 @@ const ContactTable = () => {
       </TableContainer>
 
       <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>Delete contact?</DialogTitle>
+        <DialogTitle>Delete notification?</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            Are you sure you want to delete the contact with ID: {contactToDelete?._id}?
+            Are you sure you want to delete the notification with ID: {notificationToDelete?._id}?
           </DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose} color="primary">
             Cancel
           </Button>
-          <Button onClick={deleteContact} color="secondary" autoFocus>
+          <Button onClick={deleteNotification} color="secondary" autoFocus>
             Delete
           </Button>
         </DialogActions>
@@ -238,4 +230,4 @@ const ContactTable = () => {
   );
 };
 
-export default ContactTable;
+export default NotificationsTable;

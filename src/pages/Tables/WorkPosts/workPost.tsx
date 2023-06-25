@@ -1,7 +1,7 @@
-import TableMenu from '@/components/Tools/Menus/tableMenu';
+import WorkPostsTable from '@/components/Tools/WorkPosts/tableWPost';
 import Head from 'next/head';
 
-const menu = () => {
+const workPost = () => {
   return (
   <>
       <Head>
@@ -11,9 +11,9 @@ const menu = () => {
       <link rel="icon" href="/favicon.ico" />
     </Head>
 
-      <TableMenu />
+      <WorkPostsTable />
   </>
   );
 };
 
-export default menu;
+export default workPost;

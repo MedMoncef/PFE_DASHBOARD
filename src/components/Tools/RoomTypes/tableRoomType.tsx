@@ -21,14 +21,11 @@ import {
 import { useRouter } from 'next/router';
 import styles from '@/styles/Title.module.css';
 
-const API_URL = 'http://localhost:7000/contacts';
+const API_URL = 'http://localhost:7000/roomTypes';
 
-interface Contact {
+interface RoomType {
   _id: string;
-  Nom: string;
-  Email: string;
-  Sujet: string;
-  Message: string;
+  Name: string;
 }
 
 enum SortOrder {
@@ -38,7 +35,7 @@ enum SortOrder {
 }
 
 interface SortState {
-  field: keyof Contact | '';
+  field: keyof RoomType | '';
   order: SortOrder;
 }
 
@@ -47,12 +44,12 @@ const initialSortState: SortState = {
   order: SortOrder.NONE,
 };
 
-const ContactTable = () => {
-  const [contacts, setContacts] = useState<Contact[]>([]);
-  const [initialContacts, setInitialContacts] = useState<Contact[]>([]);
+const RoomTypesTable = () => {
+  const [roomTypes, setRoomTypes] = useState<RoomType[]>([]);
+  const [initialRoomTypes, setInitialRoomTypes] = useState<RoomType[]>([]);
   const [sortState, setSortState] = useState<SortState>(initialSortState);
   const [open, setOpen] = useState(false);
-  const [contactToDelete, setContactToDelete] = useState<Contact | null>(null);
+  const [roomTypeToDelete, setRoomTypeToDelete] = useState<RoomType | null>(null);
   const router = useRouter();
 
   const AscArrow = () => <span> &#9650; </span>; // Upwards arrow
@@ -65,15 +62,15 @@ const ContactTable = () => {
   const fetchData = async () => {
     try {
       const response = await axios.get(API_URL);
-      setContacts(response.data);
-      setInitialContacts(response.data);
+      setRoomTypes(response.data);
+      setInitialRoomTypes(response.data);
     } catch (error) {
       console.error(error);
     }
   };
 
-  const handleClickOpen = (contact: Contact) => {
-    setContactToDelete(contact);
+  const handleClickOpen = (roomType: RoomType) => {
+    setRoomTypeToDelete(roomType);
     setOpen(true);
   };
 
@@ -81,12 +78,12 @@ const ContactTable = () => {
     setOpen(false);
   };
 
-  const deleteContact = async () => {
+  const deleteRoomType = async () => {
     try {
-      if (contactToDelete) {
-        await axios.delete(`${API_URL}/${contactToDelete._id}`);
-        setContacts(prevContacts =>
-          prevContacts.filter(contact => contact._id !== contactToDelete._id)
+      if (roomTypeToDelete) {
+        await axios.delete(`${API_URL}/${roomTypeToDelete._id}`);
+        setRoomTypes(prevRoomTypes =>
+          prevRoomTypes.filter(roomType => roomType._id !== roomTypeToDelete._id)
         );
       }
     } catch (error) {
@@ -96,9 +93,9 @@ const ContactTable = () => {
     }
   };
 
-  const sortData = (field: keyof Contact) => {
+  const sortData = (field: keyof RoomType) => {
     let order = sortState.order;
-    let sortedContacts = [...contacts];
+    let sortedRoomTypes = [...roomTypes];
 
     if (sortState.field !== field) {
       order = SortOrder.ASC;
@@ -107,9 +104,9 @@ const ContactTable = () => {
     }
 
     if (order === SortOrder.NONE) {
-      setContacts(initialContacts);
+      setRoomTypes(initialRoomTypes);
     } else {
-      sortedContacts.sort((a, b) => {
+      sortedRoomTypes.sort((a, b) => {
         const valA = a[field];
         const valB = b[field];
 
@@ -117,14 +114,10 @@ const ContactTable = () => {
           return order === SortOrder.ASC ? valA.localeCompare(valB) : valB.localeCompare(valA);
         }
 
-        if (typeof valA === 'number' && typeof valB === 'number') {
-          return order === SortOrder.ASC ? valA - valB : valB - valA;
-        }
-
         return 0;
       });
 
-      setContacts(sortedContacts);
+      setRoomTypes(sortedRoomTypes);
     }
 
     setSortState({ field, order });
@@ -141,13 +134,13 @@ const ContactTable = () => {
       }}
     >
       <div className={styles.title}>
-        <h2>Contact List</h2>
+        <h2>Room Type List</h2>
       </div>
 
       <Grid container justifyContent="center" alignItems="center" sx={{ marginBottom: 2 }}>
         <Grid item>
-          <Button variant="outlined" onClick={() => router.push('/admin/contacts/create')}>
-            Create a Contact
+          <Button variant="outlined" onClick={() => router.push('/admin/roomTypes/create')}>
+            Create a Room Type
           </Button>
         </Grid>
       </Grid>
@@ -162,27 +155,9 @@ const ContactTable = () => {
                   sortState.order !== SortOrder.NONE &&
                   (sortState.order === SortOrder.ASC ? <AscArrow /> : <DescArrow />)}
               </TableCell>
-              <TableCell sx={{ cursor: 'pointer' }} onClick={() => sortData('Nom')}>
+              <TableCell sx={{ cursor: 'pointer' }} onClick={() => sortData('Name')}>
                 Name
-                {sortState.field === 'Nom' &&
-                  sortState.order !== SortOrder.NONE &&
-                  (sortState.order === SortOrder.ASC ? <AscArrow /> : <DescArrow />)}
-              </TableCell>
-              <TableCell sx={{ cursor: 'pointer' }} onClick={() => sortData('Email')}>
-                Email
-                {sortState.field === 'Email' &&
-                  sortState.order !== SortOrder.NONE &&
-                  (sortState.order === SortOrder.ASC ? <AscArrow /> : <DescArrow />)}
-              </TableCell>
-              <TableCell sx={{ cursor: 'pointer' }} onClick={() => sortData('Sujet')}>
-                Subject
-                {sortState.field === 'Sujet' &&
-                  sortState.order !== SortOrder.NONE &&
-                  (sortState.order === SortOrder.ASC ? <AscArrow /> : <DescArrow />)}
-              </TableCell>
-              <TableCell sx={{ cursor: 'pointer' }} onClick={() => sortData('Message')}>
-                Message
-                {sortState.field === 'Message' &&
+                {sortState.field === 'Name' &&
                   sortState.order !== SortOrder.NONE &&
                   (sortState.order === SortOrder.ASC ? <AscArrow /> : <DescArrow />)}
               </TableCell>
@@ -190,23 +165,20 @@ const ContactTable = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {contacts.map(contact => (
-              <TableRow key={contact._id}>
-                <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{contact._id}</TableCell>
-                <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{contact.Nom}</TableCell>
-                <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{contact.Email}</TableCell>
-                <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{contact.Sujet}</TableCell>
-                <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{contact.Message}</TableCell>
+            {roomTypes.map(roomType => (
+              <TableRow key={roomType._id}>
+                <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{roomType._id}</TableCell>
+                <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{roomType.Name}</TableCell>
                 <TableCell sx={{ maxWidth: 120, overflow: 'auto' }}>
-                  <Button onClick={() => handleClickOpen(contact)} color="secondary">
+                  <Button onClick={() => handleClickOpen(roomType)} color="secondary">
                     Delete
                   </Button>
-                  <Link href={`/Contacts/${contact._id}`} passHref>
+                  <Link href={`/RoomTypes/${roomType._id}`} passHref>
                     <Button component="a" color="primary">
                       Detail
                     </Button>
                   </Link>
-                  <Link href={`/Contacts/edit/${contact._id}`} passHref>
+                  <Link href={`/RoomTypes/edit/${roomType._id}`} passHref>
                     <Button component="a" color="primary">
                       Edit
                     </Button>
@@ -219,17 +191,17 @@ const ContactTable = () => {
       </TableContainer>
 
       <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>Delete contact?</DialogTitle>
+        <DialogTitle>Delete room type?</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            Are you sure you want to delete the contact with ID: {contactToDelete?._id}?
+            Are you sure you want to delete the room type with ID: {roomTypeToDelete?._id}?
           </DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose} color="primary">
             Cancel
           </Button>
-          <Button onClick={deleteContact} color="secondary" autoFocus>
+          <Button onClick={deleteRoomType} color="secondary" autoFocus>
             Delete
           </Button>
         </DialogActions>
@@ -238,4 +210,4 @@ const ContactTable = () => {
   );
 };
 
-export default ContactTable;
+export default RoomTypesTable;

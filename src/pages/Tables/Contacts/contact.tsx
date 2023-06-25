@@ -1,7 +1,7 @@
-import TableContact from '@/components/Tools/Contacts/TableContact';
+import TableContact from '@/components/Tools/Contacts/tableContact';
 import Head from 'next/head';
 
-const blog = () => {
+const contact = () => {
   return (
   <>
       <Head>
@@ -16,4 +16,4 @@ const blog = () => {
   );
 };
 
-export default blog;
+export default contact;

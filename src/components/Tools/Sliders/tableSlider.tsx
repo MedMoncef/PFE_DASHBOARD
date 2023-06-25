@@ -21,14 +21,14 @@ import {
 import { useRouter } from 'next/router';
 import styles from '@/styles/Title.module.css';
 
-const API_URL = 'http://localhost:7000/contacts';
+const API_URL = 'http://localhost:7000/sliders';
 
-interface Contact {
+interface Slider {
   _id: string;
-  Nom: string;
-  Email: string;
-  Sujet: string;
-  Message: string;
+  Image: string;
+  Titre: string;
+  Text: string;
+  DateU: Date;
 }
 
 enum SortOrder {
@@ -38,7 +38,7 @@ enum SortOrder {
 }
 
 interface SortState {
-  field: keyof Contact | '';
+  field: keyof Slider | '';
   order: SortOrder;
 }
 
@@ -47,12 +47,12 @@ const initialSortState: SortState = {
   order: SortOrder.NONE,
 };
 
-const ContactTable = () => {
-  const [contacts, setContacts] = useState<Contact[]>([]);
-  const [initialContacts, setInitialContacts] = useState<Contact[]>([]);
+const SlidersTable = () => {
+  const [sliders, setSliders] = useState<Slider[]>([]);
+  const [initialSliders, setInitialSliders] = useState<Slider[]>([]);
   const [sortState, setSortState] = useState<SortState>(initialSortState);
   const [open, setOpen] = useState(false);
-  const [contactToDelete, setContactToDelete] = useState<Contact | null>(null);
+  const [sliderToDelete, setSliderToDelete] = useState<Slider | null>(null);
   const router = useRouter();
 
   const AscArrow = () => <span> &#9650; </span>; // Upwards arrow
@@ -65,15 +65,15 @@ const ContactTable = () => {
   const fetchData = async () => {
     try {
       const response = await axios.get(API_URL);
-      setContacts(response.data);
-      setInitialContacts(response.data);
+      setSliders(response.data);
+      setInitialSliders(response.data);
     } catch (error) {
       console.error(error);
     }
   };
 
-  const handleClickOpen = (contact: Contact) => {
-    setContactToDelete(contact);
+  const handleClickOpen = (slider: Slider) => {
+    setSliderToDelete(slider);
     setOpen(true);
   };
 
@@ -81,13 +81,11 @@ const ContactTable = () => {
     setOpen(false);
   };
 
-  const deleteContact = async () => {
+  const deleteSlider = async () => {
     try {
-      if (contactToDelete) {
-        await axios.delete(`${API_URL}/${contactToDelete._id}`);
-        setContacts(prevContacts =>
-          prevContacts.filter(contact => contact._id !== contactToDelete._id)
-        );
+      if (sliderToDelete) {
+        await axios.delete(`${API_URL}/${sliderToDelete._id}`);
+        setSliders(prevSliders => prevSliders.filter(slider => slider._id !== sliderToDelete._id));
       }
     } catch (error) {
       console.error(error);
@@ -96,9 +94,9 @@ const ContactTable = () => {
     }
   };
 
-  const sortData = (field: keyof Contact) => {
+  const sortData = (field: keyof Slider) => {
     let order = sortState.order;
-    let sortedContacts = [...contacts];
+    let sortedSliders = [...sliders];
 
     if (sortState.field !== field) {
       order = SortOrder.ASC;
@@ -107,9 +105,9 @@ const ContactTable = () => {
     }
 
     if (order === SortOrder.NONE) {
-      setContacts(initialContacts);
+      setSliders(initialSliders);
     } else {
-      sortedContacts.sort((a, b) => {
+      sortedSliders.sort((a, b) => {
         const valA = a[field];
         const valB = b[field];
 
@@ -117,14 +115,14 @@ const ContactTable = () => {
           return order === SortOrder.ASC ? valA.localeCompare(valB) : valB.localeCompare(valA);
         }
 
-        if (typeof valA === 'number' && typeof valB === 'number') {
-          return order === SortOrder.ASC ? valA - valB : valB - valA;
+        if (valA instanceof Date && valB instanceof Date) {
+          return order === SortOrder.ASC ? valA.getTime() - valB.getTime() : valB.getTime() - valA.getTime();
         }
 
         return 0;
       });
 
-      setContacts(sortedContacts);
+      setSliders(sortedSliders);
     }
 
     setSortState({ field, order });
@@ -141,13 +139,13 @@ const ContactTable = () => {
       }}
     >
       <div className={styles.title}>
-        <h2>Contact List</h2>
+        <h2>Slider List</h2>
       </div>
 
       <Grid container justifyContent="center" alignItems="center" sx={{ marginBottom: 2 }}>
         <Grid item>
-          <Button variant="outlined" onClick={() => router.push('/admin/contacts/create')}>
-            Create a Contact
+          <Button variant="outlined" onClick={() => router.push('/admin/sliders/create')}>
+            Create a Slider
           </Button>
         </Grid>
       </Grid>
@@ -162,27 +160,27 @@ const ContactTable = () => {
                   sortState.order !== SortOrder.NONE &&
                   (sortState.order === SortOrder.ASC ? <AscArrow /> : <DescArrow />)}
               </TableCell>
-              <TableCell sx={{ cursor: 'pointer' }} onClick={() => sortData('Nom')}>
-                Name
-                {sortState.field === 'Nom' &&
+              <TableCell sx={{ cursor: 'pointer' }} onClick={() => sortData('Image')}>
+                Image
+                {sortState.field === 'Image' &&
                   sortState.order !== SortOrder.NONE &&
                   (sortState.order === SortOrder.ASC ? <AscArrow /> : <DescArrow />)}
               </TableCell>
-              <TableCell sx={{ cursor: 'pointer' }} onClick={() => sortData('Email')}>
-                Email
-                {sortState.field === 'Email' &&
+              <TableCell sx={{ cursor: 'pointer' }} onClick={() => sortData('Titre')}>
+                Titre
+                {sortState.field === 'Titre' &&
                   sortState.order !== SortOrder.NONE &&
                   (sortState.order === SortOrder.ASC ? <AscArrow /> : <DescArrow />)}
               </TableCell>
-              <TableCell sx={{ cursor: 'pointer' }} onClick={() => sortData('Sujet')}>
-                Subject
-                {sortState.field === 'Sujet' &&
+              <TableCell sx={{ cursor: 'pointer' }} onClick={() => sortData('Text')}>
+                Text
+                {sortState.field === 'Text' &&
                   sortState.order !== SortOrder.NONE &&
                   (sortState.order === SortOrder.ASC ? <AscArrow /> : <DescArrow />)}
               </TableCell>
-              <TableCell sx={{ cursor: 'pointer' }} onClick={() => sortData('Message')}>
-                Message
-                {sortState.field === 'Message' &&
+              <TableCell sx={{ cursor: 'pointer' }} onClick={() => sortData('DateU')}>
+                Date
+                {sortState.field === 'DateU' &&
                   sortState.order !== SortOrder.NONE &&
                   (sortState.order === SortOrder.ASC ? <AscArrow /> : <DescArrow />)}
               </TableCell>
@@ -190,23 +188,23 @@ const ContactTable = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {contacts.map(contact => (
-              <TableRow key={contact._id}>
-                <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{contact._id}</TableCell>
-                <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{contact.Nom}</TableCell>
-                <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{contact.Email}</TableCell>
-                <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{contact.Sujet}</TableCell>
-                <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{contact.Message}</TableCell>
+            {sliders.map(slider => (
+              <TableRow key={slider._id}>
+                <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{slider._id}</TableCell>
+                <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{slider.Image}</TableCell>
+                <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{slider.Titre}</TableCell>
+                <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{slider.Text}</TableCell>
+                <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{slider.DateU}</TableCell>
                 <TableCell sx={{ maxWidth: 120, overflow: 'auto' }}>
-                  <Button onClick={() => handleClickOpen(contact)} color="secondary">
+                  <Button onClick={() => handleClickOpen(slider)} color="secondary">
                     Delete
                   </Button>
-                  <Link href={`/Contacts/${contact._id}`} passHref>
+                  <Link href={`/Sliders/${slider._id}`} passHref>
                     <Button component="a" color="primary">
                       Detail
                     </Button>
                   </Link>
-                  <Link href={`/Contacts/edit/${contact._id}`} passHref>
+                  <Link href={`/Sliders/edit/${slider._id}`} passHref>
                     <Button component="a" color="primary">
                       Edit
                     </Button>
@@ -219,17 +217,17 @@ const ContactTable = () => {
       </TableContainer>
 
       <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>Delete contact?</DialogTitle>
+        <DialogTitle>Delete slider?</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            Are you sure you want to delete the contact with ID: {contactToDelete?._id}?
+            Are you sure you want to delete the slider with ID: {sliderToDelete?._id}?
           </DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose} color="primary">
             Cancel
           </Button>
-          <Button onClick={deleteContact} color="secondary" autoFocus>
+          <Button onClick={deleteSlider} color="secondary" autoFocus>
             Delete
           </Button>
         </DialogActions>
@@ -238,4 +236,4 @@ const ContactTable = () => {
   );
 };
 
-export default ContactTable;
+export default SlidersTable;
