@@ -1,7 +1,7 @@
-import TableMenu from '@/components/Tools/Menus/tableMenu';
+import TestimoniesTable from '@/components/Tools/Testimonies/tableTestimony';
 import Head from 'next/head';
 
-const blog = () => {
+const testimony = () => {
   return (
   <>
       <Head>
@@ -11,9 +11,9 @@ const blog = () => {
       <link rel="icon" href="/favicon.ico" />
     </Head>
 
-      <TableMenu />
+      <TestimoniesTable />
   </>
   );
 };
 
-export default blog;
+export default testimony;

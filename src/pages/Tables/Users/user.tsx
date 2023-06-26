@@ -1,7 +1,7 @@
-import TableMenu from '@/components/Tools/Menus/tableMenu';
+import UsersTable from '@/components/Tools/Users/tableUser';
 import Head from 'next/head';
 
-const blog = () => {
+const user = () => {
   return (
   <>
       <Head>
@@ -11,9 +11,9 @@ const blog = () => {
       <link rel="icon" href="/favicon.ico" />
     </Head>
 
-      <TableMenu />
+      <UsersTable />
   </>
   );
 };
 
-export default blog;
+export default user;

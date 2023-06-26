@@ -21,11 +21,13 @@ import MarkUnreadChatAltIcon from '@mui/icons-material/MarkUnreadChatAlt';
 import PersonIcon from '@mui/icons-material/Person';
 import NightShelterIcon from '@mui/icons-material/NightShelter';
 import { useRouter } from 'next/router';
+import { useAuth } from '@/context/AuthContext';
 
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [open, setOpen] = useState(false);
   const router = useRouter();
+  const { isLoggedIn, logout } = useAuth();
 
   const handleClick = () => {
     setOpen(!open);
@@ -117,197 +119,219 @@ const Sidebar = () => {
         }}
       />
       <Box sx={{ p: 3, position: 'relative', zIndex: 1 }}>
-        <MenuIcon onClick={toggleSidebar} />
-        {isOpen && (
+      {isLoggedIn ? (
           <>
-            <Fade in={isOpen} timeout={500}>
-              <List sx={{ position: 'relative', zIndex: 1 }}>
-                <ListItem>
-                  <ListItemButton onClick={handleHomePageClick}>
-                    <ListItemIcon sx={{ color: 'white' }}>
-                      <PieChartIcon />
-                    </ListItemIcon>
-                    <ListItemText primary="Home Page" />
-                  </ListItemButton>
-                </ListItem>
-
-                <ListItem>
-                  <ListItemButton onClick={handleClick}>
-                    <ListItemIcon sx={{ color: 'white' }}>
-                      <FormatListBulletedIcon />
-                    </ListItemIcon>
-                    <ListItemText primary="Table List" />
-                    {open ? <ExpandLess /> : <ExpandMore />}
-                  </ListItemButton>
-                </ListItem>
-
-                <Collapse in={open} timeout="auto" unmountOnExit>
-                  <List component="div" disablePadding>
+        <MenuIcon onClick={toggleSidebar} />
+            {isOpen && (
+              <>
+                <Fade in={isOpen} timeout={500}>
+                  <List sx={{ position: 'relative', zIndex: 1 }}>
                     <ListItem>
-                      <ListItemButton sx={{ pl: 4 }} onClick={handleBlogClick}>
+                      <ListItemButton onClick={handleHomePageClick}>
                         <ListItemIcon sx={{ color: 'white' }}>
-                          <BookIcon />
+                          <PieChartIcon />
                         </ListItemIcon>
-                        <ListItemText primary="Blogs" />
+                        <ListItemText primary="Home Page" />
                       </ListItemButton>
                     </ListItem>
 
                     <ListItem>
-                      <ListItemButton sx={{ pl: 4 }} onClick={handleContactClick}>
+                      <ListItemButton onClick={handleClick}>
                         <ListItemIcon sx={{ color: 'white' }}>
-                          <ContactPhoneIcon />
+                          <FormatListBulletedIcon />
                         </ListItemIcon>
-                        <ListItemText primary="Contacts Clients" />
+                        <ListItemText primary="Table List" />
+                        {open ? <ExpandLess /> : <ExpandMore />}
+                      </ListItemButton>
+                    </ListItem>
+
+                    <Collapse in={open} timeout="auto" unmountOnExit>
+                      <List component="div" disablePadding>
+                        <ListItem>
+                          <ListItemButton sx={{ pl: 4 }} onClick={handleBlogClick}>
+                            <ListItemIcon sx={{ color: 'white' }}>
+                              <BookIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="Blogs" />
+                          </ListItemButton>
+                        </ListItem>
+
+                        <ListItem>
+                          <ListItemButton sx={{ pl: 4 }} onClick={handleContactClick}>
+                            <ListItemIcon sx={{ color: 'white' }}>
+                              <ContactPhoneIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="Contacts Clients" />
+                          </ListItemButton>
+                        </ListItem>
+
+                        <ListItem>
+                          <ListItemButton sx={{ pl: 4 }} onClick={handleMenuClick}>
+                            <ListItemIcon sx={{ color: 'white' }}>
+                              <RestaurantMenuIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="Menus" />
+                          </ListItemButton>
+                        </ListItem>
+
+                        <ListItem>
+                          <ListItemButton sx={{ pl: 4 }} onClick={handleNotificationClick}>
+                            <ListItemIcon sx={{ color: 'white' }}>
+                              <NotificationsActiveIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="Notifications" />
+                          </ListItemButton>
+                        </ListItem>
+
+                        <ListItem>
+                          <ListItemButton sx={{ pl: 4 }} onClick={handleWorkPostClick}>
+                            <ListItemIcon sx={{ color: 'white' }}>
+                              <WorkIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="Work Posts" />
+                          </ListItemButton>
+                        </ListItem>
+
+                        <ListItem>
+                          <ListItemButton sx={{ pl: 4 }} onClick={handleReservationClick}>
+                            <ListItemIcon sx={{ color: 'white' }}>
+                              <BookmarksIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="Reservations" />
+                          </ListItemButton>
+                        </ListItem>
+
+                        <ListItem>
+                          <ListItemButton sx={{ pl: 4 }} onClick={handleReviewClick}>
+                            <ListItemIcon sx={{ color: 'white' }}>
+                              <PreviewIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="Reviews" />
+                          </ListItemButton>
+                        </ListItem>
+
+                        <ListItem>
+                          <ListItemButton sx={{ pl: 4 }} onClick={handleRoomClick}>
+                            <ListItemIcon sx={{ color: 'white' }}>
+                              <KingBedIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="Rooms" />
+                          </ListItemButton>
+                        </ListItem>
+
+                        <ListItem>
+                          <ListItemButton sx={{ pl: 4 }} onClick={handleRoomTypeClick}>
+                            <ListItemIcon sx={{ color: 'white' }}>
+                              <NightShelterIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="Room Types" />
+                          </ListItemButton>
+                        </ListItem>
+
+                        <ListItem>
+                          <ListItemButton sx={{ pl: 4 }} onClick={handleSliderClick}>
+                            <ListItemIcon sx={{ color: 'white' }}>
+                              <ImageIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="Sliders" />
+                          </ListItemButton>
+                        </ListItem>
+
+                        <ListItem>
+                          <ListItemButton sx={{ pl: 4 }} onClick={handleTestimonyClick}>
+                            <ListItemIcon sx={{ color: 'white' }}>
+                              <MarkUnreadChatAltIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="Testimonies" />
+                          </ListItemButton>
+                        </ListItem>
+
+                        <ListItem>
+                          <ListItemButton sx={{ pl: 4 }} onClick={handleUserClick}>
+                            <ListItemIcon sx={{ color: 'white' }}>
+                              <PersonIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="Users" />
+                          </ListItemButton>
+                        </ListItem>
+                      </List>
+                    </Collapse>
+
+                    <ListItem>
+                      <ListItemButton onClick={handleUserProfileClick}>
+                        <ListItemIcon sx={{ color: 'white' }}>
+                          <AccountCircleIcon />
+                        </ListItemIcon>
+                        <ListItemText primary="User Profile" />
                       </ListItemButton>
                     </ListItem>
 
                     <ListItem>
-                      <ListItemButton sx={{ pl: 4 }} onClick={handleMenuClick}>
+                      <ListItemButton onClick={handleSendMessageClick}>
                         <ListItemIcon sx={{ color: 'white' }}>
-                          <RestaurantMenuIcon />
+                          <ConnectWithoutContactIcon />
                         </ListItemIcon>
-                        <ListItemText primary="Menus" />
-                      </ListItemButton>
-                    </ListItem>
-
-                    <ListItem>
-                      <ListItemButton sx={{ pl: 4 }} onClick={handleNotificationClick}>
-                        <ListItemIcon sx={{ color: 'white' }}>
-                          <NotificationsActiveIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Notifications" />
-                      </ListItemButton>
-                    </ListItem>
-
-                    <ListItem>
-                      <ListItemButton sx={{ pl: 4 }} onClick={handleWorkPostClick}>
-                        <ListItemIcon sx={{ color: 'white' }}>
-                          <WorkIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Work Posts" />
-                      </ListItemButton>
-                    </ListItem>
-
-                    <ListItem>
-                      <ListItemButton sx={{ pl: 4 }} onClick={handleReservationClick}>
-                        <ListItemIcon sx={{ color: 'white' }}>
-                          <BookmarksIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Reservations" />
-                      </ListItemButton>
-                    </ListItem>
-
-                    <ListItem>
-                      <ListItemButton sx={{ pl: 4 }} onClick={handleReviewClick}>
-                        <ListItemIcon sx={{ color: 'white' }}>
-                          <PreviewIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Reviews" />
-                      </ListItemButton>
-                    </ListItem>
-
-                    <ListItem>
-                      <ListItemButton sx={{ pl: 4 }} onClick={handleRoomClick}>
-                        <ListItemIcon sx={{ color: 'white' }}>
-                          <KingBedIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Rooms" />
-                      </ListItemButton>
-                    </ListItem>
-
-                    <ListItem>
-                      <ListItemButton sx={{ pl: 4 }} onClick={handleRoomTypeClick}>
-                        <ListItemIcon sx={{ color: 'white' }}>
-                          <NightShelterIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Room Types" />
-                      </ListItemButton>
-                    </ListItem>
-
-                    <ListItem>
-                      <ListItemButton sx={{ pl: 4 }} onClick={handleSliderClick}>
-                        <ListItemIcon sx={{ color: 'white' }}>
-                          <ImageIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Sliders" />
-                      </ListItemButton>
-                    </ListItem>
-
-                    <ListItem>
-                      <ListItemButton sx={{ pl: 4 }} onClick={handleTestimonyClick}>
-                        <ListItemIcon sx={{ color: 'white' }}>
-                          <MarkUnreadChatAltIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Testimonies" />
-                      </ListItemButton>
-                    </ListItem>
-
-                    <ListItem>
-                      <ListItemButton sx={{ pl: 4 }} onClick={handleUserClick}>
-                        <ListItemIcon sx={{ color: 'white' }}>
-                          <PersonIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Users" />
+                        <ListItemText primary="Send a Message" />
                       </ListItemButton>
                     </ListItem>
                   </List>
-                </Collapse>
-
-                <ListItem>
-                  <ListItemButton onClick={handleUserProfileClick}>
-                    <ListItemIcon sx={{ color: 'white' }}>
-                      <AccountCircleIcon />
-                    </ListItemIcon>
-                    <ListItemText primary="User Profile" />
-                  </ListItemButton>
-                </ListItem>
-
-                <ListItem>
-                  <ListItemButton onClick={handleSendMessageClick}>
-                    <ListItemIcon sx={{ color: 'white' }}>
-                      <ConnectWithoutContactIcon />
-                    </ListItemIcon>
-                    <ListItemText primary="Send a Message" />
-                  </ListItemButton>
-                </ListItem>
-              </List>
-            </Fade>
+                </Fade>
+              </>
+            )}
           </>
+        ) : (
+          <ListItem>
+            <ListItemButton disabled>
+              <ListItemIcon sx={{ color: 'white' }}>
+              </ListItemIcon>
+            </ListItemButton>
+          </ListItem>
         )}
       </Box>
       {!isOpen && (
         <List sx={{ position: 'relative', zIndex: 1 }}>
-          <ListItem>
-            <ListItemButton onClick={handleHomePageClick}>
-              <ListItemIcon sx={{ color: 'white' }}>
-                <PieChartIcon />
-              </ListItemIcon>
-            </ListItemButton>
-          </ListItem>
+          {isLoggedIn ? (
+            <>
+            <ListItem>
+              <ListItemButton onClick={handleHomePageClick}>
+                <ListItemIcon sx={{ color: 'white' }}>
+                  <PieChartIcon />
+                </ListItemIcon>
+              </ListItemButton>
+            </ListItem>
+            
+              <ListItem>
+                <ListItemButton onClick={() => { toggleSidebar(); handleClick(); }}>
+                  <ListItemIcon sx={{ color: 'white' }}>
+                    <FormatListBulletedIcon />
+                  </ListItemIcon>
+                </ListItemButton>
+              </ListItem>
 
-          <ListItem>
-            <ListItemButton onClick={() => { toggleSidebar(); handleClick(); }}>
-              <ListItemIcon sx={{ color: 'white' }}>
-                <FormatListBulletedIcon />
-              </ListItemIcon>
-            </ListItemButton>
-          </ListItem>
+              <ListItem>
+                <ListItemButton onClick={handleUserProfileClick}>
+                  <ListItemIcon sx={{ color: 'white' }}>
+                    <AccountCircleIcon />
+                  </ListItemIcon>
+                </ListItemButton>
+              </ListItem>
 
-          <ListItem>
-            <ListItemButton onClick={handleUserProfileClick}>
-              <ListItemIcon sx={{ color: 'white' }}>
-                <AccountCircleIcon />
-              </ListItemIcon>
-            </ListItemButton>
-          </ListItem>
-
-          <ListItem>
-            <ListItemButton onClick={handleSendMessageClick}>
-              <ListItemIcon sx={{ color: 'white' }}>
-                <ConnectWithoutContactIcon />
-              </ListItemIcon>
-            </ListItemButton>
-          </ListItem>
+              <ListItem>
+                <ListItemButton onClick={handleSendMessageClick}>
+                  <ListItemIcon sx={{ color: 'white' }}>
+                    <ConnectWithoutContactIcon />
+                  </ListItemIcon>
+                </ListItemButton>
+              </ListItem>
+              </>
+            ) : (
+              <ListItem>
+              <ListItemButton disabled>
+                <ListItemIcon sx={{ color: 'white' }}>
+                </ListItemIcon>
+              </ListItemButton>
+            </ListItem>
+            )}
         </List>
       )}
     </Box>

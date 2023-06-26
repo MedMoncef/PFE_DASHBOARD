@@ -1,7 +1,7 @@
-import TableMenu from '@/components/Tools/Menus/tableMenu';
+import RoomsTable from '@/components/Tools/Rooms/tableRoom';
 import Head from 'next/head';
 
-const blog = () => {
+const room = () => {
   return (
   <>
       <Head>
@@ -11,9 +11,9 @@ const blog = () => {
       <link rel="icon" href="/favicon.ico" />
     </Head>
 
-      <TableMenu />
+      <RoomsTable />
   </>
   );
 };
 
-export default blog;
+export default room;

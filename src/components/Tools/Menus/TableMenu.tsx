@@ -153,7 +153,7 @@ const MenuTable = () => {
         </Grid>
       </Grid>
 
-      <TableContainer component={Paper} sx={{ overflow: 'auto' }}>
+      <TableContainer component={Paper} sx={{ maxWidth: 1120, overflow: 'auto' }}>
         <Table stickyHeader aria-label="collapsible table">
           <TableHead>
             <TableRow>

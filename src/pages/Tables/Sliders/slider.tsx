@@ -1,7 +1,7 @@
-import TableMenu from '@/components/Tools/Menus/tableMenu';
+import SlidersTable from '@/components/Tools/Sliders/tableSlider';
 import Head from 'next/head';
 
-const blog = () => {
+const slider = () => {
   return (
   <>
       <Head>
@@ -11,9 +11,9 @@ const blog = () => {
       <link rel="icon" href="/favicon.ico" />
     </Head>
 
-      <TableMenu />
+      <SlidersTable />
   </>
   );
 };
 
-export default blog;
+export default slider;

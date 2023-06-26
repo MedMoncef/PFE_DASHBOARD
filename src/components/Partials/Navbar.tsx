@@ -1,17 +1,16 @@
 import React, { useState } from 'react';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import { AppBar, Toolbar, Typography, Box, IconButton, Avatar, Button, Menu, MenuItem, CardContent, Card } from '@mui/material';
-
-const data = [
-  { name: 'Jan', value: 400 },
-  { name: 'Feb', value: 300 },
-  { name: 'Mar', value: 500 },
-  { name: 'Apr', value: 200 },
-  { name: 'May', value: 600 },
-];
+import { useAuth } from '@/context/AuthContext';
+import { useRouter } from 'next/router';
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import LogoutIcon from '@mui/icons-material/Logout';
+import AppRegistrationIcon from '@mui/icons-material/AppRegistration';
 
 const Navbar = () => {
-const [anchorEl, setAnchorEl] = useState(null);
+  const router = useRouter();
+  const [anchorEl, setAnchorEl] = useState(null);
+  const { isLoggedIn, logout } = useAuth();
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -19,6 +18,19 @@ const [anchorEl, setAnchorEl] = useState(null);
 
   const handleClose = () => {
     setAnchorEl(null);
+  };
+
+  const handleRegisterUserClick = () => {
+    router.push('/auth/register');
+  };
+
+  const handleLoginClick = () => {
+    router.push('/auth/login');
+  };
+
+  const handleLogoutClick = () => {
+    logout();
+    router.push('/auth/login');
   };
 
   return (
@@ -55,14 +67,18 @@ const [anchorEl, setAnchorEl] = useState(null);
             <MenuItem onClick={handleClose}>Notification 2</MenuItem>
             <MenuItem onClick={handleClose}>Notification 3</MenuItem>
             </Menu>
-            <Avatar sx={{ marginLeft: 2 }}>A</Avatar>
-            <Button
-            variant="text"
-            color="inherit"
-            sx={{ marginLeft: 2, textTransform: 'none' }}
-            >
-            Logout
-            </Button>
+            {isLoggedIn ? (
+            <>
+              <Avatar sx={{ marginLeft: 2 }}>A</Avatar>
+              
+              <Button variant="text" color="inherit" onClick={handleLogoutClick} sx={{ marginLeft: 2, textTransform: 'none' }} startIcon={<LogoutIcon />}>Logout</Button>
+            </>
+            ) : (
+            <>
+                <Button variant="text" color="inherit" onClick={handleLoginClick} sx={{ marginLeft: 2, textTransform: 'none' }} startIcon={<LockOutlinedIcon />}>Login</Button>
+                <Button variant="text" color="inherit" onClick={handleRegisterUserClick} sx={{ marginLeft: 2, textTransform: 'none' }} startIcon={<AppRegistrationIcon />}>Register</Button>
+            </>
+            )}
         </Box>
         </Toolbar>
     </AppBar>
