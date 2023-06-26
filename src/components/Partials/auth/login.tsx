@@ -40,8 +40,6 @@ export default function Login() {
       });
   
       await login(formState.email, formState.password);
-      console.log(formState.email);
-      console.log(formState.password);
       toast('Welcome Back!');
       router.push('/');
     } catch (error) {

@@ -6,6 +6,7 @@ import Sidebar from '@/components/Partials/Sidebar';
 import { AuthProvider } from '@/context/AuthContext';
 
 export default function App({ Component, pageProps }: AppProps) {
+
   return (
     <ThemeProvider>
         <AuthProvider>
