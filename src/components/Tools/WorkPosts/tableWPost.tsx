@@ -21,7 +21,7 @@ import {
 import { useRouter } from 'next/router';
 import styles from '@/styles/Title.module.css';
 
-const API_URL = 'http://localhost:7000/post';
+const API_URL = 'http://localhost:7000/posts';
 
 interface WorkPost {
   _id: string;

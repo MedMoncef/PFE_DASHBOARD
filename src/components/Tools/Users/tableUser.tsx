@@ -149,7 +149,7 @@ const UsersTable = () => {
         </Grid>
       </Grid>
 
-      <TableContainer component={Paper} sx={{ maxWidth: 1120, overflow: 'auto' }}>
+      <TableContainer component={Paper} sx={{ maxWidth: '100%', overflow: 'auto' }}>
         <Table stickyHeader aria-label="collapsible table">
           <TableHead>
             <TableRow>
@@ -219,14 +219,9 @@ const UsersTable = () => {
                   <Button onClick={() => handleClickOpen(user)} color="secondary">
                     Delete
                   </Button>
-                  <Link href={`/Users/${user._id}`} passHref>
+                  <Link href={`/Tables/Users/${user._id}`} passHref>
                     <Button component="a" color="primary">
                       Detail
-                    </Button>
-                  </Link>
-                  <Link href={`/Users/edit/${user._id}`} passHref>
-                    <Button component="a" color="primary">
-                      Edit
                     </Button>
                   </Link>
                 </TableCell>

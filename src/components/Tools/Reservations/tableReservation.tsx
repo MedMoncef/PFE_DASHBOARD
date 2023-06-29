@@ -21,7 +21,7 @@ import {
 import { useRouter } from 'next/router';
 import styles from '@/styles/Title.module.css';
 
-const API_URL = 'http://localhost:7000/reservation';
+const API_URL = 'http://localhost:7000/reservations';
 
 interface Reservation {
   _id: string;
@@ -160,7 +160,7 @@ const ReservationsTable = () => {
         </Grid>
       </Grid>
 
-      <TableContainer component={Paper} sx={{ maxWidth: 1120, overflow: 'auto' }}>
+      <TableContainer component={Paper} sx={{ maxWidth: '100%', overflow: 'auto' }}>
         <Table stickyHeader aria-label="collapsible table">
           <TableHead>
             <TableRow>

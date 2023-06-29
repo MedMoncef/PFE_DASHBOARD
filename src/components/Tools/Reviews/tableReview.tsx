@@ -149,7 +149,7 @@ const ReviewsTable = () => {
         </Grid>
       </Grid>
 
-      <TableContainer component={Paper} sx={{ maxWidth: 1120, overflow: 'auto' }}>
+      <TableContainer component={Paper} sx={{ maxWidth: '100%', overflow: 'auto' }}>
         <Table stickyHeader aria-label="collapsible table">
           <TableHead>
             <TableRow>

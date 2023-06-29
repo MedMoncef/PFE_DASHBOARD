@@ -21,7 +21,7 @@ import {
 import { useRouter } from 'next/router';
 import styles from '@/styles/Title.module.css';
 
-const API_URL = 'http://localhost:7000/testimony';
+const API_URL = 'http://localhost:7000/testimonies';
 
 interface Testimony {
   _id: string;
@@ -148,7 +148,7 @@ const TestimoniesTable = () => {
         </Grid>
       </Grid>
 
-      <TableContainer component={Paper} sx={{ maxWidth: 1120, overflow: 'auto' }}>
+      <TableContainer component={Paper} sx={{ maxWidth: '100%', overflow: 'auto' }}>
         <Table stickyHeader aria-label="collapsible table">
           <TableHead>
             <TableRow>
@@ -197,14 +197,9 @@ const TestimoniesTable = () => {
                   <Button onClick={() => handleClickOpen(testimony)} color="secondary">
                     Delete
                   </Button>
-                  <Link href={`/Testimonies/${testimony._id}`} passHref>
+                  <Link href={`/Tables/Testimonies//${testimony._id}`} passHref>
                     <Button component="a" color="primary">
                       Detail
-                    </Button>
-                  </Link>
-                  <Link href={`/Testimonies/edit/${testimony._id}`} passHref>
-                    <Button component="a" color="primary">
-                      Edit
                     </Button>
                   </Link>
                 </TableCell>
