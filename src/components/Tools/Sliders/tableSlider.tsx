@@ -17,9 +17,13 @@ import {
   Box,
   Link,
   Grid,
+  Avatar,
 } from '@mui/material';
 import { useRouter } from 'next/router';
 import styles from '@/styles/Title.module.css';
+import { styled } from '@mui/system';
+import { CldImage } from 'next-cloudinary';
+
 
 const API_URL = 'http://localhost:7000/sliders';
 
@@ -46,6 +50,12 @@ const initialSortState: SortState = {
   field: '',
   order: SortOrder.NONE,
 };
+
+const UserAvatar = styled(Avatar)({
+  width: '75px',
+  height: '75px',
+  marginBottom: '16px',
+});
 
 const SlidersTable = () => {
   const [sliders, setSliders] = useState<Slider[]>([]);
@@ -191,22 +201,19 @@ const SlidersTable = () => {
             {sliders.map(slider => (
               <TableRow key={slider._id}>
                 <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{slider._id}</TableCell>
-                <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{slider.Image}</TableCell>
+                <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>
+                  <CldImage width="100" height="100" src={`/Background/${slider.Image}`} alt={slider.Image}/>
+                </TableCell>
                 <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{slider.Titre}</TableCell>
                 <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{slider.Text}</TableCell>
-                <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{slider.DateU}</TableCell>
+                <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{new Date(slider.DateU).toLocaleDateString()}</TableCell>
                 <TableCell sx={{ maxWidth: 120, overflow: 'auto' }}>
                   <Button onClick={() => handleClickOpen(slider)} color="secondary">
                     Delete
                   </Button>
-                  <Link href={`/Sliders/${slider._id}`} passHref>
+                  <Link href={`/Tables/Sliders/${slider._id}`} passHref>
                     <Button component="a" color="primary">
                       Detail
-                    </Button>
-                  </Link>
-                  <Link href={`/Sliders/edit/${slider._id}`} passHref>
-                    <Button component="a" color="primary">
-                      Edit
                     </Button>
                   </Link>
                 </TableCell>

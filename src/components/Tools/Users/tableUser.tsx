@@ -17,9 +17,11 @@ import {
   Box,
   Link,
   Grid,
+  Avatar,
 } from '@mui/material';
 import { useRouter } from 'next/router';
 import styles from '@/styles/Title.module.css';
+import { styled } from '@mui/system';
 
 const API_URL = 'http://localhost:7000/users';
 
@@ -49,6 +51,12 @@ const initialSortState: SortState = {
   field: '',
   order: SortOrder.NONE,
 };
+
+const UserAvatar = styled(Avatar)({
+  width: '75px',
+  height: '75px',
+  marginBottom: '16px',
+});
 
 const UsersTable = () => {
   const [users, setUsers] = useState<User[]>([]);
@@ -213,7 +221,7 @@ const UsersTable = () => {
                 <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{user.dateN}</TableCell>
                 <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{user.email}</TableCell>
                 <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{user.password}</TableCell>
-                <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{user.image}</TableCell>
+                <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}><UserAvatar src={user.image} /></TableCell>
                 <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{user.id_post.Name}</TableCell>
                 <TableCell sx={{ maxWidth: 120, overflow: 'auto' }}>
                   <Button onClick={() => handleClickOpen(user)} color="secondary">

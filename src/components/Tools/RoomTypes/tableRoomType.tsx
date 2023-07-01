@@ -173,14 +173,9 @@ const RoomTypesTable = () => {
                   <Button onClick={() => handleClickOpen(roomType)} color="secondary">
                     Delete
                   </Button>
-                  <Link href={`/RoomTypes/${roomType._id}`} passHref>
+                  <Link href={`/Tables/RoomTypes/${roomType._id}`} passHref>
                     <Button component="a" color="primary">
                       Detail
-                    </Button>
-                  </Link>
-                  <Link href={`/RoomTypes/edit/${roomType._id}`} passHref>
-                    <Button component="a" color="primary">
-                      Edit
                     </Button>
                   </Link>
                 </TableCell>

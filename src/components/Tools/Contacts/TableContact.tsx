@@ -206,11 +206,6 @@ const ContactTable = () => {
                       Detail
                     </Button>
                   </Link>
-                  <Link href={`/Contacts/edit/${contact._id}`} passHref>
-                    <Button component="a" color="primary">
-                      Edit
-                    </Button>
-                  </Link>
                 </TableCell>
               </TableRow>
             ))}

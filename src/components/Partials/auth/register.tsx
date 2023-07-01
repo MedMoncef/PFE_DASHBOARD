@@ -7,7 +7,7 @@ import { z } from 'zod';
 import { Button, Grid , TextField, Paper, Typography, FormLabel, InputLabel, Select, MenuItem, SelectChangeEvent } from '@mui/material';
 import axios from 'axios';
 
-const API_URL = 'http://localhost:7000/post';
+const API_URL = 'http://localhost:7000/posts';
 
 const registerSchema = z.object({
   nom: z.string().nonempty('Nom is required'),
@@ -33,6 +33,9 @@ export default function Register() {
   const [id_post, setPost] = useState('');
   const [errors, setErrors] = useState({ email: '', password: '' });
   const [posts, setPosts] = useState([]);
+
+  //HarborHotel Cloudinary Image Upload
+    
 
   interface Post {
     _id: string;
@@ -196,7 +199,7 @@ export default function Register() {
                   </Grid>
 
                   <Grid item xs={12}>
-                    <InputLabel id="demo-simple-select-label">Category</InputLabel>
+                    <InputLabel id="demo-simple-select-label">Role</InputLabel>
                     <Select
                       fullWidth
                       labelId="demo-simple-select-label"

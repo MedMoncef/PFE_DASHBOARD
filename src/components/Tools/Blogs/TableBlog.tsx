@@ -20,6 +20,7 @@ import {
 } from '@mui/material';
 import { useRouter } from 'next/router';
 import styles from '@/styles/Title.module.css';
+import { CldImage } from 'next-cloudinary';
 
 const API_URL = 'http://localhost:7000/blogs';
 
@@ -186,9 +187,9 @@ const BlogTable = () => {
           <TableBody>
             {blogPosts.map((post) => (
               <TableRow key={post._id}>
-                <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{post._id}</TableCell>
+                <TableCell sx={{ maxWidth: 50, overflow: 'auto' }}>{post._id}</TableCell>
                 <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>
-                  <img src={`/images/Blog/${post.Image}`} alt={post.Nom} />
+                 <CldImage width="100" height="100" src={`/Blog/${post.Image}`} alt={post.Image}/>
                 </TableCell>
                 <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{post.Titre}</TableCell>
                 <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{post.Content}</TableCell>
@@ -197,14 +198,9 @@ const BlogTable = () => {
                   <Button onClick={() => handleClickOpen(post)} color="secondary">
                     Delete
                   </Button>
-                  <Link href={`/Blogs/${post._id}`} passHref>
+                  <Link href={`/Tables/Blogs/${post._id}`} passHref>
                     <Button component="a" color="primary">
                       Detail
-                    </Button>
-                  </Link>
-                  <Link href={`/Blogs/edit/${post._id}`} passHref>
-                    <Button component="a" color="primary">
-                      Edit
                     </Button>
                   </Link>
                 </TableCell>

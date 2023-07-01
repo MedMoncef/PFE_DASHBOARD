@@ -20,6 +20,7 @@ import {
 } from '@mui/material';
 import { useRouter } from 'next/router';
 import styles from '@/styles/Title.module.css';
+import { CldImage } from 'next-cloudinary';
 
 const API_URL = 'http://localhost:7000/rooms';
 
@@ -246,31 +247,28 @@ const RoomsTable = () => {
           <TableBody>
             {rooms.map(room => (
               <TableRow key={room._id}>
-                <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{room._id}</TableCell>
-                <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{room.Room_Number}</TableCell>
-                <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{room.Floor_Number}</TableCell>
-                <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{room.Name}</TableCell>
-                <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{room.Image}</TableCell>
-                <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{room.Description}</TableCell>
-                <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{room.Max}</TableCell>
-                <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{room.View}</TableCell>
-                <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{room.Size}</TableCell>
-                <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{room.Bed_Number}</TableCell>
-                <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{room.Type.Name}</TableCell>
-                <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{room.Rating}</TableCell>
-                <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{room.Price}</TableCell>
+                <TableCell sx={{ maxWidth: 300, overflow: 'auto' }}>{room._id}</TableCell>
+                <TableCell sx={{ maxWidth: 300, overflow: 'auto' }}>{room.Room_Number}</TableCell>
+                <TableCell sx={{ maxWidth: 300, overflow: 'auto' }}>{room.Floor_Number}</TableCell>
+                <TableCell sx={{ maxWidth: 300, overflow: 'auto' }}>{room.Name}</TableCell>
+                <TableCell sx={{ maxWidth: 500, overflow: 'auto' }}>
+                 <CldImage width="200" height="200" src={`/Rooms/${room.Image}`} alt={room.Image}/>
+                </TableCell>
+                <TableCell sx={{ maxWidth: 300, overflow: 'auto' }}>{room.Description}</TableCell>
+                <TableCell sx={{ maxWidth: 300, overflow: 'auto' }}>{room.Max}</TableCell>
+                <TableCell sx={{ maxWidth: 300, overflow: 'auto' }}>{room.View}</TableCell>
+                <TableCell sx={{ maxWidth: 300, overflow: 'auto' }}>{room.Size}</TableCell>
+                <TableCell sx={{ maxWidth: 300, overflow: 'auto' }}>{room.Bed_Number}</TableCell>
+                <TableCell sx={{ maxWidth: 300, overflow: 'auto' }}>{room.Type.Name}</TableCell>
+                <TableCell sx={{ maxWidth: 300, overflow: 'auto' }}>{room.Rating}</TableCell>
+                <TableCell sx={{ maxWidth: 300, overflow: 'auto' }}>{room.Price}</TableCell>
                 <TableCell sx={{ maxWidth: 120, overflow: 'auto' }}>
                   <Button onClick={() => handleClickOpen(room)} color="secondary">
                     Delete
                   </Button>
-                  <Link href={`/Rooms/${room._id}`} passHref>
+                  <Link href={`/Tables/Rooms/${room._id}`} passHref>
                     <Button component="a" color="primary">
                       Detail
-                    </Button>
-                  </Link>
-                  <Link href={`/Rooms/edit/${room._id}`} passHref>
-                    <Button component="a" color="primary">
-                      Edit
                     </Button>
                   </Link>
                 </TableCell>

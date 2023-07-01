@@ -88,7 +88,7 @@ const ProfilePage = () => {
         {userDetail && (
             <OuterContainer>
                 <ProfileContainer>
-                    <UserAvatar src={userDetail.Image} />
+                    <UserAvatar src={userDetail.image} />
                     <UserInfo variant="h4">
                         {userDetail.nom} {userDetail.prenom}
                     </UserInfo>
@@ -128,7 +128,7 @@ const ProfilePage = () => {
                                 </Select>
                                 )}
                         <Button variant="outlined" color="secondary" style={{ marginTop: '20px' }}>
-                            Modify
+                            ADD
                         </Button>
                     </Box>
                 </FormContainer>

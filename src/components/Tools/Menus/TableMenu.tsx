@@ -20,6 +20,7 @@ import {
 } from '@mui/material';
 import { useRouter } from 'next/router';
 import styles from '@/styles/Title.module.css';
+import { CldImage } from 'next-cloudinary';
 
 const API_URL = 'http://localhost:7000/menus';
 
@@ -195,7 +196,7 @@ const MenuTable = () => {
               <TableRow key={menu._id}>
                 <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{menu._id}</TableCell>
                 <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>
-                  <img src={`/images/Menu/${menu.Image}`} alt={menu.Nom} />
+                  <CldImage width="100" height="100" src={`/Menu/${menu.Image}`} alt={menu.Image}/>
                 </TableCell>
                 <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{menu.Nom}</TableCell>
                 <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{menu.Description}</TableCell>

@@ -17,9 +17,12 @@ import {
   Box,
   Link,
   Grid,
+  Avatar,
 } from '@mui/material';
 import { useRouter } from 'next/router';
 import styles from '@/styles/Title.module.css';
+import { styled } from '@mui/system';
+import { CldImage } from 'next-cloudinary';
 
 const API_URL = 'http://localhost:7000/testimonies';
 
@@ -46,6 +49,12 @@ const initialSortState: SortState = {
   field: '',
   order: SortOrder.NONE,
 };
+
+const UserAvatar = styled(Avatar)({
+  width: '75px',
+  height: '75px',
+  marginBottom: '16px',
+});
 
 const TestimoniesTable = () => {
   const [testimonies, setTestimonies] = useState<Testimony[]>([]);
@@ -191,7 +200,9 @@ const TestimoniesTable = () => {
                 <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{testimony._id}</TableCell>
                 <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{testimony.comment}</TableCell>
                 <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{testimony.name}</TableCell>
-                <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{testimony.image}</TableCell>
+                <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>
+                  <CldImage width="100" height="100" src={`/Users/${testimony.image}`} alt={testimony.image}/>
+                </TableCell>
                 <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{testimony.title}</TableCell>
                 <TableCell sx={{ maxWidth: 120, overflow: 'auto' }}>
                   <Button onClick={() => handleClickOpen(testimony)} color="secondary">

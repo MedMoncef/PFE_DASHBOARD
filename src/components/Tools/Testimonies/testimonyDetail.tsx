@@ -1,9 +1,10 @@
 import React from 'react';
 import { styled } from '@mui/system';
-import { Typography, Box, Avatar, Button, TextField,    } from '@mui/material';
+import { Typography, Box, Button, TextField } from '@mui/material';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useRouter } from 'next/router';
+import { CldImage } from 'next-cloudinary';
 
 const API_URL_TESTIMONY = 'http://localhost:7000/testimonies';
 
@@ -35,12 +36,6 @@ const ProfileContainer = styled('div')({
   minHeight: '100vh',
 });
 
-const UserAvatar = styled(Avatar)({
-  width: '200px',
-  height: '200px',
-  marginBottom: '16px',
-});
-
 const UserInfo = styled(Typography)({
   textAlign: 'center',
 });
@@ -59,35 +54,20 @@ const TestimonyPage = () => {
   }, [testimonyId]);
 
   return (
-    <OuterContainer             
-    sx={{
-      border: '1px solid #ccc',
-      borderRadius: '4px',
-    }}>
+    <OuterContainer>
     {testimonies && (
       <>
-      <ProfileContainer>
-          <Box
-            key={testimonies._id}
-            sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              padding: '32px',
-              marginBottom: '32px'
-            }}
-          >
-            <UserAvatar src={`/images/Users/${testimonies.image}`}/>
-            <UserInfo variant="h4" align="center" sx={{ marginTop: '16px' }}>
+      <ProfileContainer key={testimonies._id}>
+            <CldImage width="200" height="200" src={`/Users/${testimonies.image}`} alt={testimonies.image}/>
+            <UserInfo variant="h4" sx={{ marginTop: '16px' }}>
               {testimonies.name}
             </UserInfo>
-            <UserInfo variant="h6" align="center">
+            <UserInfo variant="h6">
               {testimonies.title}
             </UserInfo>
-            <UserInfo variant="body1" align="center" sx={{ marginTop: '16px' }}>
+            <UserInfo variant="subtitle1">
               {testimonies.comment}
             </UserInfo>
-          </Box>
       </ProfileContainer>
         <FormContainer>
         <Box component="form" sx={{ display: 'flex', flexDirection: 'column', '& .MuiTextField-root': { m: 1, width: '30ch' }, }}>
