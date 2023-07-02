@@ -12,3 +12,17 @@
     color: rgb(21, 101, 192);
     text-transform: uppercase;
   }
+
+  .invalidPaid {
+    background-color: rgba(255, 0, 0, 0.5);
+    text-align: center !important;
+    vertical-align: center !important;
+    font-weight: bold !important;
+  }
+  
+  .validPaid {
+    background-color: rgba(0, 128, 0, 0.5);
+    text-align: center !important;
+    vertical-align: center !important;
+    font-weight: bold !important;
+  }

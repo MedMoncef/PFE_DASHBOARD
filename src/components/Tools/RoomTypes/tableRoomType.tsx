@@ -167,9 +167,9 @@ const RoomTypesTable = () => {
           <TableBody>
             {roomTypes.map(roomType => (
               <TableRow key={roomType._id}>
-                <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{roomType._id}</TableCell>
-                <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{roomType.Name}</TableCell>
-                <TableCell sx={{ maxWidth: 120, overflow: 'auto' }}>
+                <TableCell sx={{ Width: 200, overflow: 'auto' }}>{roomType._id}</TableCell>
+                <TableCell sx={{ Width: 200, overflow: 'auto' }}>{roomType.Name}</TableCell>
+                <TableCell sx={{ Width: 120, overflow: 'auto' }}>
                   <Button onClick={() => handleClickOpen(roomType)} color="secondary">
                     Delete
                   </Button>

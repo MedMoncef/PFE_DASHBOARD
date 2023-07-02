@@ -33,6 +33,8 @@ interface Reservation {
   Date_Debut: Date;
   Date_Fin: Date;
   Duree: number;
+  Prix: number;
+  Paid: string;
 }
 
 enum SortOrder {
@@ -218,33 +220,44 @@ const ReservationsTable = () => {
                   sortState.order !== SortOrder.NONE &&
                   (sortState.order === SortOrder.ASC ? <AscArrow /> : <DescArrow />)}
               </TableCell>
+              <TableCell sx={{ cursor: 'pointer' }} onClick={() => sortData('Prix')}>
+                Prix
+                {sortState.field === 'Prix' &&
+                  sortState.order !== SortOrder.NONE &&
+                  (sortState.order === SortOrder.ASC ? <AscArrow /> : <DescArrow />)}
+              </TableCell>
+              <TableCell sx={{ cursor: 'pointer' }} onClick={() => sortData('Paid')}>
+                Payment
+                {sortState.field === 'Paid' &&
+                  sortState.order !== SortOrder.NONE &&
+                  (sortState.order === SortOrder.ASC ? <AscArrow /> : <DescArrow />)}
+              </TableCell>
               <TableCell>Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {reservations.map(reservation => (
               <TableRow key={reservation._id}>
-                <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{reservation._id}</TableCell>
+                <TableCell sx={{ maxWidth: 50, overflow: 'auto' }}>{reservation._id}</TableCell>
                 <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{reservation.firstName}</TableCell>
                 <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{reservation.lastName}</TableCell>
                 <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{reservation.Email}</TableCell>
                 <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{reservation.CIN}</TableCell>
-                <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{reservation.ID_Rooms}</TableCell>
+                <TableCell sx={{ maxWidth: 50, overflow: 'auto' }}>{reservation.ID_Rooms}</TableCell>
                 <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{new Date(reservation.Date_Debut).toLocaleDateString()}</TableCell>
                 <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{new Date(reservation.Date_Fin).toLocaleDateString()}</TableCell>
                 <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{reservation.Duree} Day/s</TableCell>
+                <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{reservation.Prix} $</TableCell>
+                <TableCell sx={{ maxWidth: 200, overflow: 'auto' }} className={reservation.Paid === 'Invalid' ? styles.invalidPaid : styles.validPaid}>
+                  {reservation.Paid}
+                </TableCell>
                 <TableCell sx={{ maxWidth: 120, overflow: 'auto' }}>
                   <Button onClick={() => handleClickOpen(reservation)} color="secondary">
                     Delete
                   </Button>
-                  <Link href={`/Reservations/${reservation._id}`} passHref>
+                  <Link href={`/Tables/Reservations/${reservation._id}`} passHref>
                     <Button component="a" color="primary">
                       Detail
-                    </Button>
-                  </Link>
-                  <Link href={`/Reservations/edit/${reservation._id}`} passHref>
-                    <Button component="a" color="primary">
-                      Edit
                     </Button>
                   </Link>
                 </TableCell>

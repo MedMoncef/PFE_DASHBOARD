@@ -1,4 +1,4 @@
-import TestimonyPage from '@/components/Tools/Testimonies/testimonyDetail';
+import ReservationPage from '@/components/Tools/Reservations/reservationDetail';
 import Head from 'next/head';
 
 const testimonyDetails = () => {
@@ -11,7 +11,7 @@ const testimonyDetails = () => {
       <link rel="icon" href="/favicon.ico" />
     </Head>
 
-      <TestimonyPage />
+      <ReservationPage />
   </>
   );
 };
