@@ -201,19 +201,14 @@ const MenuTable = () => {
                 <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{menu.Nom}</TableCell>
                 <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{menu.Description}</TableCell>
                 <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{menu.Prix}</TableCell>
-                <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{menu.Type}</TableCell>
+                <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{menu.Type.Name}</TableCell>
                 <TableCell sx={{ maxWidth: 120, overflow: 'auto' }}>
                   <Button onClick={() => handleClickOpen(menu)} color="secondary">
                     Delete
                   </Button>
-                  <Link href={`/Menus/${menu._id}`} passHref>
+                  <Link href={`/Tables/Menus/${menu._id}`} passHref>
                     <Button component="a" color="primary">
                       Detail
-                    </Button>
-                  </Link>
-                  <Link href={`/Menus/edit/${menu._id}`} passHref>
-                    <Button component="a" color="primary">
-                      Edit
                     </Button>
                   </Link>
                 </TableCell>

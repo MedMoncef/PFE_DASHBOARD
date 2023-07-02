@@ -7,8 +7,8 @@ import { useRouter } from 'next/router';
 import { CldImage } from 'next-cloudinary';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 
-const API_URL_ROOM = 'http://localhost:7000/rooms';
-const API_URL_ROOMTYPES = 'http://localhost:7000/roomTypes';
+const API_URL_MENU = 'http://localhost:7000/menus';
+const API_URL_MENUTYPE = 'http://localhost:7000/menuTypes';
 
 const OuterContainer = styled('div')({
   display: 'flex',
@@ -38,34 +38,29 @@ const ProfileContainer = styled('div')({
   minHeight: '100vh',
 });
 
-const UserAvatar = styled(Avatar)({
-  width: '200px',
-  height: '200px',
-  marginBottom: '16px',
-});
-
 const UserInfo = styled(Typography)({
   textAlign: 'center',
 });
 
-const RoomPage = () => {
-  const [room, setRoom] = useState(null);
-  const [roomTypes, setRoomTypes] = useState([]);
+const MenuPage = () => {
+  const [menu, setMenu] = useState(null);
   const router = useRouter();
-  const { roomId } = router.query;
+  const { menuId } = router.query;
   const [selectedTypes, setSelectedTypes] = useState("");
+  const [menuTypes, setMenuTypes] = useState(null);
 
   useEffect(() => {
-    if (roomId) {
-      axios.get(`${API_URL_ROOM}/${roomId}`).then((res) => {
-        setRoom(res.data);
+    if (menuId) {
+      axios.get(`${API_URL_MENU}/${menuId}`).then((res) => {
+        setMenu(res.data);
       });
     }
-  }, [roomId]);
+    console.log(router.query);
+  }, [menuId]);
 
   const fetchData = async () => {
-    const result = await axios(API_URL_ROOMTYPES);
-    setRoomTypes(result.data);
+    const result = await axios(API_URL_MENUTYPE);
+    setMenuTypes(result.data);
   };
   
   useEffect(() => {
@@ -88,11 +83,11 @@ const RoomPage = () => {
         borderRadius: '4px',
       }}
     >
-      {room && (
+      {menu && (
         <>
           <ProfileContainer>
             <Box
-              key={room._id}
+              key={menu._id}
               sx={{
                 display: 'flex',
                 flexDirection: 'column',
@@ -101,69 +96,39 @@ const RoomPage = () => {
                 marginBottom: '32px'
               }}
             >
-              <CldImage width="500" height="500" src={`/Rooms/${room.Image}`} alt={room.Image}/>
+              <CldImage width="500" height="500" src={`/Menu/${menu.Image}`} alt={menu.Image}/>
               <UserInfo variant="h4" align="center" sx={{ marginTop: '16px' }}>
-                Name: {room.Name}
-              </UserInfo>
-              <UserInfo variant="h5" align="center" sx={{ marginTop: '16px' }}>
-                Type: {room.Type.Name}
+                {menu.Nom}
               </UserInfo>
               <UserInfo variant="body1" align="center" sx={{ marginTop: '16px' }}>
-                Room Number: {room.Room_Number}
-              </UserInfo>
-              <UserInfo variant="body1" align="center" sx={{ marginTop: '16px' }}>
-                Floor Number: {room.Floor_Number}
-              </UserInfo>
-              <UserInfo variant="body1" align="center" sx={{ marginTop: '16px' }}>
-                Room Description: {room.Description}
+                {menu.Description}
               </UserInfo>
               <UserInfo variant="body2" align="center" sx={{ marginTop: '16px' }}>
-                Price: {room.Price} $
+                Prix: {menu.Prix} $
               </UserInfo>
               <UserInfo variant="body2" align="center" sx={{ marginTop: '16px' }}>
-                Max Capacity: {room.Max} People
-              </UserInfo>
-              <UserInfo variant="body2" align="center" sx={{ marginTop: '16px' }}>
-                View: {room.View}
+                Type: {menu.Type.Name}
               </UserInfo>
             </Box>
           </ProfileContainer>
-          <FormContainer sx={{ m: '1% 0' }}>
+          <FormContainer>
             <Box component="form" sx={{ display: 'flex', flexDirection: 'column', '& .MuiTextField-root': { m: 1, width: '30ch' }, }}>
-              <TextField
-                required
-                id="roomNumber"
-                name="roomNumber"
-                label="Room Number"
-                variant="outlined"
-                value={room.Room_Number}
-                sx={{ marginBottom: '16px' }}
-              />
-              <TextField
-                required
-                id="floorNumber"
-                name="floorNumber"
-                label="Floor Number"
-                variant="outlined"
-                value={room.Floor_Number}
-                sx={{ marginBottom: '16px' }}
-              />
-              <TextField
-                required
-                id="name"
-                name="name"
-                label="Name"
-                variant="outlined"
-                value={room.Name}
-                sx={{ marginBottom: '16px' }}
-              />
               <TextField
                 required
                 id="image"
                 name="image"
                 label="Image"
                 variant="outlined"
-                value={room.Image}
+                value={menu.Image}
+                sx={{ marginBottom: '16px' }}
+              />
+              <TextField
+                required
+                id="nom"
+                name="nom"
+                label="Nom"
+                variant="outlined"
+                value={menu.Nom}
                 sx={{ marginBottom: '16px' }}
               />
               <TextField
@@ -174,71 +139,43 @@ const RoomPage = () => {
                 variant="outlined"
                 multiline
                 rows={4}
-                value={room.Description}
+                value={menu.Description}
                 sx={{ marginBottom: '16px' }}
               />
               <TextField
                 required
-                id="max"
-                name="max"
-                label="Max Occupancy"
+                id="prix"
+                name="prix"
+                label="Prix"
                 variant="outlined"
                 type="number"
-                value={room.Max}
+                value={menu.Prix}
                 sx={{ marginBottom: '16px' }}
               />
-              <TextField
-                required
-                id="view"
-                name="view"
-                label="View"
-                variant="outlined"
-                value={room.View}
-                sx={{ marginBottom: '16px' }}
-              />
-              <TextField
-                required
-                id="size"
-                name="size"
-                label="Size"
-                variant="outlined"
-                value={room.Size}
-                sx={{ marginBottom: '16px' }}
-              />
-              <TextField
-                required
-                id="bedNumber"
-                name="bedNumber"
-                label="Bed Number"
-                variant="outlined"
-                value={room.Bed_Number}
-                sx={{ marginBottom: '16px' }}
-              />
-              <InputLabel id="demo-simple-select-label">Room Types</InputLabel>
-              {roomTypes && (
+              <InputLabel id="demo-simple-select-label">Role</InputLabel>
+              {menuTypes && (
                   <Select
                   value={selectedTypes}
                   label="Role"
                   onChange={handleChange}
                   sx={{ mb: 2, width: 'auto' }}
-                  >
-                  {roomTypes.map((type: Types) => (
+              >
+                  {menuTypes.map((type: Types) => (
                   <MenuItem key={type._id} value={type._id}>{type.Name}</MenuItem>
                   ))}
               </Select>
-                )}
+              )}
               <TextField
                 required
-                id="price"
-                name="price"
-                label="Price"
+                id="type"
+                name="type"
+                label="Type"
                 variant="outlined"
-                type="number"
-                value={room.Price}
+                value={menu.Type.Name}
                 sx={{ marginBottom: '16px' }}
               />
               <Button type="submit" variant="outlined" color="primary">
-                Modify Room
+                Modify Menu
               </Button>
             </Box>
           </FormContainer>
@@ -248,4 +185,4 @@ const RoomPage = () => {
   );
 };
 
-export default RoomPage;
+export default MenuPage;
