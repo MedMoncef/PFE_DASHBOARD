@@ -185,14 +185,9 @@ const WorkPostsTable = () => {
                   <Button onClick={() => handleClickOpen(workPost)} color="secondary">
                     Delete
                   </Button>
-                  <Link href={`/WorkPosts/${workPost._id}`} passHref>
+                  <Link href={`/Tables/WorkPosts/${workPost._id}`} passHref>
                     <Button component="a" color="primary">
                       Detail
-                    </Button>
-                  </Link>
-                  <Link href={`/WorkPosts/edit/${workPost._id}`} passHref>
-                    <Button component="a" color="primary">
-                      Edit
                     </Button>
                   </Link>
                 </TableCell>

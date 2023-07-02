@@ -32,17 +32,15 @@ const ProfileContainer = styled('div')({
   flexDirection: 'column',
   alignItems: 'center',
   justifyContent: 'center',
-  minHeight: '100vh',
-});
-
-const UserAvatar = styled(Avatar)({
-  width: '200px',
-  height: '200px',
-  marginBottom: '16px',
+  minHeight: '50%',
+  boxShadow: '0px 0px 20px rgba(0, 0, 0, 0.25)',
+  background: '#ffffff',
+  color: 'black',
+  borderRadius: '10px',
 });
 
 const UserInfo = styled(Typography)({
-  textAlign: 'center',
+  textAlign: 'left',
 });
 
 const ReservationPage = () => {
@@ -73,12 +71,11 @@ const ReservationPage = () => {
               sx={{
                 display: 'flex',
                 flexDirection: 'column',
-                alignItems: 'center',
+                alignItems: 'left',
                 padding: '32px',
                 marginBottom: '32px'
               }}
             >
-              <UserAvatar src={reservation.Image} />
               <UserInfo variant="h4" align="center" sx={{ marginTop: '16px' }}>
                 {reservation.firstName} {reservation.lastName}
               </UserInfo>
@@ -92,10 +89,10 @@ const ReservationPage = () => {
                 Room ID: {reservation.ID_Rooms}
               </UserInfo>
               <UserInfo variant="body2" align="center" sx={{ marginTop: '16px' }}>
-                Start Date: {reservation.Date_Debut}
+                Start Date: {new Date(reservation.Date_Debut).toLocaleDateString()}
               </UserInfo>
               <UserInfo variant="body2" align="center" sx={{ marginTop: '16px' }}>
-                End Date: {reservation.Date_Fin}
+                End Date: {new Date(reservation.Date_Fin).toLocaleDateString()}
               </UserInfo>
               <UserInfo variant="body2" align="center" sx={{ marginTop: '16px' }}>
                 Duration: {reservation.Duree} days
