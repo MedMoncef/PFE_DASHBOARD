@@ -201,7 +201,7 @@ const ContactTable = () => {
                   <Button onClick={() => handleClickOpen(contact)} color="secondary">
                     Delete
                   </Button>
-                  <Link href={`/Contacts/${contact._id}`} passHref>
+                  <Link href={`/Tables/Contacts/${contact._id}`} passHref>
                     <Button component="a" color="primary">
                       Detail
                     </Button>

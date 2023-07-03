@@ -11,7 +11,7 @@ import Collapse from '@mui/material/Collapse';
 import BookIcon from '@mui/icons-material/Book';
 import ContactPhoneIcon from '@mui/icons-material/ContactPhone';
 import RestaurantMenuIcon from '@mui/icons-material/RestaurantMenu';
-import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
+import FoodBankIcon from '@mui/icons-material/FoodBank';
 import WorkIcon from '@mui/icons-material/Work';
 import BookmarksIcon from '@mui/icons-material/Bookmarks';
 import PreviewIcon from '@mui/icons-material/Preview';
@@ -53,8 +53,8 @@ const Sidebar = () => {
     router.push('/Tables/Menus/menu');
   };
 
-  const handleNotificationClick = () => {
-    router.push('/Tables/Notifications/notification');
+  const handleMenuTypeClick = () => {
+    router.push('/Tables/MenuTypes/menuType');
   };
 
   const handleWorkPostClick = () => {
@@ -175,11 +175,11 @@ const Sidebar = () => {
                         </ListItem>
 
                         <ListItem>
-                          <ListItemButton sx={{ pl: 4 }} onClick={handleNotificationClick}>
+                          <ListItemButton sx={{ pl: 4 }} onClick={handleMenuTypeClick}>
                             <ListItemIcon sx={{ color: 'white' }}>
-                              <NotificationsActiveIcon />
+                              <FoodBankIcon />
                             </ListItemIcon>
-                            <ListItemText primary="Notifications" />
+                            <ListItemText primary="Menu Types" />
                           </ListItemButton>
                         </ListItem>
 

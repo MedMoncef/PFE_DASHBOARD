@@ -32,7 +32,7 @@ enum SortOrder {
 
 interface BlogPost {
   _id: string;
-  Image: string;
+  Image_B: string;
   Titre: string;
   Content: string;
   DateU: Date;
@@ -161,9 +161,9 @@ const BlogTable = () => {
                 {sortState.field === '_id' &&
                   (sortState.order === SortOrder.ASC ? <AscArrow /> : <DescArrow />)}
               </TableCell>
-              <TableCell sx={{ cursor: 'pointer' }} onClick={() => sortData('Image')}>
+              <TableCell sx={{ cursor: 'pointer' }} onClick={() => sortData('Image_B')}>
                 Image
-                {sortState.field === 'Image' &&
+                {sortState.field === 'Image_B' &&
                   (sortState.order === SortOrder.ASC ? <AscArrow /> : <DescArrow />)}
               </TableCell>
               <TableCell sx={{ cursor: 'pointer' }} onClick={() => sortData('Titre')}>
@@ -189,7 +189,7 @@ const BlogTable = () => {
               <TableRow key={post._id}>
                 <TableCell sx={{ maxWidth: 50, overflow: 'auto' }}>{post._id}</TableCell>
                 <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>
-                 <CldImage width="100" height="100" src={`/Blog/${post.Image}`} alt={post.Image}/>
+                 <CldImage width="100" height="100" src={`/Blog/${post.Image_B}`} alt={post.Image_B}/>
                 </TableCell>
                 <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{post.Titre}</TableCell>
                 <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{post.Content}</TableCell>

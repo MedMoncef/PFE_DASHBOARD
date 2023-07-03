@@ -1,4 +1,4 @@
-import TestimonyPage from '@/components/Tools/Testimonies/testimonyDetail';
+import MenuTypePage from '@/components/Tools/MenuTypes/menuTypeDetail';
 import Head from 'next/head';
 
 const testimonyDetails = () => {
@@ -11,7 +11,7 @@ const testimonyDetails = () => {
       <link rel="icon" href="/favicon.ico" />
     </Head>
 
-      <TestimonyPage />
+      <MenuTypePage />
   </>
   );
 };

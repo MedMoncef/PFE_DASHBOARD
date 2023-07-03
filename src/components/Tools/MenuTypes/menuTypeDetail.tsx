@@ -4,7 +4,7 @@ import { Typography, Box, Button, TextField } from '@mui/material';
 import axios from 'axios';
 import { useRouter } from 'next/router';
 
-const API_URL_ROOM_TYPE = 'http://localhost:7000/roomTypes';
+const API_URL_MENU_TYPE = 'http://localhost:7000/menuTypes';
 
 const OuterContainer = styled('div')({
   display: 'flex',
@@ -42,26 +42,26 @@ const UserInfo = styled(Typography)({
   textAlign: 'left',
 });
 
-const RoomTypePage = () => {
-  const [roomType, setRoomType] = useState(null);
-  const [modifiedRoomType, setModifiedRoomType] = useState({
+const MenuTypePage = () => {
+  const [menuType, setMenuType] = useState(null);
+  const [modifiedMenuType, setModifiedMenuType] = useState({
     Name: '',
   });
   const router = useRouter();
-  const { roomTypeId } = router.query;
+  const { menuTypeId } = router.query;
 
   useEffect(() => {
-    if (roomTypeId) {
-      axios.get(`${API_URL_ROOM_TYPE}/${roomTypeId}`).then((res) => {
-        setRoomType(res.data);
-        setModifiedRoomType(res.data);
+    if (menuTypeId) {
+      axios.get(`${API_URL_MENU_TYPE}/${menuTypeId}`).then((res) => {
+        setMenuType(res.data);
+        setModifiedMenuType(res.data);
       });
     }
-  }, [roomTypeId]);
+  }, [menuTypeId]);
 
   const handleInputChange = (e) => {
-    setModifiedRoomType({
-      ...modifiedRoomType,
+    setModifiedMenuType({
+      ...modifiedMenuType,
       [e.target.name]: e.target.value,
     });
   };
@@ -70,9 +70,9 @@ const RoomTypePage = () => {
     event.preventDefault();
 
     try {
-      await axios.put(`${API_URL_ROOM_TYPE}/${roomTypeId}`, modifiedRoomType);
-      setRoomType(modifiedRoomType);
-      console.log('Room type updated successfully');
+      await axios.put(`${API_URL_MENU_TYPE}/${menuTypeId}`, modifiedMenuType);
+      setMenuType(modifiedMenuType);
+      console.log('Menu type updated successfully');
     } catch (error) {
       console.error('Error in form submission:', error);
     }
@@ -85,11 +85,11 @@ const RoomTypePage = () => {
         borderRadius: '4px',
       }}
     >
-      {roomType && (
+      {menuType && (
         <>
           <ProfileContainer>
             <Box
-              key={roomType._id}
+              key={menuType._id}
               sx={{
                 display: 'flex',
                 flexDirection: 'column',
@@ -99,7 +99,7 @@ const RoomTypePage = () => {
               }}
             >
               <UserInfo variant="h4" align="center" sx={{ marginTop: '16px' }}>
-                {roomType.Name}
+                {menuType.Name}
               </UserInfo>
             </Box>
           </ProfileContainer>
@@ -119,12 +119,12 @@ const RoomTypePage = () => {
                 name="Name"
                 label="Name"
                 variant="outlined"
-                value={modifiedRoomType.Name}
+                value={modifiedMenuType.Name}
                 sx={{ marginBottom: '16px' }}
                 onChange={handleInputChange}
               />
               <Button type="submit" variant="outlined" color="primary">
-                Modify Room Type
+                Modify Menu Type
               </Button>
             </Box>
           </FormContainer>
@@ -134,4 +134,4 @@ const RoomTypePage = () => {
   );
 };
 
-export default RoomTypePage;
+export default MenuTypePage;

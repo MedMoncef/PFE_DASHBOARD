@@ -1,7 +1,7 @@
-import TestimonyPage from '@/components/Tools/Testimonies/testimonyDetail';
+import MenuTypesTable from '@/components/Tools/MenuTypes/tableMenuType';
 import Head from 'next/head';
 
-const testimonyDetails = () => {
+const roomType = () => {
   return (
   <>
       <Head>
@@ -11,9 +11,9 @@ const testimonyDetails = () => {
       <link rel="icon" href="/favicon.ico" />
     </Head>
 
-      <TestimonyPage />
+      <MenuTypesTable />
   </>
   );
 };
 
-export default testimonyDetails;
+export default roomType;

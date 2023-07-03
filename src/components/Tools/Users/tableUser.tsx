@@ -22,6 +22,7 @@ import {
 import { useRouter } from 'next/router';
 import styles from '@/styles/Title.module.css';
 import { styled } from '@mui/system';
+import { CldImage } from 'next-cloudinary';
 
 const API_URL = 'http://localhost:7000/users';
 
@@ -51,12 +52,6 @@ const initialSortState: SortState = {
   field: '',
   order: SortOrder.NONE,
 };
-
-const UserAvatar = styled(Avatar)({
-  width: '75px',
-  height: '75px',
-  marginBottom: '16px',
-});
 
 const UsersTable = () => {
   const [users, setUsers] = useState<User[]>([]);
@@ -215,13 +210,15 @@ const UsersTable = () => {
           <TableBody>
             {users.map(user => (
               <TableRow key={user._id}>
-                <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{user._id}</TableCell>
+                <TableCell sx={{ maxWidth: 50, overflow: 'auto' }}>{user._id}</TableCell>
                 <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{user.nom}</TableCell>
                 <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{user.prenom}</TableCell>
                 <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{user.dateN}</TableCell>
                 <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{user.email}</TableCell>
-                <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{user.password}</TableCell>
-                <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}><UserAvatar src={user.image} /></TableCell>
+                <TableCell sx={{ maxWidth: 50, overflow: 'auto' }}>{user.password}</TableCell>
+                <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>
+                  <CldImage width="100" height="100" src={`/Users/${user.image}`} alt={user.image}/>
+                </TableCell>
                 <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{user.id_post.Name}</TableCell>
                 <TableCell sx={{ maxWidth: 120, overflow: 'auto' }}>
                   <Button onClick={() => handleClickOpen(user)} color="secondary">

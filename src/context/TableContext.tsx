@@ -109,6 +109,7 @@ interface ContactFormData {
     submitRoomTypeForm: (formData: RoomTypeFormData) => void;
     submitSliderForm: (formData: SliderFormData) => void;
     submitTestimonyForm: (formData: TestimonyFormData) => void;
+    updateById: (endpoint: string, id: string, updateData: any) => void;
   }
   
   const AuthContext = createContext<AuthContextType>({
@@ -124,6 +125,7 @@ interface ContactFormData {
     submitRoomTypeForm: () => {},
     submitSliderForm: () => {},
     submitTestimonyForm: () => {},
+    updateById: () => {},
   });
   
   export const useTable = () => useContext(AuthContext);
@@ -273,6 +275,21 @@ interface ContactFormData {
         // Handle submission failure, show error message, etc.
       }
     };
+
+    const updateById = async (endpoint: string, id: string, updateData: {}) => {
+      try {
+        // Make an HTTP request to update the data by ID
+        await axios.patch(`http://localhost:7000/${endpoint}/${id}`, updateData);
+        console.log(`${endpoint} updated successfully`);
+        console.log(`${id} id successfully`);
+        console.log(`${updateData} info successfully`);
+
+        // Handle success, show confirmation message, etc.
+      } catch (error) {
+        console.error(`${endpoint} update failed:`, error);
+        // Handle submission failure, show error message, etc.
+      }
+    };
   
     return (
       <AuthContext.Provider
@@ -289,9 +306,10 @@ interface ContactFormData {
           submitRoomTypeForm,
           submitSliderForm,
           submitTestimonyForm,
-        }}
-      >
-        {children}
-      </AuthContext.Provider>
-    );
-  };
+          updateById,
+      }}
+    >
+      {children}
+    </AuthContext.Provider>
+  );
+};

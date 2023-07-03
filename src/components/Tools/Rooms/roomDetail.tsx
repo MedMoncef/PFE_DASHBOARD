@@ -6,6 +6,8 @@ import axios from 'axios';
 import { useRouter } from 'next/router';
 import { CldImage } from 'next-cloudinary';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
+import { useTable } from '@/context/TableContext';
+import { toast } from 'react-toastify';
 
 const API_URL_ROOM = 'http://localhost:7000/rooms';
 const API_URL_ROOMTYPES = 'http://localhost:7000/roomTypes';
@@ -38,12 +40,6 @@ const ProfileContainer = styled('div')({
   minHeight: '100vh',
 });
 
-const UserAvatar = styled(Avatar)({
-  width: '200px',
-  height: '200px',
-  marginBottom: '16px',
-});
-
 const UserInfo = styled(Typography)({
   textAlign: 'center',
 });
@@ -53,15 +49,38 @@ const RoomPage = () => {
   const [roomTypes, setRoomTypes] = useState([]);
   const router = useRouter();
   const { roomId } = router.query;
-  const [selectedTypes, setSelectedTypes] = useState("");
-
+  const [file, setFile] = useState(null);
+  const { updateById } = useTable();
+  const [roomNumber, setRoomNumber] = useState("");
+  const [floorNumber, setFloorNumber] = useState("");
+  const [name, setName] = useState("");
+  const [image, setImage] = useState("");
+  const [description, setDescription] = useState("");
+  const [max, setMax] = useState("");
+  const [view, setView] = useState("");
+  const [size, setSize] = useState("");
+  const [bedNumber, setBedNumber] = useState("");
+  const [type, setType] = useState("");
+  const [price, setPrice] = useState("");
+  
   useEffect(() => {
     if (roomId) {
       axios.get(`${API_URL_ROOM}/${roomId}`).then((res) => {
         setRoom(res.data);
+        setRoomNumber(res.data.Room_Number);
+        setFloorNumber(res.data.Floor_Number);
+        setName(res.data.Name);
+        setDescription(res.data.Description);
+        setMax(res.data.Max);
+        setView(res.data.View);
+        setSize(res.data.Size);
+        setBedNumber(res.data.Bed_Number);
+        setType(res.data.Type);
+        setPrice(res.data.Price);
       });
     }
   }, [roomId]);
+  
 
   const fetchData = async () => {
     const result = await axios(API_URL_ROOMTYPES);
@@ -73,13 +92,80 @@ const RoomPage = () => {
   }, []);
 
   const handleChange = (event: SelectChangeEvent) => {
-    setSelectedTypes(event.target.value as string);
+    setType(event.target.value as string);
   };
 
   interface Types {
     _id: string;
     Name: string;
   }
+
+const handleFileChange = (e) => {
+  const selectedFile = e.target.files[0];
+  setFile(selectedFile);
+};
+
+const uploadImage = async (): Promise<string> => {
+  return new Promise<string>(async (resolve, reject) => {
+    if (file) {
+      try {
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('upload_preset', 'HarborHotel');
+        const filenameWithoutExtension = file.name.replace(/\.[^/.]+$/, ""); // Remove file extension
+        formData.append('public_id', `Rooms/${filenameWithoutExtension}`);
+        setImage(String(file.name));
+
+        await axios.post('https://api.cloudinary.com/v1_1/dv5o7w2aw/upload', formData);
+
+        // Handle the response or perform additional operations
+        console.log('File uploaded successfully');
+
+        resolve(file.name); // Return file name
+      } catch (error) {
+        console.error('Error uploading file:', error);
+        reject(error);
+      }
+    } else {
+      resolve('');
+    }
+  });
+};
+
+const handleFormSubmit = async (event) => {
+  event.preventDefault();
+
+  try {
+    let imageName = '';
+    if (file) {
+      imageName = await uploadImage();
+    }
+
+    if (imageName || imageName === '') {
+      const roomData = {
+        Room_Number: roomNumber,
+        Floor_Number: floorNumber,
+        Name: name,
+        Image: imageName,
+        Description: description,
+        Max: max,
+        View: view,
+        Size: size,
+        Bed_Number: bedNumber,
+        Type: type,
+        Price: price,
+      };
+
+      await updateById("rooms", roomId, roomData);
+      toast.success('Room updated successfully');
+    } else {
+      throw new Error('Image upload failed');
+    }
+  } catch (error) {
+    console.error('Error in form submission:', error);
+    toast.error('Something went wrong.');
+  }
+};
 
   return (
     <OuterContainer             
@@ -129,14 +215,15 @@ const RoomPage = () => {
             </Box>
           </ProfileContainer>
           <FormContainer sx={{ m: '1% 0' }}>
-            <Box component="form" sx={{ display: 'flex', flexDirection: 'column', '& .MuiTextField-root': { m: 1, width: '30ch' }, }}>
+            <Box component="form" onSubmit={handleFormSubmit} sx={{ display: 'flex', flexDirection: 'column', '& .MuiTextField-root': { m: 1, width: '30ch' }, }}>
               <TextField
                 required
                 id="roomNumber"
                 name="roomNumber"
                 label="Room Number"
                 variant="outlined"
-                value={room.Room_Number}
+                value={roomNumber}
+                onChange={(e) => setRoomNumber(e.target.value)}
                 sx={{ marginBottom: '16px' }}
               />
               <TextField
@@ -145,7 +232,8 @@ const RoomPage = () => {
                 name="floorNumber"
                 label="Floor Number"
                 variant="outlined"
-                value={room.Floor_Number}
+                value={floorNumber}
+                onChange={(e) => setFloorNumber(e.target.value)}
                 sx={{ marginBottom: '16px' }}
               />
               <TextField
@@ -154,16 +242,8 @@ const RoomPage = () => {
                 name="name"
                 label="Name"
                 variant="outlined"
-                value={room.Name}
-                sx={{ marginBottom: '16px' }}
-              />
-              <TextField
-                required
-                id="image"
-                name="image"
-                label="Image"
-                variant="outlined"
-                value={room.Image}
+                value={name}
+                onChange={(e) => setName(e.target.value)}
                 sx={{ marginBottom: '16px' }}
               />
               <TextField
@@ -174,7 +254,8 @@ const RoomPage = () => {
                 variant="outlined"
                 multiline
                 rows={4}
-                value={room.Description}
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
                 sx={{ marginBottom: '16px' }}
               />
               <TextField
@@ -184,7 +265,8 @@ const RoomPage = () => {
                 label="Max Occupancy"
                 variant="outlined"
                 type="number"
-                value={room.Max}
+                value={max}
+                onChange={(e) => setMax(e.target.value)}
                 sx={{ marginBottom: '16px' }}
               />
               <TextField
@@ -193,7 +275,8 @@ const RoomPage = () => {
                 name="view"
                 label="View"
                 variant="outlined"
-                value={room.View}
+                value={view}
+                onChange={(e) => setView(e.target.value)}
                 sx={{ marginBottom: '16px' }}
               />
               <TextField
@@ -202,7 +285,8 @@ const RoomPage = () => {
                 name="size"
                 label="Size"
                 variant="outlined"
-                value={room.Size}
+                value={size}
+                onChange={(e) => setSize(e.target.value)}
                 sx={{ marginBottom: '16px' }}
               />
               <TextField
@@ -211,22 +295,23 @@ const RoomPage = () => {
                 name="bedNumber"
                 label="Bed Number"
                 variant="outlined"
-                value={room.Bed_Number}
+                value={bedNumber}
+                onChange={(e) => setBedNumber(e.target.value)}
                 sx={{ marginBottom: '16px' }}
               />
               <InputLabel id="demo-simple-select-label">Room Types</InputLabel>
               {roomTypes && (
-                  <Select
-                  value={selectedTypes}
+                <Select
+                  value={type}
                   label="Role"
                   onChange={handleChange}
                   sx={{ mb: 2, width: 'auto' }}
-                  >
+                >
                   {roomTypes.map((type: Types) => (
-                  <MenuItem key={type._id} value={type._id}>{type.Name}</MenuItem>
+                    <MenuItem key={type._id} value={type._id}>{type.Name}</MenuItem>
                   ))}
-              </Select>
-                )}
+                </Select>
+              )}
               <TextField
                 required
                 id="price"
@@ -234,9 +319,14 @@ const RoomPage = () => {
                 label="Price"
                 variant="outlined"
                 type="number"
-                value={room.Price}
+                value={price}
+                onChange={(e) => setPrice(e.target.value)}
                 sx={{ marginBottom: '16px' }}
               />
+              
+              <InputLabel id="demo-simple-select-label">Image</InputLabel>
+                <input type="file" onChange={handleFileChange} />
+
               <Button type="submit" variant="outlined" color="primary">
                 Modify Room
               </Button>

@@ -6,6 +6,8 @@ import axios from 'axios';
 import { useRouter } from 'next/router';
 import { CldImage } from 'next-cloudinary';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
+import { useTable } from '@/context/TableContext';
+import { toast } from 'react-toastify';
 
 const API_URL_MENU = 'http://localhost:7000/menus';
 const API_URL_MENUTYPE = 'http://localhost:7000/menuTypes';
@@ -46,13 +48,23 @@ const MenuPage = () => {
   const [menu, setMenu] = useState(null);
   const router = useRouter();
   const { menuId } = router.query;
-  const [selectedTypes, setSelectedTypes] = useState("");
   const [menuTypes, setMenuTypes] = useState(null);
+  const [file, setFile] = useState(null);
+  const [Nom, setNom] = useState("");
+  const [Description, setDescription] = useState("");
+  const [Image, setImage] = useState("");
+  const [Prix, setPrix] = useState("");
+  const [Type, setType] = useState("");
+  const { updateById } = useTable();
 
   useEffect(() => {
     if (menuId) {
       axios.get(`${API_URL_MENU}/${menuId}`).then((res) => {
         setMenu(res.data);
+        setNom(res.data.Nom);
+        setDescription(res.data.Description);
+        setPrix(res.data.Prix);
+        setType(res.data.Type.Name);
       });
     }
     console.log(router.query);
@@ -68,13 +80,74 @@ const MenuPage = () => {
   }, []);
 
   const handleChange = (event: SelectChangeEvent) => {
-    setSelectedTypes(event.target.value as string);
+    setType(event.target.value as string);
   };
 
   interface Types {
     _id: string;
     Name: string;
   }
+
+  const handleFileChange = (e) => {
+    const selectedFile = e.target.files[0];
+    setFile(selectedFile);
+  };
+  
+  const uploadImage = async (): Promise<string> => {
+    return new Promise<string>(async (resolve, reject) => {
+      if (file) {
+        try {
+          const formData = new FormData();
+          formData.append('file', file);
+          formData.append('upload_preset', 'HarborHotel');
+          const filenameWithoutExtension = file.name.replace(/\.[^/.]+$/, ""); // Remove file extension
+          formData.append('public_id', `Menu/${filenameWithoutExtension}`);
+          setImage(String(file.name));
+  
+          await axios.post('https://api.cloudinary.com/v1_1/dv5o7w2aw/upload', formData);
+  
+          // Handle the response or perform additional operations
+          console.log('File uploaded successfully');
+  
+          resolve(file.name); // Return file name
+        } catch (error) {
+          console.error('Error uploading file:', error);
+          reject(error);
+        }
+      } else {
+        resolve('');
+      }
+    });
+  };
+  
+  const handleFormSubmit = async (event) => {
+    event.preventDefault();
+  
+    try {
+      let imageName = '';
+      if (file) {
+        imageName = await uploadImage();
+      }
+  
+      if (imageName || imageName === '') {
+        const menuData = {
+          Image: imageName,  // Use imageName instead of imageUrl
+          Nom,
+          Description,
+          Prix,
+          Type,
+        };
+  
+        await updateById("menus", menuId, menuData);
+        toast.success('Menu updated successfully');
+      } else {
+        throw new Error('Image upload failed');
+      }
+    } catch (error) {
+      console.error('Error in form submission:', error);
+      toast.error('Something went wrong.');
+    }
+  };  
 
   return (
     <OuterContainer             
@@ -100,37 +173,33 @@ const MenuPage = () => {
               <UserInfo variant="h4" align="center" sx={{ marginTop: '16px' }}>
                 {menu.Nom}
               </UserInfo>
-              <UserInfo variant="body1" align="center" sx={{ marginTop: '16px' }}>
+              <UserInfo variant="h6" align="center" sx={{ marginTop: '16px' }}>
                 {menu.Description}
               </UserInfo>
-              <UserInfo variant="body2" align="center" sx={{ marginTop: '16px' }}>
+              <UserInfo variant="h6" align="center" sx={{ marginTop: '16px' }}>
                 Prix: {menu.Prix} $
               </UserInfo>
-              <UserInfo variant="body2" align="center" sx={{ marginTop: '16px' }}>
+              <UserInfo variant="h6" align="center" sx={{ marginTop: '16px' }}>
                 Type: {menu.Type.Name}
               </UserInfo>
             </Box>
           </ProfileContainer>
           <FormContainer>
-            <Box component="form" sx={{ display: 'flex', flexDirection: 'column', '& .MuiTextField-root': { m: 1, width: '30ch' }, }}>
-              <TextField
-                required
-                id="image"
-                name="image"
-                label="Image"
-                variant="outlined"
-                value={menu.Image}
-                sx={{ marginBottom: '16px' }}
-              />
+            <Box component="form" onSubmit={handleFormSubmit} sx={{ display: 'flex', flexDirection: 'column', '& .MuiTextField-root': { m: 1, width: '30ch' }, }}>
+            <InputLabel id="demo-simple-select-label">Image</InputLabel>
+              <input type="file" onChange={handleFileChange} />
+
               <TextField
                 required
                 id="nom"
                 name="nom"
                 label="Nom"
                 variant="outlined"
-                value={menu.Nom}
+                value={Nom} // Use Nom state variable instead of menu.Nom
+                onChange={(e) => setNom(e.target.value)}
                 sx={{ marginBottom: '16px' }}
               />
+
               <TextField
                 required
                 id="description"
@@ -139,9 +208,11 @@ const MenuPage = () => {
                 variant="outlined"
                 multiline
                 rows={4}
-                value={menu.Description}
+                value={Description} // Use Description state variable instead of menu.Description
+                onChange={(e) => setDescription(e.target.value)}
                 sx={{ marginBottom: '16px' }}
               />
+
               <TextField
                 required
                 id="prix"
@@ -149,14 +220,17 @@ const MenuPage = () => {
                 label="Prix"
                 variant="outlined"
                 type="number"
-                value={menu.Prix}
+                value={Prix} // Use Prix state variable instead of menu.Prix
+                onChange={(e) => setPrix(e.target.value)}
                 sx={{ marginBottom: '16px' }}
               />
               <InputLabel id="demo-simple-select-label">Role</InputLabel>
               {menuTypes && (
                   <Select
-                  value={selectedTypes}
-                  label="Role"
+                  value={Type}
+                  id="type"
+                  name="type"
+                  label="Type"
                   onChange={handleChange}
                   sx={{ mb: 2, width: 'auto' }}
               >
@@ -165,15 +239,6 @@ const MenuPage = () => {
                   ))}
               </Select>
               )}
-              <TextField
-                required
-                id="type"
-                name="type"
-                label="Type"
-                variant="outlined"
-                value={menu.Type.Name}
-                sx={{ marginBottom: '16px' }}
-              />
               <Button type="submit" variant="outlined" color="primary">
                 Modify Menu
               </Button>

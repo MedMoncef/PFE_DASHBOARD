@@ -8,21 +8,23 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import AppRegistrationIcon from '@mui/icons-material/AppRegistration';
 import axios from 'axios';
 import jwt_decode from 'jwt-decode';
+import { CldImage } from 'next-cloudinary';
 
 const Navbar = () => {
   const router = useRouter();
   const [anchorEl, setAnchorEl] = useState(null);
   const { isLoggedIn, logout } = useAuth();
   const [user, setUser] = useState(null);
+  const [image, setImage] = useState("");
 
   useEffect(() => {
     if(isLoggedIn) {
       const token = localStorage.getItem('token');
       const decodedToken = jwt_decode(token);
       const user_id = decodedToken.user_id; // Replace 'sub' with the actual property name for user id in your decoded token
-      axios.get(`http://localhost:7000/users/${user_id}`)
-        .then(response => setUser(response.data))
-        .catch(err => console.error(err));
+      axios.get(`http://localhost:7000/users/${user_id}`).then((res) => {
+        setImage(res.data.image);
+      });
     }
   }, [isLoggedIn]);
 
@@ -64,7 +66,7 @@ const Navbar = () => {
             </Menu>
             {isLoggedIn ? (
               <>
-                <Avatar sx={{ marginLeft: 2 }} src={user?.image || ""} />
+                <CldImage width="50" height="50" src={`/Users/${image}`} alt={image} style={{ borderRadius: '50%', objectFit: 'cover' }}/>
                 <Button variant="text" color="inherit" onClick={handleLogoutClick} sx={{ marginLeft: 2, textTransform: 'none' }} startIcon={<LogoutIcon />}>Logout</Button>
               </>
             ) : (

@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { styled } from '@mui/system';
 import { Typography, Box, Button, TextField } from '@mui/material';
-import axios from 'axios';
 import { useRouter } from 'next/router';
+import axios from 'axios';
 
-const API_URL_ROOM_TYPE = 'http://localhost:7000/roomTypes';
+const API_URL_CONTACT = 'http://localhost:7000/contacts';
 
 const OuterContainer = styled('div')({
   display: 'flex',
@@ -42,26 +42,29 @@ const UserInfo = styled(Typography)({
   textAlign: 'left',
 });
 
-const RoomTypePage = () => {
-  const [roomType, setRoomType] = useState(null);
-  const [modifiedRoomType, setModifiedRoomType] = useState({
-    Name: '',
+const ContactPage = () => {
+  const [contact, setContact] = useState(null);
+  const [modifiedContact, setModifiedContact] = useState({
+    Nom: '',
+    Email: '',
+    Sujet: '',
+    Message: '',
   });
   const router = useRouter();
-  const { roomTypeId } = router.query;
+  const { contactId } = router.query;
 
   useEffect(() => {
-    if (roomTypeId) {
-      axios.get(`${API_URL_ROOM_TYPE}/${roomTypeId}`).then((res) => {
-        setRoomType(res.data);
-        setModifiedRoomType(res.data);
+    if (contactId) {
+      axios.get(`${API_URL_CONTACT}/${contactId}`).then((res) => {
+        setContact(res.data);
+        setModifiedContact(res.data);
       });
     }
-  }, [roomTypeId]);
+  }, [contactId]);
 
   const handleInputChange = (e) => {
-    setModifiedRoomType({
-      ...modifiedRoomType,
+    setModifiedContact({
+      ...modifiedContact,
       [e.target.name]: e.target.value,
     });
   };
@@ -70,9 +73,9 @@ const RoomTypePage = () => {
     event.preventDefault();
 
     try {
-      await axios.put(`${API_URL_ROOM_TYPE}/${roomTypeId}`, modifiedRoomType);
-      setRoomType(modifiedRoomType);
-      console.log('Room type updated successfully');
+      await axios.put(`${API_URL_CONTACT}/${contactId}`, modifiedContact);
+      setContact(modifiedContact);
+      console.log('Contact updated successfully');
     } catch (error) {
       console.error('Error in form submission:', error);
     }
@@ -85,11 +88,11 @@ const RoomTypePage = () => {
         borderRadius: '4px',
       }}
     >
-      {roomType && (
+      {contact && (
         <>
           <ProfileContainer>
             <Box
-              key={roomType._id}
+              key={contact._id}
               sx={{
                 display: 'flex',
                 flexDirection: 'column',
@@ -99,7 +102,16 @@ const RoomTypePage = () => {
               }}
             >
               <UserInfo variant="h4" align="center" sx={{ marginTop: '16px' }}>
-                {roomType.Name}
+                {contact.Nom}
+              </UserInfo>
+              <UserInfo variant="h6" align="center" sx={{ marginTop: '16px' }}>
+                {contact.Email}
+              </UserInfo>
+              <UserInfo variant="h6" align="center" sx={{ marginTop: '16px' }}>
+                {contact.Sujet}
+              </UserInfo>
+              <UserInfo variant="h6" align="center" sx={{ marginTop: '16px' }}>
+                {contact.Message}
               </UserInfo>
             </Box>
           </ProfileContainer>
@@ -115,16 +127,48 @@ const RoomTypePage = () => {
             >
               <TextField
                 required
-                id="name"
-                name="Name"
-                label="Name"
+                id="nom"
+                name="Nom"
+                label="Nom"
                 variant="outlined"
-                value={modifiedRoomType.Name}
+                value={modifiedContact.Nom}
+                sx={{ marginBottom: '16px' }}
+                onChange={handleInputChange}
+              />
+              <TextField
+                required
+                id="email"
+                name="Email"
+                label="Email"
+                variant="outlined"
+                value={modifiedContact.Email}
+                sx={{ marginBottom: '16px' }}
+                onChange={handleInputChange}
+              />
+              <TextField
+                required
+                id="sujet"
+                name="Sujet"
+                label="Sujet"
+                variant="outlined"
+                value={modifiedContact.Sujet}
+                sx={{ marginBottom: '16px' }}
+                onChange={handleInputChange}
+              />
+              <TextField
+                required
+                id="message"
+                name="Message"
+                label="Message"
+                variant="outlined"
+                multiline
+                rows={4}
+                value={modifiedContact.Message}
                 sx={{ marginBottom: '16px' }}
                 onChange={handleInputChange}
               />
               <Button type="submit" variant="outlined" color="primary">
-                Modify Room Type
+                Modify contact
               </Button>
             </Box>
           </FormContainer>
@@ -134,4 +178,4 @@ const RoomTypePage = () => {
   );
 };
 
-export default RoomTypePage;
+export default ContactPage;

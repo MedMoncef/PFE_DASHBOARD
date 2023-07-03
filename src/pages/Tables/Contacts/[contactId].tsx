@@ -1,7 +1,7 @@
-import NotificationsTable from '@/components/Tools/Notifications/tableMessage';
+import ContactPage from '@/components/Tools/Contacts/contactDetail';
 import Head from 'next/head';
 
-const notification = () => {
+const testimonyDetails = () => {
   return (
   <>
       <Head>
@@ -11,10 +11,9 @@ const notification = () => {
       <link rel="icon" href="/favicon.ico" />
     </Head>
 
-    <NotificationsTable />
-
+      <ContactPage />
   </>
   );
 };
 
-export default notification;
+export default testimonyDetails;

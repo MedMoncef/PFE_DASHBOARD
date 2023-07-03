@@ -1,7 +1,6 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { styled } from '@mui/system';
-import { Typography, Box, Avatar, Button, TextField } from '@mui/material';
-import { useState, useEffect } from 'react';
+import { Typography, Box, Button, TextField } from '@mui/material';
 import axios from 'axios';
 import { useRouter } from 'next/router';
 
@@ -33,7 +32,7 @@ const ProfileContainer = styled('div')({
   alignItems: 'center',
   justifyContent: 'center',
   minHeight: '50%',
-  boxShadow: '0px 0px 20px rgba(0, 0, 0, 0.25)',
+  boxShadow: 'linear-gradient(45deg, #6f5df0 30%, #bcb4fa 90%)',
   background: '#ffffff',
   color: 'black',
   borderRadius: '10px',
@@ -45,6 +44,18 @@ const UserInfo = styled(Typography)({
 
 const ReservationPage = () => {
   const [reservation, setReservation] = useState(null);
+  const [modifiedReservation, setModifiedReservation] = useState({
+    firstName: '',
+    lastName: '',
+    Email: '',
+    CIN: '',
+    ID_Rooms: '',
+    Date_Debut: '',
+    Date_Fin: '',
+    Duree: 0,
+    Prix: 0,
+    Paid: '',
+  });
   const router = useRouter();
   const { reservationId } = router.query;
 
@@ -52,12 +63,32 @@ const ReservationPage = () => {
     if (reservationId) {
       axios.get(`${API_URL_RESERVATION}/${reservationId}`).then((res) => {
         setReservation(res.data);
+        setModifiedReservation(res.data);
       });
     }
   }, [reservationId]);
 
+  const handleInputChange = (e) => {
+    setModifiedReservation({
+      ...modifiedReservation,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleFormSubmit = async (event) => {
+    event.preventDefault();
+
+    try {
+      await axios.put(`${API_URL_RESERVATION}/${reservationId}`, modifiedReservation);
+      setReservation(modifiedReservation);
+      console.log('Reservation updated successfully');
+    } catch (error) {
+      console.error('Error in form submission:', error);
+    }
+  };
+
   return (
-    <OuterContainer             
+    <OuterContainer
       sx={{
         border: '1px solid #ccc',
         borderRadius: '4px',
@@ -73,7 +104,7 @@ const ReservationPage = () => {
                 flexDirection: 'column',
                 alignItems: 'left',
                 padding: '32px',
-                marginBottom: '32px'
+                marginBottom: '32px',
               }}
             >
               <UserInfo variant="h4" align="center" sx={{ marginTop: '16px' }}>
@@ -106,15 +137,24 @@ const ReservationPage = () => {
             </Box>
           </ProfileContainer>
           <FormContainer>
-            <Box component="form" sx={{ display: 'flex', flexDirection: 'column', '& .MuiTextField-root': { m: 1, width: '30ch' }, }}>
+            <Box
+              component="form"
+              sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                '& .MuiTextField-root': { m: 1, width: '30ch' },
+              }}
+              onSubmit={handleFormSubmit}
+            >
               <TextField
                 required
                 id="firstName"
                 name="firstName"
                 label="First Name"
                 variant="outlined"
-                value={reservation.firstName}
+                value={modifiedReservation.firstName}
                 sx={{ marginBottom: '16px' }}
+                onChange={handleInputChange}
               />
               <TextField
                 required
@@ -122,84 +162,93 @@ const ReservationPage = () => {
                 name="lastName"
                 label="Last Name"
                 variant="outlined"
-                value={reservation.lastName}
+                value={modifiedReservation.lastName}
                 sx={{ marginBottom: '16px' }}
+                onChange={handleInputChange}
               />
               <TextField
                 required
                 id="email"
-                name="email"
+                name="Email"
                 label="Email"
                 variant="outlined"
-                value={reservation.Email}
+                value={modifiedReservation.Email}
                 sx={{ marginBottom: '16px' }}
+                onChange={handleInputChange}
               />
               <TextField
                 required
                 id="cin"
-                name="cin"
+                name="CIN"
                 label="CIN"
                 variant="outlined"
-                value={reservation.CIN}
+                value={modifiedReservation.CIN}
                 sx={{ marginBottom: '16px' }}
+                onChange={handleInputChange}
               />
               <TextField
                 required
                 id="roomId"
-                name="roomId"
+                name="ID_Rooms"
                 label="Room ID"
                 variant="outlined"
-                value={reservation.ID_Rooms}
+                value={modifiedReservation.ID_Rooms}
                 sx={{ marginBottom: '16px' }}
+                onChange={handleInputChange}
               />
               <TextField
                 required
                 id="startDate"
-                name="startDate"
+                name="Date_Debut"
                 label="Start Date"
                 variant="outlined"
                 type="date"
-                value={reservation.Date_Debut}
+                value={modifiedReservation.Date_Debut}
                 sx={{ marginBottom: '16px' }}
+                onChange={handleInputChange}
               />
               <TextField
                 required
                 id="endDate"
-                name="endDate"
+                name="Date_Fin"
                 label="End Date"
                 variant="outlined"
                 type="date"
-                value={reservation.Date_Fin}
+                value={modifiedReservation.Date_Fin}
                 sx={{ marginBottom: '16px' }}
+                onChange={handleInputChange}
               />
               <TextField
                 required
                 id="duration"
-                name="duration"
+                name="Duree"
                 label="Duration (days)"
                 variant="outlined"
                 type="number"
-                value={reservation.Duree}
+                value={modifiedReservation.Duree}
                 sx={{ marginBottom: '16px' }}
+                onChange={handleInputChange}
               />
               <TextField
                 required
                 id="price"
-                name="price"
+                name="Prix"
                 label="Price"
                 variant="outlined"
                 type="number"
-                value={reservation.Prix}
+                value={modifiedReservation.Prix}
                 sx={{ marginBottom: '16px' }}
+                onChange={handleInputChange}
               />
               <TextField
                 required
                 id="paid"
-                name="paid"
+                name="Paid"
                 label="Paid"
                 variant="outlined"
-                value={reservation.Paid}
+                value={modifiedReservation.Paid}
                 sx={{ marginBottom: '16px' }}
+                onChange={handleInputChange}
               />
               <Button type="submit" variant="outlined" color="primary">
                 Modify Reservation
@@ -208,7 +257,7 @@ const ReservationPage = () => {
           </FormContainer>
         </>
       )}
-    </OuterContainer>  
+    </OuterContainer>
   );
 };
 

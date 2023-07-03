@@ -21,13 +21,11 @@ import {
 import { useRouter } from 'next/router';
 import styles from '@/styles/Title.module.css';
 
-const API_URL = 'http://localhost:7000/messages';
+const API_URL = 'http://localhost:7000/menuTypes';
 
-interface Notification {
+interface MenuType {
   _id: string;
-  Sujet: string;
-  Message: string;
-  ID_Sent: string;
+  Name: string;
 }
 
 enum SortOrder {
@@ -37,7 +35,7 @@ enum SortOrder {
 }
 
 interface SortState {
-  field: keyof Notification | '';
+  field: keyof MenuType | '';
   order: SortOrder;
 }
 
@@ -46,12 +44,12 @@ const initialSortState: SortState = {
   order: SortOrder.NONE,
 };
 
-const NotificationsTable = () => {
-  const [notifications, setNotifications] = useState<Notification[]>([]);
-  const [initialNotifications, setInitialNotifications] = useState<Notification[]>([]);
+const MenuTypesTable = () => {
+  const [menuTypes, setMenuTypes] = useState<MenuType[]>([]);
+  const [initialMenuTypes, setInitialMenuTypes] = useState<MenuType[]>([]);
   const [sortState, setSortState] = useState<SortState>(initialSortState);
   const [open, setOpen] = useState(false);
-  const [notificationToDelete, setNotificationToDelete] = useState<Notification | null>(null);
+  const [menuTypeToDelete, setMenuTypeToDelete] = useState<MenuType | null>(null);
   const router = useRouter();
 
   const AscArrow = () => <span> &#9650; </span>; // Upwards arrow
@@ -64,15 +62,15 @@ const NotificationsTable = () => {
   const fetchData = async () => {
     try {
       const response = await axios.get(API_URL);
-      setNotifications(response.data);
-      setInitialNotifications(response.data);
+      setMenuTypes(response.data);
+      setInitialMenuTypes(response.data);
     } catch (error) {
       console.error(error);
     }
   };
 
-  const handleClickOpen = (notification: Notification) => {
-    setNotificationToDelete(notification);
+  const handleClickOpen = (menuType: MenuType) => {
+    setMenuTypeToDelete(menuType);
     setOpen(true);
   };
 
@@ -80,12 +78,12 @@ const NotificationsTable = () => {
     setOpen(false);
   };
 
-  const deleteNotification = async () => {
+  const deleteMenuType = async () => {
     try {
-      if (notificationToDelete) {
-        await axios.delete(`${API_URL}/${notificationToDelete._id}`);
-        setNotifications(prevNotifications =>
-          prevNotifications.filter(notification => notification._id !== notificationToDelete._id)
+      if (menuTypeToDelete) {
+        await axios.delete(`${API_URL}/${menuTypeToDelete._id}`);
+        setMenuTypes(prevMenuTypes =>
+          prevMenuTypes.filter(menuType => menuType._id !== menuTypeToDelete._id)
         );
       }
     } catch (error) {
@@ -95,9 +93,9 @@ const NotificationsTable = () => {
     }
   };
 
-  const sortData = (field: keyof Notification) => {
+  const sortData = (field: keyof MenuType) => {
     let order = sortState.order;
-    let sortedNotifications = [...notifications];
+    let sortedMenuTypes = [...menuTypes];
 
     if (sortState.field !== field) {
       order = SortOrder.ASC;
@@ -106,9 +104,9 @@ const NotificationsTable = () => {
     }
 
     if (order === SortOrder.NONE) {
-      setNotifications(initialNotifications);
+      setMenuTypes(initialMenuTypes);
     } else {
-      sortedNotifications.sort((a, b) => {
+      sortedMenuTypes.sort((a, b) => {
         const valA = a[field];
         const valB = b[field];
 
@@ -116,14 +114,10 @@ const NotificationsTable = () => {
           return order === SortOrder.ASC ? valA.localeCompare(valB) : valB.localeCompare(valA);
         }
 
-        if (typeof valA === 'number' && typeof valB === 'number') {
-          return order === SortOrder.ASC ? valA - valB : valB - valA;
-        }
-
         return 0;
       });
 
-      setNotifications(sortedNotifications);
+      setMenuTypes(sortedMenuTypes);
     }
 
     setSortState({ field, order });
@@ -140,13 +134,13 @@ const NotificationsTable = () => {
       }}
     >
       <div className={styles.title}>
-        <h2>Notification List</h2>
+        <h2>Menu Type List</h2>
       </div>
 
       <Grid container justifyContent="center" alignItems="center" sx={{ marginBottom: 2 }}>
         <Grid item>
-          <Button variant="outlined" onClick={() => router.push('/admin/notifications/create')}>
-            Create a Notification
+          <Button variant="outlined" onClick={() => router.push('/admin/menuTypes/create')}>
+            Create a Menu Type
           </Button>
         </Grid>
       </Grid>
@@ -161,21 +155,9 @@ const NotificationsTable = () => {
                   sortState.order !== SortOrder.NONE &&
                   (sortState.order === SortOrder.ASC ? <AscArrow /> : <DescArrow />)}
               </TableCell>
-              <TableCell sx={{ cursor: 'pointer' }} onClick={() => sortData('Sujet')}>
-                Subject
-                {sortState.field === 'Sujet' &&
-                  sortState.order !== SortOrder.NONE &&
-                  (sortState.order === SortOrder.ASC ? <AscArrow /> : <DescArrow />)}
-              </TableCell>
-              <TableCell sx={{ cursor: 'pointer' }} onClick={() => sortData('Message')}>
-                Message
-                {sortState.field === 'Message' &&
-                  sortState.order !== SortOrder.NONE &&
-                  (sortState.order === SortOrder.ASC ? <AscArrow /> : <DescArrow />)}
-              </TableCell>
-              <TableCell sx={{ cursor: 'pointer' }} onClick={() => sortData('ID_Sent')}>
-                Sent By
-                {sortState.field === 'ID_Sent' &&
+              <TableCell sx={{ cursor: 'pointer' }} onClick={() => sortData('Name')}>
+                Name
+                {sortState.field === 'Name' &&
                   sortState.order !== SortOrder.NONE &&
                   (sortState.order === SortOrder.ASC ? <AscArrow /> : <DescArrow />)}
               </TableCell>
@@ -183,24 +165,17 @@ const NotificationsTable = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {notifications.map(notification => (
-              <TableRow key={notification._id}>
-                <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{notification._id}</TableCell>
-                <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{notification.Sujet}</TableCell>
-                <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{notification.Message}</TableCell>
-                <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{notification.ID_Sent}</TableCell>
-                <TableCell sx={{ maxWidth: 120, overflow: 'auto' }}>
-                  <Button onClick={() => handleClickOpen(notification)} color="secondary">
+            {menuTypes.map(menuType => (
+              <TableRow key={menuType._id}>
+                <TableCell sx={{ Width: 200, overflow: 'auto' }}>{menuType._id}</TableCell>
+                <TableCell sx={{ Width: 200, overflow: 'auto' }}>{menuType.Name}</TableCell>
+                <TableCell sx={{ Width: 120, overflow: 'auto' }}>
+                  <Button onClick={() => handleClickOpen(menuType)} color="secondary">
                     Delete
                   </Button>
-                  <Link href={`/Notifications/${notification._id}`} passHref>
+                  <Link href={`/Tables/MenuTypes/${menuType._id}`} passHref>
                     <Button component="a" color="primary">
                       Detail
-                    </Button>
-                  </Link>
-                  <Link href={`/Notifications/edit/${notification._id}`} passHref>
-                    <Button component="a" color="primary">
-                      Edit
                     </Button>
                   </Link>
                 </TableCell>
@@ -211,17 +186,17 @@ const NotificationsTable = () => {
       </TableContainer>
 
       <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>Delete notification?</DialogTitle>
+        <DialogTitle>Delete menu type?</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            Are you sure you want to delete the notification with ID: {notificationToDelete?._id}?
+            Are you sure you want to delete the menu type with ID: {menuTypeToDelete?._id}?
           </DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose} color="primary">
             Cancel
           </Button>
-          <Button onClick={deleteNotification} color="secondary" autoFocus>
+          <Button onClick={deleteMenuType} color="secondary" autoFocus>
             Delete
           </Button>
         </DialogActions>
@@ -230,4 +205,4 @@ const NotificationsTable = () => {
   );
 };
 
-export default NotificationsTable;
+export default MenuTypesTable;
