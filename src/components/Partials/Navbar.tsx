@@ -66,7 +66,9 @@ const Navbar = () => {
             </Menu>
             {isLoggedIn ? (
               <>
+              <div className="image-preview">
                 <CldImage width="50" height="50" src={`/Users/${image}`} alt={image} style={{ borderRadius: '50%', objectFit: 'cover' }}/>
+              </div>
                 <Button variant="text" color="inherit" onClick={handleLogoutClick} sx={{ marginLeft: 2, textTransform: 'none' }} startIcon={<LogoutIcon />}>Logout</Button>
               </>
             ) : (
@@ -78,6 +80,21 @@ const Navbar = () => {
         </Box>
         </Toolbar>
     </AppBar>
+
+    <style>
+  {`
+    .image-preview {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid #ccc;
+    }
+  `}
+</style>
     </>
   );
 };

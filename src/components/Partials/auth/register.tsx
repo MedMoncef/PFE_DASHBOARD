@@ -33,27 +33,15 @@ export default function Register() {
   const [id_post, setPost] = useState('');
   const [errors, setErrors] = useState({ email: '', password: '' });
   const [posts, setPosts] = useState([]);
+  const [file, setFile] = useState(null);
 
   //HarborHotel Cloudinary Image Upload
     
-
   interface Post {
     _id: string;
     Name: string;
     Salaire: number;
   }
-
-  const handleImageChange = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        // reader.result contains the base64 string
-        setImage(reader.result);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
 
   const resetForm = (event) => {
     event.preventDefault();
@@ -68,9 +56,48 @@ export default function Register() {
     setErrors({ email: '', password: '' });
   };
 
+
+  const handleFileChange = (e) => {
+    const selectedFile = e.target.files[0];
+    setFile(selectedFile);
+  };
+  
+  const uploadImage = async (): Promise<string> => {
+    return new Promise<string>(async (resolve, reject) => {
+      if (file) {
+        try {
+          const formData = new FormData();
+          formData.append('file', file);
+          formData.append('upload_preset', 'HarborHotel');
+          const filenameWithoutExtension = file.name.replace(/\.[^/.]+$/, ""); // Remove file extension
+          formData.append('public_id', `Users/${filenameWithoutExtension}`);
+  
+          await axios.post('https://api.cloudinary.com/v1_1/dv5o7w2aw/upload', formData);
+  
+          // Handle the response or perform additional operations
+          console.log('File uploaded successfully');
+  
+          resolve(file.name); // Return file name
+        } catch (error) {
+          console.error('Error uploading file:', error);
+          reject(error);
+        }
+      } else {
+        resolve('');
+      }
+    });
+  };
+
+
   const handleRegister = async (event) => {
     event.preventDefault();
     try {
+      
+      let imageName = '';
+      if (file) {
+        imageName = await uploadImage();
+      }
+
       registerSchema.parse({
         nom,
         prenom,
@@ -81,9 +108,9 @@ export default function Register() {
         image,
         id_post,
       });
-  
+
         // Update your register function to handle file upload (you'll need to modify this on your server side too)
-        await register(nom, prenom, dateN, email, password, confirmPassword, image, id_post);
+        await register(nom, prenom, dateN, email, password, confirmPassword, imageName, id_post);
         toast('Welcome Back!');
       } catch (error) {
         if (error instanceof z.ZodError) {
@@ -118,6 +145,7 @@ export default function Register() {
     fetchData();
   }, []);
 
+  
   return (
     <>
           <Grid item xs={12} sm={6} md={4}>
@@ -216,18 +244,13 @@ export default function Register() {
                     </Select>
                   </Grid>
 
-
                   <Grid item xs={12}>
-                    <input
-                      type="file"
-                      onChange={handleImageChange}
-                    />
+                    <InputLabel id="demo-simple-select-label">Image</InputLabel>
+                    <input type="file" onChange={handleFileChange} />
                   </Grid>
 
-                    
-
                   <Grid item xs={12}>
-                    <Button fullWidth variant="contained" color="primary" type="submit">
+                    <Button fullWidth variant="outlined" color="primary" type="submit">
                       Register
                     </Button>
                   </Grid>
@@ -237,7 +260,7 @@ export default function Register() {
                     </Button>
                   </Grid>
                   <Grid item xs={12}>
-                    <Button fullWidth variant="outlined" onClick={() => router.push('/auth/login')}>
+                    <Button fullWidth variant="text" onClick={() => router.push('/auth/login')}>
                       Login
                     </Button>
                   </Grid>

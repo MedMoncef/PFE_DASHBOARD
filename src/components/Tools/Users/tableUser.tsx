@@ -64,10 +64,6 @@ const UsersTable = () => {
   const AscArrow = () => <span> &#9650; </span>; // Upwards arrow
   const DescArrow = () => <span> &#9660; </span>; // Downwards arrow
 
-  useEffect(() => {
-    fetchData();
-  }, []);
-
   const fetchData = async () => {
     try {
       const response = await axios.get(API_URL);
@@ -77,6 +73,10 @@ const UsersTable = () => {
       console.error(error);
     }
   };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   const handleClickOpen = (user: User) => {
     setUserToDelete(user);

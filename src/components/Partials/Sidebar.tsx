@@ -22,12 +22,22 @@ import PersonIcon from '@mui/icons-material/Person';
 import NightShelterIcon from '@mui/icons-material/NightShelter';
 import { useRouter } from 'next/router';
 import { useAuth } from '@/context/AuthContext';
+import jwt_decode from 'jwt-decode';
 
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [open, setOpen] = useState(false);
+  const [user_ID, setUser_ID] = useState("");
   const router = useRouter();
   const { isLoggedIn, logout } = useAuth();
+
+  useEffect(() => {
+    if(isLoggedIn) {
+      const token = localStorage.getItem('token');
+      const decodedToken = jwt_decode(token);
+      setUser_ID(decodedToken.user_id); // Replace 'sub' with the actual property name for user id in your decoded token
+    }
+  }, [isLoggedIn]);
 
   const handleClick = () => {
     setOpen(!open);
@@ -90,7 +100,7 @@ const Sidebar = () => {
   };
 
   const handleUserProfileClick = () => {
-    router.push('/Tables/UserProfiles/userProfile');
+    router.push(`/Tables/Users/${user_ID}`);
   };
 
   const handleSendMessageClick = () => {
