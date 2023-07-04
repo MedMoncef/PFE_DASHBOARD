@@ -168,7 +168,7 @@ const ProfilePage = () => {
         {userDetail && (
             <OuterContainer>
                 <ProfileContainer>
-                    <CldImage width="500" height="500" src={`/Users/${userDetail.image}`} alt={userDetail.image}/>
+                      <CldImage width="250" height="250" src={`/Users/${userDetail.image}`} alt={userDetail.image}/>
 
                     <UserInfo variant="h4">
                         {userDetail.nom} {userDetail.prenom}
