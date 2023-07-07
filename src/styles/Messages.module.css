@@ -1,0 +1,136 @@
+.container {
+    height: 91vh;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  
+  .messagesContainer {
+    height: 90%;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+  }
+  
+  .spacer {
+    flex-grow: 1;
+  }
+
+
+  .inputContainer {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    background: #f0f0f0;
+    border-top: 1px solid #ccc;
+  }
+  
+  .messageInput {
+    flex-grow: 1;
+    padding: 10px;
+    margin-right: 10px;
+    border-radius: 15px;
+    border: none;
+    outline: none;
+    color: black;
+  }
+  
+  .sendButton {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 15px;
+    background-color: #007bff;
+    color: #fff;
+    cursor: pointer;
+    outline: none;
+  }
+  
+  .myMessage, .otherMessage {
+    max-width: 60%;
+    padding: 10px 20px;
+    margin-bottom: 15px;
+    border-radius: 20px;
+  }
+  
+    .myMessage {
+      position: relative;
+        align-self: flex-end;
+        background-color: #0084ff;
+        color: white;
+        border-radius: 18px 0px 18px 18px;
+        padding: 10px 15px;
+        margin: 5px;
+        max-width: 80%;
+        word-wrap: break-word;
+    }
+  
+    .otherMessage {
+        align-self: flex-start;
+        background-color: #f0f0f0;
+        color: black;
+        border-radius: 0px 18px 18px 18px;
+        padding: 10px 15px;
+        margin: 5px;
+        max-width: 80%;
+        word-wrap: break-word;
+    }
+      
+      .userListContainer {
+        display: flex;
+        justify-content: space-between;
+        width: 20%;
+        border-right: 1px solid #ccc;
+        overflow-y: auto;
+        color: black;
+      }
+
+      .floatingButtonContainer {
+        position: fixed;
+        left: 10px;
+        bottom: 20px;
+      }
+      
+      .currentUserBar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px;
+        border-bottom: 1px solid #ccc;
+        background-color: rgb(255, 255, 255);
+        color: black; /* Added to make text color black */
+    }
+    
+    .userInfo {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 10px;
+        color: black;
+    }
+    
+    .userName {
+        font-size: 1rem;
+        text-transform: capitalize;
+        margin: 0;
+        color: black;
+    }
+
+    .options {
+      position: absolute;
+      right: 5px;
+      top: 50%;
+      transform: translateY(-50%);
+      opacity: 0; 
+      visibility: hidden;
+      transition: opacity 0.3s ease, visibility 0s 3s;
+      margin-right: 100%;
+      color: rgba(0, 0, 0, 0.5);
+    }
+    
+    .myMessage:hover .options {
+      opacity: 1; 
+      visibility: visible;
+      transition-delay: 0s;
+    }    

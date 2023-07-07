@@ -148,7 +148,7 @@ const MenuTable = () => {
 
       <Grid container justifyContent="center" alignItems="center" sx={{ marginBottom: 2 }}>
         <Grid item>
-          <Button variant="outlined" onClick={() => router.push('/Tables/Menus/create')}>
+          <Button variant="outlined" onClick={() => router.push('/Tables/Menus/createMenu')}>
             Create a Menu
           </Button>
         </Grid>

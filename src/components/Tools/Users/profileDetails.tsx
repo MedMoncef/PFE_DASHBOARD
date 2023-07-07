@@ -9,6 +9,8 @@ import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { CldImage } from 'next-cloudinary';
 import { useTable } from '@/context/TableContext';
 import { toast } from 'react-toastify';
+import { useAuth } from '@/context/AuthContext';
+import jwt_decode from 'jwt-decode';
 
 const API_URL_USER = 'http://localhost:7000/users';
 const API_URL_POST = 'http://localhost:7000/posts';
@@ -51,7 +53,6 @@ const OuterContainer = styled('div')({
 
 const ProfilePage = () => {
     const router = useRouter();
-    const { userId } = router.query;
     const [userDetail, setUserDetails] = useState(null);
     const [userPosts, setUserPosts] = useState([]);
     const [file, setFile] = useState(null);
@@ -64,11 +65,22 @@ const ProfilePage = () => {
     const [password, setPassword] = useState("");
     const [image, setImage] = useState("");
     const [id_post, setIdPost] = useState("");
+    const { isLoggedIn } = useAuth();
+    const [profileID, setProfileID] = useState("");
+    const [oldImage, setOldImage] = useState("");
+
+    useEffect(() => {
+      if(isLoggedIn) {
+        const token = localStorage.getItem('token');
+        const decodedToken = jwt_decode(token);
+        setProfileID(decodedToken.user_id);
+      }
+    }, [isLoggedIn]);
 
 
     useEffect(() => {
-        if (userId) {
-          axios.get(`${API_URL_USER}/${userId}`).then((res) => {
+        if (profileID) {
+          axios.get(`${API_URL_USER}/${profileID}`).then((res) => {
             setUserDetails(res.data);
             setNom(res.data.nom);
             setPrenom(res.data.prenom);
@@ -76,9 +88,10 @@ const ProfilePage = () => {
             setEmail(res.data.email);
             setPassword(res.data.password);
             setIdPost(res.data.id_post);
+            setOldImage(res.data.image);
           });
         }
-      }, [userId]);
+      }, [profileID]);
 
       const fetchData = async () => {
         const result = await axios(API_URL_POST);
@@ -92,12 +105,6 @@ const ProfilePage = () => {
       const handleChange = (event: SelectChangeEvent) => {
         setIdPost(event.target.value as string);
       };
-      
-      interface Roles {
-        _id: string;
-        Name: string;
-        Salaire: Number;
-      }
 
       const handleFileChange = (e) => {
         const selectedFile = e.target.files[0];
@@ -137,6 +144,8 @@ const ProfilePage = () => {
           let imageName = '';
           if (file) {
             imageName = await uploadImage();
+          }else{
+            imageName = oldImage;
           }
       
           if (imageName || imageName === '') {
@@ -152,7 +161,7 @@ const ProfilePage = () => {
 
             console.log(userData);
       
-            await updateById("users", userId, userData);
+            await updateById("users", profileID, userData);
             toast.success('User updated successfully');
           } else {
             throw new Error('Image upload failed');
@@ -168,10 +177,13 @@ const ProfilePage = () => {
         {userDetail && (
             <OuterContainer>
                 <ProfileContainer>
-                    <CldImage width="500" height="500" src={`/Users/${userDetail.image}`} alt={userDetail.image}/>
+                      <CldImage width="250" height="250" src={`/Users/${userDetail.image}`} alt={userDetail.image}/>
 
+                      <UserInfo variant="h4">
+                        {userDetail.nom}
+                    </UserInfo>
                     <UserInfo variant="h4">
-                        {userDetail.nom} {userDetail.prenom}
+                        {userDetail.prenom}
                     </UserInfo>
                     <UserInfo variant="subtitle1">
                         Date of Birth: {userDetail.dateN}
@@ -190,20 +202,7 @@ const ProfilePage = () => {
                         <TextField required id="dateOfBirth" label="Date of Birth" variant="outlined" value={dateN} onChange={(e) => setDateN(e.target.value)}/>
                         <TextField required id="email" label="Email" variant="outlined" value={email} onChange={(e) => setEmail(e.target.value)}/>
                         <TextField required id="password" label="Password" variant="outlined" type="password" onChange={(e) => setPassword(e.target.value)}/>
-                            <InputLabel id="demo-simple-select-label">Role</InputLabel>
-                                {userPosts && (
-                                    <Select
-                                    value={id_post}
-                                    label="Role"
-                                    onChange={handleChange}
-                                    sx={{ mb: 2, width: 'auto' }}
-                                >
-                                    {userPosts.map((role: Roles) => (
-                                    <MenuItem key={role._id} value={role._id}>{role.Name}</MenuItem>
-                                    ))}
-                                </Select>
-                                )}
-
+                
                           <InputLabel id="demo-simple-select-label">Image</InputLabel>
                           <input type="file" onChange={handleFileChange} />
 
@@ -214,6 +213,21 @@ const ProfilePage = () => {
                 </FormContainer>
             </OuterContainer>
         )}
+
+            <style>
+            {`
+              .image-preview {
+                width: 50px;
+                height: 50px;
+                border-radius: 50%;
+                overflow: hidden;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border: 1px solid #ccc;
+              }
+            `}
+          </style>
         </>
     );
 };

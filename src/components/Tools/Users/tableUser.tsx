@@ -217,7 +217,9 @@ const UsersTable = () => {
                 <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{user.email}</TableCell>
                 <TableCell sx={{ maxWidth: 50, overflow: 'auto' }}>{user.password}</TableCell>
                 <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>
-                  <CldImage width="100" height="100" src={`/Users/${user.image}`} alt={user.image}/>
+                <div className="image-preview">
+                      <CldImage width="50" height="50" src={`/Users/${user.image}`} alt={user.image} style={{ borderRadius: '50%', objectFit: 'cover' }}/>
+                </div>
                 </TableCell>
                 <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{user.id_post.Name}</TableCell>
                 <TableCell sx={{ maxWidth: 120, overflow: 'auto' }}>

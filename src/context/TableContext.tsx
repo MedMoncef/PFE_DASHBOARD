@@ -28,9 +28,9 @@ interface ContactFormData {
   }
   
   interface MessageFormData {
-    Sujet: string;
-    Message: string;
+    messageContent: string;
     ID_Sent: string;
+    ID_SentTo: string;
   }
   
   interface PostFormData {

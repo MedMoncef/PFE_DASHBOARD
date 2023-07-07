@@ -224,7 +224,7 @@ const MenuPage = () => {
                 onChange={(e) => setPrix(e.target.value)}
                 sx={{ marginBottom: '16px' }}
               />
-              <InputLabel id="demo-simple-select-label">Role</InputLabel>
+              <InputLabel id="demo-simple-select-label">Type</InputLabel>
               {menuTypes && (
                   <Select
                   value={Type}

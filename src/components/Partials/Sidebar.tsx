@@ -29,7 +29,7 @@ const Sidebar = () => {
   const [open, setOpen] = useState(false);
   const [user_ID, setUser_ID] = useState("");
   const router = useRouter();
-  const { isLoggedIn, logout } = useAuth();
+  const { isLoggedIn } = useAuth();
 
   useEffect(() => {
     if(isLoggedIn) {
@@ -100,11 +100,11 @@ const Sidebar = () => {
   };
 
   const handleUserProfileClick = () => {
-    router.push(`/Tables/Users/${user_ID}`);
+    router.push(`/Tables/Users/pofileID`);
   };
 
   const handleSendMessageClick = () => {
-    router.push('/Tables/SendMessages/sendMessage');
+    router.push('/SendMessages/sendMessage');
   };
 
   return (

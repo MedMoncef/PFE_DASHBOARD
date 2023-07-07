@@ -146,7 +146,7 @@ const ContactTable = () => {
 
       <Grid container justifyContent="center" alignItems="center" sx={{ marginBottom: 2 }}>
         <Grid item>
-          <Button variant="outlined" onClick={() => router.push('/admin/contacts/create')}>
+          <Button variant="outlined" onClick={() => router.push('/Tables/Contacts/createContact')}>
             Create a Contact
           </Button>
         </Grid>

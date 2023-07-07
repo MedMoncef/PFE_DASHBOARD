@@ -105,7 +105,7 @@ export default function Login() {
                     />
                   </Grid>          
                   <Grid item xs={12}>
-                    <Button fullWidth variant="contained" color="primary" type="submit">
+                    <Button fullWidth variant="outlined" color="primary" type="submit">
                       Login
                     </Button>
                   </Grid>
@@ -115,7 +115,7 @@ export default function Login() {
                     </Button>
                   </Grid>
                   <Grid item xs={12}>
-                    <Button fullWidth variant="outlined" onClick={() => router.push('/auth/register')}>
+                    <Button fullWidth variant="text" onClick={() => router.push('/auth/register')}>
                       Register
                     </Button>
                   </Grid>
