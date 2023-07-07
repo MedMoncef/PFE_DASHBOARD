@@ -197,7 +197,7 @@ const ReservationsTable = () => {
                   (sortState.order === SortOrder.ASC ? <AscArrow /> : <DescArrow />)}
               </TableCell>
               <TableCell sx={{ cursor: 'pointer' }} onClick={() => sortData('ID_Rooms')}>
-                Room ID
+                Room Type
                 {sortState.field === 'ID_Rooms' &&
                   sortState.order !== SortOrder.NONE &&
                   (sortState.order === SortOrder.ASC ? <AscArrow /> : <DescArrow />)}
@@ -243,11 +243,11 @@ const ReservationsTable = () => {
                 <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{reservation.lastName}</TableCell>
                 <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{reservation.Email}</TableCell>
                 <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{reservation.CIN}</TableCell>
-                <TableCell sx={{ maxWidth: 50, overflow: 'auto' }}>{reservation.ID_Rooms}</TableCell>
+                <TableCell sx={{ maxWidth: 100, overflow: 'auto' }}>{reservation.ID_Rooms.Name}</TableCell>
                 <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{new Date(reservation.Date_Debut).toLocaleDateString()}</TableCell>
                 <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{new Date(reservation.Date_Fin).toLocaleDateString()}</TableCell>
                 <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{reservation.Duree} Day/s</TableCell>
-                <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{reservation.Prix} $</TableCell>
+                <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{reservation.Prix}$</TableCell>
                 <TableCell sx={{ maxWidth: 200, overflow: 'auto' }} className={reservation.Paid === 'Invalid' ? styles.invalidPaid : styles.validPaid}>
                   {reservation.Paid}
                 </TableCell>

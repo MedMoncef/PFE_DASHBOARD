@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { styled } from '@mui/system';
-import { Typography, Box, Button, TextField } from '@mui/material';
+import { Typography, Box, Button, TextField, Select, MenuItem, InputLabel } from '@mui/material';
 import axios from 'axios';
 import { useRouter } from 'next/router';
 
 const API_URL_RESERVATION = 'http://localhost:7000/reservations';
+const API_URL_ROOM = 'http://localhost:7000/rooms';
 
 const OuterContainer = styled('div')({
   display: 'flex',
@@ -44,6 +45,7 @@ const UserInfo = styled(Typography)({
 
 const ReservationPage = () => {
   const [reservation, setReservation] = useState(null);
+  const [rooms, setRooms] = useState([]);
   const [modifiedReservation, setModifiedReservation] = useState({
     firstName: '',
     lastName: '',
@@ -87,6 +89,32 @@ const ReservationPage = () => {
     }
   };
 
+  const fetchData = async () => {
+    const result = await axios(API_URL_ROOM);
+    setRooms(result.data);
+  };
+  
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  interface Rooms {
+    _id: String;
+    ID_Rooms: string;
+    Room_Number: string;
+    Floor_Number: string;
+    Name: string;
+    Image: string;
+    Description: string;
+    Max: number;
+    View: string;
+    Size: string;
+    Bed_Number: string;
+    Type: string;
+    Rating: number;
+    Price: number;
+  }
+
   return (
     <OuterContainer
       sx={{
@@ -117,7 +145,7 @@ const ReservationPage = () => {
                 CIN: {reservation.CIN}
               </UserInfo>
               <UserInfo variant="body2" align="center" sx={{ marginTop: '16px' }}>
-                Room ID: {reservation.ID_Rooms}
+                Room Type: {reservation.ID_Rooms.Name}
               </UserInfo>
               <UserInfo variant="body2" align="center" sx={{ marginTop: '16px' }}>
                 Start Date: {new Date(reservation.Date_Debut).toLocaleDateString()}
@@ -190,12 +218,29 @@ const ReservationPage = () => {
                 required
                 id="roomId"
                 name="ID_Rooms"
-                label="Room ID"
+                label="Room Type"
                 variant="outlined"
-                value={modifiedReservation.ID_Rooms}
+                value={modifiedReservation.ID_Rooms.Name}
                 sx={{ marginBottom: '16px' }}
                 onChange={handleInputChange}
               />
+
+              <InputLabel id="demo-simple-select-label">Room Types</InputLabel>
+              {rooms && (
+                <Select
+                  value={modifiedReservation.ID_Rooms.Name}
+                  id="roomId"
+                  name="ID_Rooms"
+                  label="Room Type"
+                  onChange={handleInputChange}
+                  sx={{ mb: 2, width: 'auto' }}
+                >
+                  {rooms.map((room: Rooms) => (
+                    <MenuItem key={room._id} value={room._id}>{room.Name}</MenuItem>
+                  ))}
+                </Select>
+              )}
+
               <TextField
                 required
                 id="startDate"
@@ -240,16 +285,20 @@ const ReservationPage = () => {
                 sx={{ marginBottom: '16px' }}
                 onChange={handleInputChange}
               />
-              <TextField
-                required
-                id="paid"
-                name="Paid"
-                label="Paid"
-                variant="outlined"
-                value={modifiedReservation.Paid}
-                sx={{ marginBottom: '16px' }}
-                onChange={handleInputChange}
-              />
+
+              <InputLabel id="demo-simple-select-label">Payment</InputLabel>
+                <Select
+                  value={modifiedReservation.Paid}
+                  id="paid"
+                  name="Paid"
+                  label="Paid"
+                  onChange={handleInputChange}
+                  sx={{ mb: 2, width: 'auto' }}
+                >
+                    <MenuItem value="Valid">Valid</MenuItem>
+                    <MenuItem value="Invalid">Invalid</MenuItem>
+                </Select>
+
               <Button type="submit" variant="outlined" color="primary">
                 Modify Reservation
               </Button>

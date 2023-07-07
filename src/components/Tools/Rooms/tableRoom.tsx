@@ -229,12 +229,6 @@ const RoomsTable = () => {
                   sortState.order !== SortOrder.NONE &&
                   (sortState.order === SortOrder.ASC ? <AscArrow /> : <DescArrow />)}
               </TableCell>
-              <TableCell sx={{ cursor: 'pointer' }} onClick={() => sortData('Rating')}>
-                Rating
-                {sortState.field === 'Rating' &&
-                  sortState.order !== SortOrder.NONE &&
-                  (sortState.order === SortOrder.ASC ? <AscArrow /> : <DescArrow />)}
-              </TableCell>
               <TableCell sx={{ cursor: 'pointer' }} onClick={() => sortData('Price')}>
                 Price
                 {sortState.field === 'Price' &&
@@ -254,14 +248,13 @@ const RoomsTable = () => {
                 <TableCell sx={{ maxWidth: 500, overflow: 'auto' }}>
                  <CldImage width="200" height="200" src={`/Rooms/${room.Image}`} alt={room.Image}/>
                 </TableCell>
-                <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{room.Description}</TableCell>
+                <TableCell sx={{ maxWidth: 200, overflow: '5' }}>{room.Description}</TableCell>
                 <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{room.Max}</TableCell>
                 <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{room.View}</TableCell>
                 <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{room.Size}</TableCell>
                 <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{room.Bed_Number}</TableCell>
                 <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{room.Type.Name}</TableCell>
-                <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{room.Rating}</TableCell>
-                <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{room.Price}</TableCell>
+                <TableCell sx={{ maxWidth: 200, overflow: 'auto' }}>{room.Price}$</TableCell>
                 <TableCell sx={{ maxWidth: 120, overflow: 'auto' }}>
                   <Button onClick={() => handleClickOpen(room)} color="secondary">
                     Delete
