@@ -1,9 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { styled } from '@mui/system';
-import { Typography, Box, InputLabel, Button, TextField, Select, MenuItem } from '@mui/material';
+import { Typography, Box, InputLabel, Button, TextField, MenuItem } from '@mui/material';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { useTable } from '@/context/TableContext';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
+
+const API_URL_MENUTYPE = 'http://localhost:7000/menuTypes';
 
 const OuterContainer = styled('div')({
   display: 'flex',
@@ -45,6 +48,7 @@ const AddMenuPage = () => {
   const [Prix, setPrix] = useState(0);
   const [Type, setType] = useState("");
   const { submitMenuForm } = useTable();
+  const [menuTypes, setMenuTypes] = useState(null);
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
@@ -103,6 +107,24 @@ const AddMenuPage = () => {
       toast.error('Something went wrong.');
     }
   };
+
+  const fetchData = async () => {
+    const result = await axios(API_URL_MENUTYPE);
+    setMenuTypes(result.data);
+  };
+  
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const handleChange = (event: SelectChangeEvent) => {
+    setType(event.target.value as string);
+  };
+
+  interface Types {
+    _id: string;
+    Name: string;
+  }
 
   return (
     <OuterContainer
