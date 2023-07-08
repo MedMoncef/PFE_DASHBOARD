@@ -5,6 +5,7 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 import { useTable } from '@/context/TableContext';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
+import { useRouter } from 'next/router';
 
 const API_URL_MENUTYPE = 'http://localhost:7000/menuTypes';
 
@@ -49,6 +50,7 @@ const AddMenuPage = () => {
   const [Type, setType] = useState("");
   const { submitMenuForm } = useTable();
   const [menuTypes, setMenuTypes] = useState(null);
+  const router = useRouter();
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
@@ -99,6 +101,7 @@ const AddMenuPage = () => {
 
         await submitMenuForm(menuFormData);
         toast.success('Menu added successfully');
+        router.push('/Tables/Menus/menu');
       } else {
         throw new Error('Image upload failed');
       }

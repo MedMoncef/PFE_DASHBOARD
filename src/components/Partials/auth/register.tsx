@@ -126,12 +126,6 @@ export default function Register() {
     };
 
   
-  useEffect(() => {
-    if (isLoggedIn) {
-      router.push('/');
-    }
-  }, [isLoggedIn, router]);
-
   const handleChange = (event: SelectChangeEvent) => {
     setPost(event.target.value as string);
   };

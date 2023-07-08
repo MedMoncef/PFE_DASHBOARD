@@ -1,15 +1,12 @@
 import React from 'react';
 import { styled } from '@mui/system';
-import { Typography, Box, InputLabel, Button, TextField, Card, CardContent, Grid, CardActions } from '@mui/material';
+import { Typography, Box, InputLabel, Button, TextField } from '@mui/material';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useRouter } from 'next/router';
 import { CldImage } from 'next-cloudinary';
 import { useTable } from '@/context/TableContext';
 import { toast } from 'react-toastify';
-
-
-const API_URL_BLOG = 'http://localhost:7000/blogs';
+import { useRouter } from 'next/router';
 
 const OuterContainer = styled('div')({
   display: 'flex',
@@ -39,40 +36,24 @@ const ProfileContainer = styled('div')({
   minHeight: '100vh',
 });
 
+const UserInfo = styled(Typography)({
+  textAlign: 'center',
+});
 
-const BlogPage = () => {
-  const [blog, setBlog] = useState(null);
-  const router = useRouter();
-  const { blogId } = router.query;
+const AddSliderPage = () => {
+  const [slider, setSlider] = useState(null);
   const [file, setFile] = useState(null);
-  const [Titre, setTitle] = useState("");
-  const [Content, setContent] = useState("");
-  const [Image_B, setImage_B] = useState("");
-  const { updateById } = useTable();
-
-  const handleBlogFetch = async () => {
-    if (blogId) {
-      const res = await axios.get(`${API_URL_BLOG}/${blogId}`);
-      const blogData = res.data;
-      setBlog(blogData);
-      setTitle(blogData.Titre);
-      setContent(blogData.Content);
-    }
-  };
-
-  useEffect(() => {
-    handleBlogFetch();
-  }, [blogId]);
+  const { submitSliderForm } = useTable();
+  const [image, setImage] = useState("");
+  const [titre, setTitre] = useState("");
+  const [text, setText] = useState("");
+  const router = useRouter();
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
     setFile(selectedFile);
   };
-
-  const goBackToTable = (e => {
-    router.push('/Tables/Blogs/blog');  
-  })
-
+  
   const uploadImage = async (): Promise<string> => {
     return new Promise<string>(async (resolve, reject) => {
       if (file) {
@@ -81,8 +62,8 @@ const BlogPage = () => {
           formData.append('file', file);
           formData.append('upload_preset', 'HarborHotel');
           const filenameWithoutExtension = file.name.replace(/\.[^/.]+$/, ""); // Remove file extension
-          formData.append('public_id', `Blog/${filenameWithoutExtension}`);
-          setImage_B(String(file.name));
+          formData.append('public_id', `Background/${filenameWithoutExtension}`);
+          setImage(String(file.name));
   
           await axios.post('https://api.cloudinary.com/v1_1/dv5o7w2aw/upload', formData);
   
@@ -110,14 +91,15 @@ const BlogPage = () => {
       }
   
       if (imageName || imageName === '') {
-        const blogData = {
-          Image_B: imageName,  // Use imageName instead of imageUrl
-          Titre,
-          Content,
+        const sliderData = {
+          Image: imageName,
+          Titre: titre,
+          Text: text,
         };
   
-        await updateById("blogs", blogId, blogData);
-        toast.success('Blog updated successfully');
+        await submitSliderForm(sliderData);
+        toast.success('Slider Added successfully');
+        router.push('/Tables/Sliders/slider');
       } else {
         throw new Error('Image upload failed');
       }
@@ -126,7 +108,7 @@ const BlogPage = () => {
       toast.error('Something went wrong.');
     }
   };
-  
+
   return (
     <OuterContainer             
       sx={{
@@ -134,66 +116,62 @@ const BlogPage = () => {
         borderRadius: '4px',
       }}
     >
-      {blog && (
         <>
           <ProfileContainer>
-
-          <Grid container spacing={2} style={{ margin: '2% 0', display: 'flex', justifyContent: 'center' }}>
-                <Card sx={{ maxWidth: 350, margin: '2% 2%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-                  <CldImage width="400" height="250" src={`/Blog/${blog.Image_B}`} alt={blog.Image_B}/>
-                  <CardContent>
-                    <Typography gutterBottom variant="h5" component="div">
-                      Titre: {blog.Titre}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      Content: {blog.Content}
-                    </Typography>
-                  </CardContent>
-                  <CardActions style={{ marginTop: 'auto' }}>
-                  </CardActions>
-                </Card>
-            </Grid>
-
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                padding: '32px',
+                marginBottom: '32px'
+              }}
+            >
+              <CldImage width="300" height="300" src={`/Background/${image}`} alt={image}/>
+              <UserInfo variant="h4" align="center" sx={{ marginTop: '16px' }}>
+                Titre: {titre}
+              </UserInfo>
+              <UserInfo variant="body1" align="center" sx={{ marginTop: '16px' }}>
+                Text: {text}
+              </UserInfo>
+            </Box>
           </ProfileContainer>
           <FormContainer>
             <Box component="form" onSubmit={handleFormSubmit} sx={{ display: 'flex', flexDirection: 'column', '& .MuiTextField-root': { m: 1, width: '30ch' }, }}>
+
+                <InputLabel id="demo-simple-select-label">Image</InputLabel>
+                <input type="file" onChange={handleFileChange} />
+
               <TextField
                 required
                 id="title"
                 name="title"
                 label="Title"
                 variant="outlined"
-                value={Titre}
-                onChange={(e) => setTitle(e.target.value)}
+                value={titre}
+                onChange={(e) => setTitre(e.target.value)}
                 sx={{ marginBottom: '16px' }}
               />
               <TextField
                 required
-                id="content"
-                name="content"
-                label="Content"
+                id="text"
+                name="text"
+                label="Text"
                 variant="outlined"
                 multiline
                 rows={4}
-                value={Content}
-                onChange={(e) => setContent(e.target.value)}
+                value={text}
+                onChange={(e) => setText(e.target.value)}
                 sx={{ marginBottom: '16px' }}
               />
-
-              <input type="file" onChange={handleFileChange} />
-
               <Button type="submit" variant="outlined" color="primary">
-                Modify Blog
-              </Button>
-              <Button variant="text" color="primary" onClick={goBackToTable}>
-                Go back!
+                Add Slider
               </Button>
             </Box>
           </FormContainer>
         </>
-      )}
     </OuterContainer>  
   );
 };
 
-export default BlogPage;
+export default AddSliderPage;

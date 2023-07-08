@@ -151,7 +151,7 @@ const TestimoniesTable = () => {
 
       <Grid container justifyContent="center" alignItems="center" sx={{ marginBottom: 2 }}>
         <Grid item>
-          <Button variant="outlined" onClick={() => router.push('/admin/testimonies/create')}>
+          <Button variant="outlined" onClick={() => router.push('/Tables/Testimonies/createTestimony')}>
             Create a Testimony
           </Button>
         </Grid>

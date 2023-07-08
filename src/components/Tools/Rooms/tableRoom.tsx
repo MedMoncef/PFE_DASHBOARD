@@ -153,7 +153,7 @@ const RoomsTable = () => {
 
       <Grid container justifyContent="center" alignItems="center" sx={{ marginBottom: 2 }}>
         <Grid item>
-          <Button variant="outlined" onClick={() => router.push('/admin/rooms/create')}>
+          <Button variant="outlined" onClick={() => router.push('/Tables/Rooms/createRoom')}>
             Create a Room
           </Button>
         </Grid>

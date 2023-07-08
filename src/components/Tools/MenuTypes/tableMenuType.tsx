@@ -139,7 +139,7 @@ const MenuTypesTable = () => {
 
       <Grid container justifyContent="center" alignItems="center" sx={{ marginBottom: 2 }}>
         <Grid item>
-          <Button variant="outlined" onClick={() => router.push('/admin/menuTypes/create')}>
+          <Button variant="outlined" onClick={() => router.push('/Tables/MenuTypes/createMenuType')}>
             Create a Menu Type
           </Button>
         </Grid>

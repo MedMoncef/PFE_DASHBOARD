@@ -39,12 +39,9 @@ const UserInfo = styled(Typography)({
   textAlign: 'center',
 });
 
-const AddContactPage = () => {
-  const [Nom, setNom] = useState("");
-  const [Email, setEmail] = useState("");
-  const [Sujet, setSujet] = useState("");
-  const [Message, setMessage] = useState("");
-  const { submitContactForm } = useTable();
+const AddMenuPage = () => {
+  const [Name, setName] = useState("");
+  const { submitMenuTypeForm } = useTable();
   const router = useRouter();
 
   const handleAddFormSubmit = async (event) => {
@@ -52,16 +49,13 @@ const AddContactPage = () => {
 
     try {
       const contactFormData = {
-        Nom,
-        Email,
-        Sujet,
-        Message,
+        Name,
       };
 
       // Call the submitContactForm function here to handle the form submission
-      await submitContactForm(contactFormData);
-      toast.success('Contact added successfully');
-      router.push('/Tables/Contacts/contact');
+      await submitMenuTypeForm(contactFormData);
+      toast.success('Menu added successfully');
+      router.push('/Tables/MenuTypes/menuType');
     } catch (error) {
       console.error('Error in form submission:', error);
       toast.error('Something went wrong.');
@@ -87,16 +81,7 @@ const AddContactPage = () => {
           }}
         >
           <UserInfo variant="h4" align="center" sx={{ marginTop: '16px' }}>
-            Nom: {Nom}
-          </UserInfo>
-          <UserInfo variant="body1" align="center" sx={{ marginTop: '16px' }}>
-            Email: {Email}
-          </UserInfo>
-          <UserInfo variant="body1" align="center" sx={{ marginTop: '16px' }}>
-            Sujet: {Sujet}
-          </UserInfo>
-          <UserInfo variant="body1" align="center" sx={{ marginTop: '16px' }}>
-            Message: {Message}
+            Name: {Name}
           </UserInfo>
         </Box>
       </ProfileContainer>
@@ -104,49 +89,17 @@ const AddContactPage = () => {
         <Box component="form" onSubmit={handleAddFormSubmit} sx={{ display: 'flex', flexDirection: 'column', '& .MuiTextField-root': { m: 1, width: '30ch' }, }}>
           <TextField
             required
-            id="nom"
-            name="nom"
-            label="Nom"
+            id="name"
+            name="name"
+            label="Name"
             variant="outlined"
-            value={Nom}
-            onChange={(e) => setNom(e.target.value)}
-            sx={{ marginBottom: '16px' }}
-          />
-          <TextField
-            required
-            id="email"
-            name="email"
-            label="Email"
-            variant="outlined"
-            value={Email}
-            onChange={(e) => setEmail(e.target.value)}
-            sx={{ marginBottom: '16px' }}
-          />
-          <TextField
-            required
-            id="sujet"
-            name="sujet"
-            label="Sujet"
-            variant="outlined"
-            value={Sujet}
-            onChange={(e) => setSujet(e.target.value)}
-            sx={{ marginBottom: '16px' }}
-          />
-          <TextField
-            required
-            id="message"
-            name="message"
-            label="Message"
-            variant="outlined"
-            multiline
-            rows={4}
-            value={Message}
-            onChange={(e) => setMessage(e.target.value)}
+            value={Name}
+            onChange={(e) => setName(e.target.value)}
             sx={{ marginBottom: '16px' }}
           />
 
           <Button type="submit" variant="outlined" color="primary">
-            Add Contact
+            Add Menu
           </Button>
         </Box>
       </FormContainer>
@@ -154,4 +107,4 @@ const AddContactPage = () => {
   );
 };
 
-export default AddContactPage;
+export default AddMenuPage;

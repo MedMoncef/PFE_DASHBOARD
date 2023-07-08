@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { styled } from '@mui/system';
-import { Typography, Box, InputLabel, Button, TextField } from '@mui/material';
+import { Typography, Box, InputLabel, Button, TextField, Card, CardContent, Grid, CardActions } from '@mui/material';
 import axios from 'axios';
 import { useTable } from '@/context/TableContext';
 import { toast } from 'react-toastify';
+import { useRouter } from 'next/router';
+import { CldImage } from 'next-cloudinary';
 
 const OuterContainer = styled('div')({
   display: 'flex',
@@ -43,11 +45,16 @@ const AddBlogPage = () => {
   const [Content, setContent] = useState("");
   const [Image_B, setImage_B] = useState("");
   const { submitBlogForm } = useTable();
+  const router = useRouter();
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
     setFile(selectedFile);
   };
+
+  const goBackToTable = (e => {
+    router.push('/Tables/Blogs/blog');  
+  })
 
   const uploadImage = async (): Promise<string> => {
     return new Promise<string>(async (resolve, reject) => {
@@ -62,7 +69,7 @@ const AddBlogPage = () => {
 
           await axios.post('https://api.cloudinary.com/v1_1/dv5o7w2aw/upload', formData);
 
-resolve(file.name); // Return file name
+        resolve(file.name); // Return file name
         } catch (error) {
           console.error('Error uploading file:', error);
           reject(error);
@@ -91,6 +98,7 @@ resolve(file.name); // Return file name
 
         await submitBlogForm(BlogFormData); // Assuming `add` function adds the blog to the table
         toast.success('Blog added successfully');
+        router.push('/Tables/Blogs/blog');
       } else {
         throw new Error('Image upload failed');
       }
@@ -108,22 +116,23 @@ resolve(file.name); // Return file name
       }}
     >
           <ProfileContainer>
-            <Box
-              sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                padding: '32px',
-                marginBottom: '32px'
-              }}
-            >
-              <UserInfo variant="h4" align="center" sx={{ marginTop: '16px' }}>
-                Titre: {Titre}
-              </UserInfo>
-              <UserInfo variant="body1" align="center" sx={{ marginTop: '16px' }}>
-                Content: {Content}
-              </UserInfo>
-            </Box>
+
+            <Grid container spacing={2} style={{ margin: '2% 0', display: 'flex', justifyContent: 'center' }}>
+                <Card sx={{ maxWidth: 350, margin: '2% 2%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                  <CldImage width="400" height="250" src={`/Blog/${Image_B}`} alt={Image_B}/>
+                  <CardContent>
+                    <Typography gutterBottom variant="h5" component="div">
+                      Titre: {Titre}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      Content: {Content}
+                    </Typography>
+                  </CardContent>
+                  <CardActions style={{ marginTop: 'auto' }}>
+                  </CardActions>
+                </Card>
+            </Grid>
+
           </ProfileContainer>
       <FormContainer>
         <Box component="form" onSubmit={handleAddFormSubmit} sx={{ display: 'flex', flexDirection: 'column', '& .MuiTextField-root': { m: 1, width: '30ch' }, }}>
@@ -156,6 +165,9 @@ resolve(file.name); // Return file name
 
           <Button type="submit" variant="outlined" color="primary">
             Add Blog
+          </Button>
+          <Button variant="text" color="primary" onClick={goBackToTable}>
+             Go back!
           </Button>
         </Box>
       </FormContainer>

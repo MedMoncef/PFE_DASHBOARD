@@ -39,15 +39,15 @@ interface ContactFormData {
   }
   
   interface ReservationFormData {
-    firstName: string;
-    lastName: string;
-    Email: string;
-    CIN: string;
+    firstName: String,
+    lastName: String,
+    Email: String,
+    CIN: String,
     ID_Rooms: string;
-    Date_Debut: Date;
-    Date_Fin: Date;
-    Duree: number;
-    Paid: string;
+    Date_Debut: string;
+    Date_Fin: string;
+    Duree: Number;
+    Prix: Number;
   }
   
   interface ReviewFormData {
@@ -74,7 +74,6 @@ interface ContactFormData {
     Size: string;
     Bed_Number: string;
     Type: string;
-    Rating: number;
     Price: number;
   }
   
@@ -207,7 +206,7 @@ interface ContactFormData {
     const submitReservationForm = async (formData: ReservationFormData) => {
       try {
         // Make an HTTP request to submit the reservation form data
-        await axios.post('http://localhost:7000/reservations', formData);
+        await axios.post('http://localhost:7000/create_reservation', formData);
         console.log('Reservation form submitted successfully');
         // Handle success, show confirmation message, etc.
       } catch (error) {
@@ -215,7 +214,7 @@ interface ContactFormData {
         // Handle submission failure, show error message, etc.
       }
     };
-  
+
     const submitReviewForm = async (formData: ReviewFormData) => {
       try {
         // Make an HTTP request to submit the review form data
@@ -233,6 +232,7 @@ interface ContactFormData {
         // Make an HTTP request to submit the room form data
         await axios.post('http://localhost:7000/rooms', formData);
         console.log('Room form submitted successfully');
+        console.log(formData);
         // Handle success, show confirmation message, etc.
       } catch (error) {
         console.error('Room form submission failed:', error);
@@ -240,7 +240,7 @@ interface ContactFormData {
       }
     };
   
-    const submitRoomTypeForm = async (formData: RoomTypeFormData) => {
+    const submitRoomTypeForm = async (formData: {}) => {
       try {
         // Make an HTTP request to submit the room type form data
         await axios.post('http://localhost:7000/roomTypes', formData);
@@ -280,9 +280,6 @@ interface ContactFormData {
       try {
         // Make an HTTP request to update the data by ID
         await axios.patch(`http://localhost:7000/${endpoint}/${id}`, updateData);
-        console.log(`${endpoint} updated successfully`);
-        console.log(`${id} id successfully`);
-        console.log(`${updateData} info successfully`);
 
         // Handle success, show confirmation message, etc.
       } catch (error) {

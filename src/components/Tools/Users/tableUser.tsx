@@ -146,7 +146,7 @@ const UsersTable = () => {
 
       <Grid container justifyContent="center" alignItems="center" sx={{ marginBottom: 2 }}>
         <Grid item>
-          <Button variant="outlined" onClick={() => router.push('/admin/users/create')}>
+          <Button variant="outlined" onClick={() => router.push('/auth/register')}>
             Create a User
           </Button>
         </Grid>

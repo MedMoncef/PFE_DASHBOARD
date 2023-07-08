@@ -154,7 +154,7 @@ const SlidersTable = () => {
 
       <Grid container justifyContent="center" alignItems="center" sx={{ marginBottom: 2 }}>
         <Grid item>
-          <Button variant="outlined" onClick={() => router.push('/admin/sliders/create')}>
+          <Button variant="outlined" onClick={() => router.push('/Tables/Sliders/createSlider')}>
             Create a Slider
           </Button>
         </Grid>

@@ -156,7 +156,7 @@ const ReservationsTable = () => {
 
       <Grid container justifyContent="center" alignItems="center" sx={{ marginBottom: 2 }}>
         <Grid item>
-          <Button variant="outlined" onClick={() => router.push('/admin/reservations/create')}>
+          <Button variant="outlined" onClick={() => router.push('/Tables/Reservations/createReservation')}>
             Create a Reservation
           </Button>
         </Grid>
