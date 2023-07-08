@@ -1,14 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { styled } from '@mui/system';
 import { Typography, Box, Button, TextField } from '@mui/material';
-import axios from 'axios';
 import { useRouter } from 'next/router';
+import { useTable } from '@/context/TableContext';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer } from 'react-toastify';
-
-const API_URL_WORK_POST = 'http://localhost:7000/posts';
-const API_URL_WORK_POST_UPDATE = 'http://localhost:7000/update_post';
 
 const OuterContainer = styled('div')({
   backgroundColor: 'rgba(0, 0, 0, 0.7)',
@@ -29,38 +26,23 @@ const FormContainer = styled('div')({
   boxShadow: '0px 0px 20px rgba(0, 0, 0, 0.25)',
 });
 
-const WorkPostPage = () => {
-  const [workPost, setWorkPost] = useState(null);
-  const [modifiedWorkPost, setModifiedWorkPost] = useState({
-    Name: '',
-    Salaire: 0,
-  });
+const WorkPostAddPage = () => {
   const router = useRouter();
-  const { workPId } = router.query;
-
-  useEffect(() => {
-    if (workPId) {
-      axios.get(`${API_URL_WORK_POST}/${workPId}`).then((res) => {
-        setWorkPost(res.data);
-        setModifiedWorkPost(res.data);
-      });
-    }
-  }, [workPId]);
-
-  const handleInputChange = (e) => {
-    setModifiedWorkPost({
-      ...modifiedWorkPost,
-      [e.target.name]: e.target.value,
-    });
-  };
+  const [name, setName] = useState("");
+  const [salaire, setSalaire] = useState("");
+  const { submitPostForm } = useTable();
 
   const handleFormSubmit = async (event) => {
     event.preventDefault();
 
     try {
-      await axios.put(`${API_URL_WORK_POST_UPDATE}/${workPId}`, modifiedWorkPost);
-      setWorkPost(modifiedWorkPost);
-      toast.success('Work post updated successfully');
+      const postFormData = {
+        Name: name,
+        Salaire: Number(salaire),
+      };
+      
+      submitPostForm(postFormData);
+      toast.success('Work post added successfully');
       router.push('/Tables/WorkPosts/workPost');
     } catch (error) {
       console.error('Error in form submission:', error);
@@ -79,7 +61,6 @@ const WorkPostPage = () => {
       }}
     >
       <ToastContainer />
-      {workPost && (
         <>
           <FormContainer>
             <Box
@@ -97,9 +78,9 @@ const WorkPostPage = () => {
                 name="Name"
                 label="Name"
                 variant="outlined"
-                value={modifiedWorkPost.Name}
+                value={name}
+                onChange={(e) => setName(e.target.value)}
                 sx={{ marginBottom: '16px' }}
-                onChange={handleInputChange}
               />
               <TextField
                 required
@@ -108,12 +89,12 @@ const WorkPostPage = () => {
                 label="Salaire"
                 variant="outlined"
                 type="number"
-                value={modifiedWorkPost.Salaire}
+                value={salaire}
+                onChange={(e) => setSalaire(e.target.value)}
                 sx={{ marginBottom: '16px' }}
-                onChange={handleInputChange}
               />
               <Button type="submit" variant="outlined" color="primary">
-                Modify Work Post
+                Add Work Post
               </Button>
               <Button variant="text" color="primary" onClick={goBackToTable}>
                 Go back!
@@ -121,9 +102,8 @@ const WorkPostPage = () => {
             </Box>
           </FormContainer>
         </>
-      )}
     </OuterContainer>
   );
 };
 
-export default WorkPostPage;
+export default WorkPostAddPage;

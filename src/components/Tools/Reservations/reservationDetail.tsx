@@ -3,44 +3,32 @@ import { styled } from '@mui/system';
 import { Typography, Box, Button, TextField, Select, MenuItem, InputLabel } from '@mui/material';
 import axios from 'axios';
 import { useRouter } from 'next/router';
+import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer } from 'react-toastify';
+import { toast } from 'react-toastify';
 
 const API_URL_RESERVATION = 'http://localhost:7000/reservations';
 const API_URL_ROOM = 'http://localhost:7000/rooms';
 
 const OuterContainer = styled('div')({
+  backgroundColor: 'rgba(0, 0, 0, 0.7)',
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',
-  minHeight: '100vh',
   width: '100%',
-  padding: '0 20px',
-  background: 'linear-gradient(45deg, #6f5df0 30%, #bcb4fa 90%)',
+  backgroundImage: "url('https://images.unsplash.com/photo-1530229540764-5f6ab595fdbe?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80')",
+  backgroundSize: 'cover',
 });
+
 
 const FormContainer = styled('div')({
   display: 'flex',
   flexDirection: 'column',
   padding: '20px',
-  marginLeft: '20%',
   background: '#ffffff',
   borderRadius: '10px',
   boxShadow: '0px 0px 20px rgba(0, 0, 0, 0.25)',
-});
-
-const ProfileContainer = styled('div')({
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'center',
-  justifyContent: 'center',
-  minHeight: '50%',
-  boxShadow: 'linear-gradient(45deg, #6f5df0 30%, #bcb4fa 90%)',
-  background: '#ffffff',
-  color: 'black',
-  borderRadius: '10px',
-});
-
-const UserInfo = styled(Typography)({
-  textAlign: 'left',
+  margin: 25,
 });
 
 const ReservationPage = () => {
@@ -83,7 +71,8 @@ const ReservationPage = () => {
     try {
       await axios.put(`${API_URL_RESERVATION}/${reservationId}`, modifiedReservation);
       setReservation(modifiedReservation);
-      console.log('Reservation updated successfully');
+      toast.success('Reservation Modified successfully');
+      router.push('/Tables/Reservations/reservation');
     } catch (error) {
       console.error('Error in form submission:', error);
     }
@@ -115,6 +104,10 @@ const ReservationPage = () => {
     Price: number;
   }
 
+  const goBackToTable = (e => {
+    router.push('/Tables/Reservations/reservation');  
+  })
+
   return (
     <OuterContainer
       sx={{
@@ -122,48 +115,9 @@ const ReservationPage = () => {
         borderRadius: '4px',
       }}
     >
+      <ToastContainer />
       {reservation && (
         <>
-          <ProfileContainer>
-            <Box
-              key={reservation._id}
-              sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'left',
-                padding: '32px',
-                marginBottom: '32px',
-              }}
-            >
-              <UserInfo variant="h4" align="center" sx={{ marginTop: '16px' }}>
-                {reservation.firstName} {reservation.lastName}
-              </UserInfo>
-              <UserInfo variant="body1" align="center" sx={{ marginTop: '16px' }}>
-                Email: {reservation.Email}
-              </UserInfo>
-              <UserInfo variant="body2" align="center" sx={{ marginTop: '16px' }}>
-                CIN: {reservation.CIN}
-              </UserInfo>
-              <UserInfo variant="body2" align="center" sx={{ marginTop: '16px' }}>
-                Room Type: {reservation.ID_Rooms.Name}
-              </UserInfo>
-              <UserInfo variant="body2" align="center" sx={{ marginTop: '16px' }}>
-                Start Date: {new Date(reservation.Date_Debut).toLocaleDateString()}
-              </UserInfo>
-              <UserInfo variant="body2" align="center" sx={{ marginTop: '16px' }}>
-                End Date: {new Date(reservation.Date_Fin).toLocaleDateString()}
-              </UserInfo>
-              <UserInfo variant="body2" align="center" sx={{ marginTop: '16px' }}>
-                Duration: {reservation.Duree} days
-              </UserInfo>
-              <UserInfo variant="body2" align="center" sx={{ marginTop: '16px' }}>
-                Price: {reservation.Prix}
-              </UserInfo>
-              <UserInfo variant="body2" align="center" sx={{ marginTop: '16px' }}>
-                Paid: {reservation.Paid}
-              </UserInfo>
-            </Box>
-          </ProfileContainer>
           <FormContainer>
             <Box
               component="form"
@@ -301,6 +255,9 @@ const ReservationPage = () => {
 
               <Button type="submit" variant="outlined" color="primary">
                 Modify Reservation
+              </Button>
+              <Button variant="text" color="primary" onClick={goBackToTable}>
+                Go back!
               </Button>
             </Box>
           </FormContainer>

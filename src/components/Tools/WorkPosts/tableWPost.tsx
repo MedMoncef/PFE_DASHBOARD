@@ -22,6 +22,7 @@ import { useRouter } from 'next/router';
 import styles from '@/styles/Title.module.css';
 
 const API_URL = 'http://localhost:7000/posts';
+const API_URL_DELETE = 'http://localhost:7000/delete_post';
 
 interface WorkPost {
   _id: string;
@@ -82,7 +83,7 @@ const WorkPostsTable = () => {
   const deleteWorkPost = async () => {
     try {
       if (workPostToDelete) {
-        await axios.delete(`${API_URL}/${workPostToDelete._id}`);
+        await axios.delete(`${API_URL_DELETE}/${workPostToDelete._id}`);
         setWorkPosts(prevWorkPosts =>
           prevWorkPosts.filter(workPost => workPost._id !== workPostToDelete._id)
         );
@@ -144,7 +145,7 @@ const WorkPostsTable = () => {
 
       <Grid container justifyContent="center" alignItems="center" sx={{ marginBottom: 2 }}>
         <Grid item>
-          <Button variant="outlined" onClick={() => router.push('/admin/workposts/create')}>
+          <Button variant="outlined" onClick={() => router.push('/Tables/WorkPosts/createWorkPost')}>
             Create a Work Post
           </Button>
         </Grid>

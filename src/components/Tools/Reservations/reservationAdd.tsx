@@ -4,17 +4,20 @@ import { Typography, Box, Button, TextField, Select, MenuItem, InputLabel } from
 import axios from 'axios';
 import { useRouter } from 'next/router';
 import { useTable } from '@/context/TableContext';
+import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer } from 'react-toastify';
+import { toast } from 'react-toastify';
 
 const API_URL_ROOM = 'http://localhost:7000/rooms';
 
 const OuterContainer = styled('div')({
+  backgroundColor: 'rgba(0, 0, 0, 0.7)',
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',
-  minHeight: '100vh',
   width: '100%',
-  padding: '0 20px',
-  background: 'linear-gradient(45deg, #6f5df0 30%, #bcb4fa 90%)',
+  backgroundImage: "url('https://images.unsplash.com/photo-1530229540764-5f6ab595fdbe?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80')",
+  backgroundSize: 'cover',
 });
 
 const FormContainer = styled('div')({
@@ -25,22 +28,7 @@ const FormContainer = styled('div')({
   background: '#ffffff',
   borderRadius: '10px',
   boxShadow: '0px 0px 20px rgba(0, 0, 0, 0.25)',
-});
-
-const ProfileContainer = styled('div')({
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'center',
-  justifyContent: 'center',
-  minHeight: '50%',
-  boxShadow: 'linear-gradient(45deg, #6f5df0 30%, #bcb4fa 90%)',
-  background: '#ffffff',
-  color: 'black',
-  borderRadius: '10px',
-});
-
-const UserInfo = styled(Typography)({
-  textAlign: 'left',
+  margin: 25,
 });
 
 const ReservationPage = () => {
@@ -81,14 +69,15 @@ const ReservationPage = () => {
       };
 
       submitReservationForm(reservationFormData);
-      console.log('Reservation added successfully');
+      toast.success('Reservation added successfully');
+      router.push('/Tables/Reservations/reservation');
     } catch (error) {
       console.error('Error in form submission:', error);
     }
   };
   
   const goBackToTable = (e => {
-    router.push('/Tables/Reservations/reservation');  
+    router.push('/Tables/Reservations/reservation');
   })
 
   const fetchData = async () => {
@@ -128,46 +117,8 @@ const ReservationPage = () => {
         borderRadius: '4px',
       }}
     >
+      <ToastContainer />
         <>
-          <ProfileContainer>
-            <Box
-              sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'left',
-                padding: '32px',
-                marginBottom: '32px',
-              }}
-            >
-              <UserInfo variant="h4" align="center" sx={{ marginTop: '16px' }}>
-                {firstName} {lastName}
-              </UserInfo>
-              <UserInfo variant="body1" align="center" sx={{ marginTop: '16px' }}>
-                Email: {email}
-              </UserInfo>
-              <UserInfo variant="body2" align="center" sx={{ marginTop: '16px' }}>
-                CIN: {CIN}
-              </UserInfo>
-              <UserInfo variant="body2" align="center" sx={{ marginTop: '16px' }}>
-                Room Type: {IDRooms.Name}
-              </UserInfo>
-              <UserInfo variant="body2" align="center" sx={{ marginTop: '16px' }}>
-                Start Date: {new Date(dateDebut).toLocaleDateString()}
-              </UserInfo>
-              <UserInfo variant="body2" align="center" sx={{ marginTop: '16px' }}>
-                End Date: {new Date(dateFin).toLocaleDateString()}
-              </UserInfo>
-              <UserInfo variant="body2" align="center" sx={{ marginTop: '16px' }}>
-                Duration: {Duree} days
-              </UserInfo>
-              <UserInfo variant="body2" align="center" sx={{ marginTop: '16px' }}>
-                Price: {Prix}
-              </UserInfo>
-              <UserInfo variant="body2" align="center" sx={{ marginTop: '16px' }}>
-                Paid: {paid}
-              </UserInfo>
-            </Box>
-          </ProfileContainer>
           <FormContainer>
             <Box
               component="form"

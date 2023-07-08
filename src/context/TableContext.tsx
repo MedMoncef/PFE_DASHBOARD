@@ -194,7 +194,7 @@ interface ContactFormData {
     const submitPostForm = async (formData: PostFormData) => {
       try {
         // Make an HTTP request to submit the post form data
-        await axios.post('http://localhost:7000/posts', formData);
+        await axios.post('http://localhost:7000/create_post', formData);
         console.log('Post form submitted successfully');
         // Handle success, show confirmation message, etc.
       } catch (error) {

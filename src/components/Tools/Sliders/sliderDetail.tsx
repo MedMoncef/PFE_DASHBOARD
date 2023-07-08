@@ -7,18 +7,21 @@ import { useRouter } from 'next/router';
 import { CldImage } from 'next-cloudinary';
 import { useTable } from '@/context/TableContext';
 import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer } from 'react-toastify';
 
 const API_URL_SLIDER = 'http://localhost:7000/sliders';
 
 const OuterContainer = styled('div')({
+  backgroundColor: 'rgba(0, 0, 0, 0.7)',
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',
-  minHeight: '100vh',
   width: '100%',
-  padding: '0 20px',
-  background: 'linear-gradient(45deg, #6f5df0 30%, #bcb4fa 90%)',
+  backgroundImage: "url('https://images.unsplash.com/photo-1530229540764-5f6ab595fdbe?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80')",
+  backgroundSize: 'cover',
 });
+
 
 const FormContainer = styled('div')({
   display: 'flex',
@@ -113,6 +116,7 @@ const SliderPage = () => {
   
         await updateById("sliders", sliderId, sliderData);
         toast.success('Slider updated successfully');
+        router.push('/Tables/Sliders/slider');
       } else {
         throw new Error('Image upload failed');
       }
@@ -129,6 +133,7 @@ const SliderPage = () => {
         borderRadius: '4px',
       }}
     >
+      <ToastContainer />
       {slider && (
         <>
           <ProfileContainer>

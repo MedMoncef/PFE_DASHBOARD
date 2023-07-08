@@ -1,23 +1,27 @@
 import React, { useState, useEffect } from 'react';
 import { styled } from '@mui/system';
-import { Typography, Box, InputLabel, Button, TextField, MenuItem } from '@mui/material';
+import { Typography, Box, Button, TextField, InputLabel, MenuItem, Card, CardContent, Grid } from '@mui/material';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { useTable } from '@/context/TableContext';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { useRouter } from 'next/router';
+import { CldImage } from 'next-cloudinary';
+import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer } from 'react-toastify';
 
 const API_URL_MENUTYPE = 'http://localhost:7000/menuTypes';
 
 const OuterContainer = styled('div')({
+  backgroundColor: 'rgba(0, 0, 0, 0.7)',
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',
-  minHeight: '100vh',
   width: '100%',
-  padding: '0 20px',
-  background: 'linear-gradient(45deg, #6f5df0 30%, #bcb4fa 90%)',
+  backgroundImage: "url('https://images.unsplash.com/photo-1530229540764-5f6ab595fdbe?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80')",
+  backgroundSize: 'cover',
 });
+
 
 const FormContainer = styled('div')({
   display: 'flex',
@@ -35,10 +39,6 @@ const ProfileContainer = styled('div')({
   alignItems: 'center',
   justifyContent: 'center',
   minHeight: '100vh',
-});
-
-const UserInfo = styled(Typography)({
-  textAlign: 'center',
 });
 
 const AddMenuPage = () => {
@@ -92,7 +92,7 @@ const AddMenuPage = () => {
 
       if (imageName || imageName === '') {
         const menuFormData = {
-          Image,
+          Image: imageName,
           Nom,
           Description,
           Prix,
@@ -129,6 +129,10 @@ const AddMenuPage = () => {
     Name: string;
   }
 
+  const goBackToTable = (e => {
+    router.push('/Tables/Menus/menu');  
+  })
+
   return (
     <OuterContainer
       sx={{
@@ -136,32 +140,28 @@ const AddMenuPage = () => {
         borderRadius: '4px',
       }}
     >
+      <ToastContainer />
       <ProfileContainer>
-        <Box
-          sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            padding: '32px',
-            marginBottom: '32px'
-          }}
-        >
-          <UserInfo variant="h4" align="center" sx={{ marginTop: '16px' }}>
-            Image: {Image}
-          </UserInfo>
-          <UserInfo variant="body1" align="center" sx={{ marginTop: '16px' }}>
-            Nom: {Nom}
-          </UserInfo>
-          <UserInfo variant="body1" align="center" sx={{ marginTop: '16px' }}>
-            Description: {Description}
-          </UserInfo>
-          <UserInfo variant="body1" align="center" sx={{ marginTop: '16px' }}>
-            Prix: {Prix}
-          </UserInfo>
-          <UserInfo variant="body1" align="center" sx={{ marginTop: '16px' }}>
-            Type: {Type}
-          </UserInfo>
-        </Box>
+
+            <Grid container spacing={2} style={{ margin: '2% 0', display: 'flex', justifyContent: 'center' }}>
+              <Card sx={{ maxWidth: 350, margin: '2% 2%' }} style={{ alignSelf: 'flex' }}>
+              <CldImage width="350" height="250" src={`/Menu/${Image}`} alt={Image}/>
+                  <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+                      <CardContent sx={{ flex: '1 0 auto' }}>
+                      <Typography component="div" variant="h5">
+                          {Nom}
+                          <div style={{ display: 'flex', width: '80px', color: '#2f89fc', textAlign: 'right', fontSize: '20px', fontWeight: '600' }}>
+                          $ {Prix}
+                          </div>
+                      </Typography>
+                      <Typography variant="subtitle1" color="text.secondary" component="div">
+                          {Description}
+                      </Typography>
+                      </CardContent>
+                  </Box>
+              </Card>
+            </Grid>
+
       </ProfileContainer>
       <FormContainer>
         <Box
@@ -228,6 +228,9 @@ const AddMenuPage = () => {
 
           <Button type="submit" variant="outlined" color="primary">
             Add Menu
+          </Button>
+          <Button variant="text" color="primary" onClick={goBackToTable}>
+            Go back!
           </Button>
         </Box>
       </FormContainer>

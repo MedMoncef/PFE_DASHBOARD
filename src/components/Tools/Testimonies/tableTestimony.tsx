@@ -50,12 +50,6 @@ const initialSortState: SortState = {
   order: SortOrder.NONE,
 };
 
-const UserAvatar = styled(Avatar)({
-  width: '75px',
-  height: '75px',
-  marginBottom: '16px',
-});
-
 const TestimoniesTable = () => {
   const [testimonies, setTestimonies] = useState<Testimony[]>([]);
   const [initialTestimonies, setInitialTestimonies] = useState<Testimony[]>([]);
