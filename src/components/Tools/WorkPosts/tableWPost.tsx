@@ -17,9 +17,12 @@ import {
   Box,
   Link,
   Grid,
+  TextField,
 } from '@mui/material';
 import { useRouter } from 'next/router';
 import styles from '@/styles/Title.module.css';
+import SearchIcon from '@mui/icons-material/Search';
+
 
 const API_URL = 'http://localhost:7000/posts';
 const API_URL_DELETE = 'http://localhost:7000/delete_post';
@@ -53,6 +56,7 @@ const WorkPostsTable = () => {
   const [open, setOpen] = useState(false);
   const [workPostToDelete, setWorkPostToDelete] = useState<WorkPost | null>(null);
   const router = useRouter();
+  const [search, setSearch] = useState(''); // New: State variable for search
 
   const AscArrow = () => <span> &#9650; </span>; // Upwards arrow
   const DescArrow = () => <span> &#9660; </span>; // Downwards arrow
@@ -60,6 +64,10 @@ const WorkPostsTable = () => {
   useEffect(() => {
     fetchData();
   }, []);
+
+  useEffect(() => { // New: Effect for filtering data
+    filterData();
+  }, [search, initialWorkPosts]);
 
   const fetchData = async () => {
     try {
@@ -69,6 +77,13 @@ const WorkPostsTable = () => {
     } catch (error) {
       console.error(error);
     }
+  };
+
+  const filterData = () => { // New: Function for filtering data
+    const filteredWorkPosts = initialWorkPosts.filter(workPost =>
+      workPost.Name.toLowerCase().includes(search.toLowerCase())
+    );
+    setWorkPosts(filteredWorkPosts);
   };
 
   const handleClickOpen = (workPost: WorkPost) => {
@@ -143,13 +158,23 @@ const WorkPostsTable = () => {
         <h2>Work Post List</h2>
       </div>
 
-      <Grid container justifyContent="center" alignItems="center" sx={{ marginBottom: 2 }}>
-        <Grid item>
+      <Grid container direction="column" justifyContent="center" alignItems="center">
+        <Grid item sx={{ marginBottom: 2 }}>
           <Button variant="outlined" onClick={() => router.push('/Tables/WorkPosts/createWorkPost')}>
             Create a Work Post
           </Button>
         </Grid>
+        <Grid item xs={12} md={6} sx={{ marginBottom: 2 }}>
+          <TextField // New: TextField for search
+            label="Search"
+            variant="outlined"
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+            fullWidth
+          />
+        </Grid>
       </Grid>
+
 
       <TableContainer component={Paper} sx={{ maxWidth: '100%', overflow: 'auto' }}>
         <Table stickyHeader aria-label="collapsible table">
@@ -186,10 +211,8 @@ const WorkPostsTable = () => {
                   <Button onClick={() => handleClickOpen(workPost)} color="secondary">
                     Delete
                   </Button>
-                  <Link href={`/Tables/WorkPosts/${workPost._id}`} passHref>
-                    <Button component="a" color="primary">
-                      Detail
-                    </Button>
+                  <Link href={`/Tables/WorkPosts/${workPost._id}`} underline="none">
+                    <Button color="primary">Edit</Button>
                   </Link>
                 </TableCell>
               </TableRow>
@@ -197,20 +220,22 @@ const WorkPostsTable = () => {
           </TableBody>
         </Table>
       </TableContainer>
-
+      
       <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>Delete work post?</DialogTitle>
+        <DialogTitle>{"Are you sure you want to delete this work post?"}</DialogTitle>
         <DialogContent>
-          <DialogContentText>
-            Are you sure you want to delete the work post with ID: {workPostToDelete?._id}?
+          <DialogContentText id="alert-dialog-description">
+            {workPostToDelete && (
+              <span>
+                {workPostToDelete._id} - {workPostToDelete.Name}
+              </span>
+            )}
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose} color="primary">
-            Cancel
-          </Button>
-          <Button onClick={deleteWorkPost} color="secondary" autoFocus>
-            Delete
+          <Button onClick={handleClose}>No</Button>
+          <Button onClick={deleteWorkPost} autoFocus>
+            Yes
           </Button>
         </DialogActions>
       </Dialog>

@@ -21,7 +21,6 @@ import {
 } from '@mui/material';
 import { useRouter } from 'next/router';
 import styles from '@/styles/Title.module.css';
-import { styled } from '@mui/system';
 import { CldImage } from 'next-cloudinary';
 
 const API_URL = 'http://localhost:7000/users';

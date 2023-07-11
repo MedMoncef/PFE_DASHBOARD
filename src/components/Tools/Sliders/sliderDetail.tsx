@@ -1,6 +1,6 @@
 import React from 'react';
 import { styled } from '@mui/system';
-import { Typography, Box, InputLabel, Button, TextField } from '@mui/material';
+import { Typography, Box, InputLabel, Button, TextField, Grid, Card, CardContent } from '@mui/material';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useRouter } from 'next/router';
@@ -137,27 +137,24 @@ const SliderPage = () => {
       {slider && (
         <>
           <ProfileContainer>
-            <Box
-              key={slider._id}
-              sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                padding: '32px',
-                marginBottom: '32px'
-              }}
-            >
-              <CldImage width="300" height="300" src={`/Background/${slider.Image}`} alt={slider.Image}/>
-              <UserInfo variant="h4" align="center" sx={{ marginTop: '16px' }}>
-                {slider.Titre}
-              </UserInfo>
-              <UserInfo variant="body1" align="center" sx={{ marginTop: '16px' }}>
-                {slider.Text}
-              </UserInfo>
-              <UserInfo variant="body2" align="center" sx={{ marginTop: '16px' }}>
-                {new Date(slider.DateU).toLocaleDateString()}
-              </UserInfo>
-            </Box>
+
+          <Grid container spacing={2} style={{ margin: '2% 0', display: 'flex', justifyContent: 'center' }}>
+              <Card sx={{ maxWidth: 350, margin: '2% 2%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                <CldImage width="400" height="250" src={`/Background/${slider.Image}`} alt={slider.Image}/>
+                <CardContent>
+                  <Typography gutterBottom variant="h5" component="div">
+                    Titre: {slider.Titre}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    Content: {slider.Text}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    Upload Date: {new Date(slider.DateU).toLocaleDateString()}
+                  </Typography>
+                </CardContent>
+              </Card>
+          </Grid>
+
           </ProfileContainer>
           <FormContainer>
             <Box component="form" onSubmit={handleFormSubmit} sx={{ display: 'flex', flexDirection: 'column', '& .MuiTextField-root': { m: 1, width: '30ch' }, }}>
@@ -190,6 +187,11 @@ const SliderPage = () => {
               <Button type="submit" variant="outlined" color="primary">
                 Modify Slider
               </Button>
+              <Grid item xs={12}>
+                <Button fullWidth variant="text" onClick={() => router.push('/Tables/Sliders/slider')}>
+                  Go back
+                </Button>
+              </Grid>
             </Box>
           </FormContainer>
         </>

@@ -17,6 +17,7 @@ import {
   Box,
   Link,
   Grid,
+  TextField
 } from '@mui/material';
 import { useRouter } from 'next/router';
 import styles from '@/styles/Title.module.css';
@@ -57,6 +58,8 @@ const BlogTable = () => {
   const [sortState, setSortState] = useState<SortState>(initialSortState);
   const AscArrow = () => <span> &#9650; </span>; // Upwards arrow
   const DescArrow = () => <span> &#9660; </span>; // Downwards arrow
+  const [searchString, setSearchString] = useState('');
+
 
   const fetchData = async () => {
     try {
@@ -80,6 +83,17 @@ const BlogTable = () => {
   const handleClose = () => {
     setOpen(false);
   };
+
+  useEffect(() => {
+    if (searchString === '') {
+      setBlogPosts(initialBlogs);
+    } else {
+      const filteredBlogs = initialBlogs.filter(post =>
+        post.Titre.toLowerCase().includes(searchString.toLowerCase())
+      );
+      setBlogPosts(filteredBlogs);
+    }
+  }, [searchString]);
 
   const deleteBlogPost = async () => {
     try {
@@ -144,11 +158,20 @@ const BlogTable = () => {
         <h2>Blog Posts</h2>
       </div>
 
-      <Grid container justifyContent="center" alignItems="center" sx={{ marginBottom: 2 }}>
-        <Grid item>
+      <Grid container direction="column" justifyContent="center" alignItems="center">
+        <Grid item xs={4} sx={{ marginBottom: 2 }}>
           <Button variant="outlined" onClick={() => router.push('/Tables/Blogs/createBlog')}>
             Create a Blog Post
           </Button>
+        </Grid>
+        <Grid item xs={8} sx={{ marginBottom: 2 }}>
+          <TextField 
+            fullWidth
+            id="search"
+            label="Search Title"
+            value={searchString}
+            onChange={(e) => setSearchString(e.target.value)}
+          />
         </Grid>
       </Grid>
 

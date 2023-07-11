@@ -17,6 +17,7 @@ import {
   Box,
   Link,
   Grid,
+  TextField,
 } from '@mui/material';
 import { useRouter } from 'next/router';
 import styles from '@/styles/Title.module.css';
@@ -50,6 +51,7 @@ const MenuTypesTable = () => {
   const [sortState, setSortState] = useState<SortState>(initialSortState);
   const [open, setOpen] = useState(false);
   const [menuTypeToDelete, setMenuTypeToDelete] = useState<MenuType | null>(null);
+  const [searchString, setSearchString] = useState('');
   const router = useRouter();
 
   const AscArrow = () => <span> &#9650; </span>; // Upwards arrow
@@ -68,6 +70,13 @@ const MenuTypesTable = () => {
       console.error(error);
     }
   };
+
+  useEffect(() => {
+    const filteredMenuTypes = initialMenuTypes.filter((menuType) =>
+      menuType.Name.toLowerCase().includes(searchString.toLowerCase())
+    );
+    setMenuTypes(filteredMenuTypes);
+  }, [searchString, initialMenuTypes]);
 
   const handleClickOpen = (menuType: MenuType) => {
     setMenuTypeToDelete(menuType);
@@ -137,11 +146,20 @@ const MenuTypesTable = () => {
         <h2>Menu Type List</h2>
       </div>
 
-      <Grid container justifyContent="center" alignItems="center" sx={{ marginBottom: 2 }}>
-        <Grid item>
+      <Grid container direction="column" justifyContent="center" alignItems="center">
+        <Grid item xs={4} sx={{ marginBottom: 2 }}>
           <Button variant="outlined" onClick={() => router.push('/Tables/MenuTypes/createMenuType')}>
             Create a Menu Type
           </Button>
+        </Grid>
+        <Grid item xs={8} sx={{ marginBottom: 2 }}>
+          <TextField 
+            fullWidth
+            id="search"
+            label="Search Name"
+            value={searchString}
+            onChange={(e) => setSearchString(e.target.value)}
+          />
         </Grid>
       </Grid>
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import { styled } from '@mui/system';
-import { Typography, Box, Button, TextField, InputLabel } from '@mui/material';
+import { Typography, Box, Button, TextField, InputLabel, Grid, CardContent, Card } from '@mui/material';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useRouter } from 'next/router';
@@ -39,10 +39,6 @@ const ProfileContainer = styled('div')({
   alignItems: 'center',
   justifyContent: 'center',
   minHeight: '100vh',
-});
-
-const UserInfo = styled(Typography)({
-  textAlign: 'center',
 });
 
 const TestimonyPage = () => {
@@ -134,16 +130,24 @@ const TestimonyPage = () => {
     {testimonies && (
       <>
       <ProfileContainer key={testimonies._id}>
-            <CldImage width="200" height="200" src={`/Users/${testimonies.image}`} alt={testimonies.image}/>
-            <UserInfo variant="h4" sx={{ marginTop: '16px' }}>
-              {testimonies.name}
-            </UserInfo>
-            <UserInfo variant="h6">
-              {testimonies.title}
-            </UserInfo>
-            <UserInfo variant="subtitle1">
-              {testimonies.comment}
-            </UserInfo>
+
+          <Grid container spacing={2} style={{ margin: '2% 0', display: 'flex', justifyContent: 'center' }}>
+              <Card sx={{ maxWidth: 350, margin: '2% 2%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                <CldImage width="400" height="250" src={`/Users/${testimonies.image}`} alt={testimonies.image}/>
+                <CardContent>
+                  <Typography gutterBottom variant="h5" component="div">
+                    {testimonies.name}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    Title: {testimonies.title}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    Comment: {testimonies.comment}
+                  </Typography>
+                </CardContent>
+              </Card>
+            </Grid>
+
       </ProfileContainer>
         <FormContainer>
         <Box component="form" onSubmit={handleFormSubmit} sx={{ display: 'flex', flexDirection: 'column', '& .MuiTextField-root': { m: 1, width: '30ch' }, }}>
@@ -186,6 +190,11 @@ const TestimonyPage = () => {
             <Button type="submit" variant="outlined" color="primary">
               Modify Testimony
             </Button>
+            <Grid item xs={12}>
+              <Button fullWidth variant="text" onClick={() => router.push('/Tables/Testimonies/testimony')}>
+                Go back 
+              </Button>
+            </Grid>
           </Box>
         </FormContainer>
         </>

@@ -1,7 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { styled } from '@mui/system';
-import { TextField, Typography, Button, Box, Avatar, FormControl, InputLabel, MenuItem } from '@mui/material';
+import { TextField, Typography, Button, Box, Grid, Card, InputLabel, CardContent } from '@mui/material';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useRouter } from 'next/router';
@@ -27,32 +27,24 @@ const OuterContainer = styled('div')({
   backgroundSize: 'cover',
 });
 
-  
-  const FormContainer = styled('div')({
-    display: 'flex',
-    flexDirection: 'column',
-    padding: '20px',
-    marginLeft: '20%',
-    background: '#ffffff',
-    borderRadius: '10px',
-    boxShadow: '0px 0px 20px rgba(0, 0, 0, 0.25)',
-  });
-  
-  const ProfileContainer = styled('div')({
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    minHeight: '50%',
-    boxShadow: '0px 0px 20px rgba(0, 0, 0, 0.25)',
-    background: '#ffffff',
-    color: 'black',
-    borderRadius: '10px',
-  });
-  
-  const UserInfo = styled(Typography)({
-    textAlign: 'left',
-  });
+
+const FormContainer = styled('div')({
+  display: 'flex',
+  flexDirection: 'column',
+  padding: '20px',
+  marginLeft: '20%',
+  background: '#ffffff',
+  borderRadius: '10px',
+  boxShadow: '0px 0px 20px rgba(0, 0, 0, 0.25)',
+});
+
+const ProfileContainer = styled('div')({
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  justifyContent: 'center',
+  minHeight: '100vh',
+});
 
 const ProfilePage = () => {
     const router = useRouter();
@@ -178,30 +170,41 @@ const ProfilePage = () => {
       
     return (
         <>
+        <OuterContainer
+              sx={{
+                border: '1px solid #ccc',
+                borderRadius: '4px',
+              }}
+        >
         <ToastContainer />
         {userDetail && (
-            <OuterContainer>
-                <ProfileContainer>
-                      <CldImage width="250" height="250" src={`/Users/${userDetail.image}`} alt={userDetail.image}/>
+              <>
+                    <ProfileContainer>
 
-                      <UserInfo variant="h4">
-                        {userDetail.nom}
-                    </UserInfo>
-                    <UserInfo variant="h4">
-                        {userDetail.prenom}
-                    </UserInfo>
-                    <UserInfo variant="subtitle1">
-                        Date of Birth: {userDetail.dateN}
-                    </UserInfo>
-                    <UserInfo variant="subtitle1">
-                        Email: {userDetail.email}
-                    </UserInfo>
-                    <UserInfo variant="subtitle1">
-                        Role: {userDetail.id_post.Name}
-                    </UserInfo>
-                </ProfileContainer>
-                <FormContainer>
-                <Box component="form" onSubmit={handleFormSubmit} sx={{ display: 'flex', flexDirection: 'column', '& .MuiTextField-root': { m: 1, width: '30ch' }, }}>
+                      <Grid container spacing={2} style={{ margin: '2% 0', display: 'flex', justifyContent: 'center' }}>
+                        <Card sx={{ maxWidth: 350, margin: '2% 2%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                          <CldImage width="400" height="250" src={`/Users/${userDetail.image}`} alt={userDetail.image}/>
+                          <CardContent>
+                            <Typography gutterBottom variant="h5" component="div">
+                              {userDetail.nom} {userDetail.prenom}
+                            </Typography>
+                            <Typography variant="body2" color="text.secondary">
+                              Date of Birth: {userDetail.dateN}
+                            </Typography>
+                            <Typography variant="body2" color="text.secondary">
+                              Email: {userDetail.email}
+                            </Typography>
+                            <Typography variant="body2" color="text.secondary">
+                              Role: {userDetail.id_post.Name}
+                            </Typography>
+                          </CardContent>
+                        </Card>
+                      </Grid>
+
+                      </ProfileContainer>
+
+                      <FormContainer>
+                        <Box component="form" onSubmit={handleFormSubmit} sx={{ display: 'flex', flexDirection: 'column', '& .MuiTextField-root': { m: 1, width: '30ch' }, }}>
                         <TextField required id="firstName" label="First Name" variant="outlined" value={nom} onChange={(e) => setNom(e.target.value)}/>
                         <TextField required id="lastName" label="Last Name" variant="outlined" value={prenom} onChange={(e) => setPrenom(e.target.value)}/>
                         <TextField required id="dateOfBirth" label="Date of Birth" variant="outlined" value={dateN} onChange={(e) => setDateN(e.target.value)}/>
@@ -214,10 +217,16 @@ const ProfilePage = () => {
                         <Button type="submit" variant="outlined" color="primary" style={{ marginTop: '20px' }}>
                             Modify
                         </Button>
+                        <Grid item xs={12}>
+                          <Button fullWidth variant="text" onClick={() => router.push('/Tables/Users/user')}>
+                            Go back 
+                          </Button>
+                        </Grid>
                     </Box>
                 </FormContainer>
+                </>
+              )}
             </OuterContainer>
-        )}
 
             <style>
             {`

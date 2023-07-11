@@ -17,6 +17,7 @@ import {
   Box,
   Link,
   Grid,
+  TextField,
 } from '@mui/material';
 import { useRouter } from 'next/router';
 import styles from '@/styles/Title.module.css';
@@ -48,6 +49,7 @@ const RoomTypesTable = () => {
   const [roomTypes, setRoomTypes] = useState<RoomType[]>([]);
   const [initialRoomTypes, setInitialRoomTypes] = useState<RoomType[]>([]);
   const [sortState, setSortState] = useState<SortState>(initialSortState);
+  const [searchString, setSearchString] = useState('');
   const [open, setOpen] = useState(false);
   const [roomTypeToDelete, setRoomTypeToDelete] = useState<RoomType | null>(null);
   const router = useRouter();
@@ -57,13 +59,16 @@ const RoomTypesTable = () => {
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [searchString]);
 
   const fetchData = async () => {
     try {
       const response = await axios.get(API_URL);
-      setRoomTypes(response.data);
-      setInitialRoomTypes(response.data);
+      const filteredData = response.data.filter((roomType: RoomType) =>
+        roomType.Name.toLowerCase().includes(searchString.toLowerCase())
+      );
+      setRoomTypes(filteredData);
+      setInitialRoomTypes(filteredData);
     } catch (error) {
       console.error(error);
     }
@@ -137,11 +142,20 @@ const RoomTypesTable = () => {
         <h2>Room Type List</h2>
       </div>
 
-      <Grid container justifyContent="center" alignItems="center" sx={{ marginBottom: 2 }}>
-        <Grid item>
+      <Grid container direction="column" justifyContent="center" alignItems="center">
+        <Grid item xs={4} sx={{ marginBottom: 2 }}>
           <Button variant="outlined" onClick={() => router.push('/Tables/RoomTypes/createRoomType')}>
             Create a Room Type
           </Button>
+        </Grid>
+        <Grid item xs={8} sx={{ marginBottom: 2 }}>
+          <TextField 
+            fullWidth
+            id="search"
+            label="Search Name"
+            value={searchString}
+            onChange={(e) => setSearchString(e.target.value)}
+          />
         </Grid>
       </Grid>
 

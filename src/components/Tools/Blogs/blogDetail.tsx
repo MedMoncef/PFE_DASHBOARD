@@ -143,21 +143,21 @@ const BlogPage = () => {
         <>
           <ProfileContainer>
 
-          <Grid container spacing={2} style={{ margin: '2% 0', display: 'flex', justifyContent: 'center' }}>
-                <Card sx={{ maxWidth: 350, margin: '2% 2%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-                  <CldImage width="400" height="250" src={`/Blog/${blog.Image_B}`} alt={blog.Image_B}/>
-                  <CardContent>
-                    <Typography gutterBottom variant="h5" component="div">
-                      Titre: {blog.Titre}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      Content: {blog.Content}
-                    </Typography>
-                  </CardContent>
-                  <CardActions style={{ marginTop: 'auto' }}>
-                  </CardActions>
-                </Card>
-            </Grid>
+            <Grid container spacing={2} style={{ margin: '2% 0', display: 'flex', justifyContent: 'center' }}>
+                  <Card sx={{ maxWidth: 350, margin: '2% 2%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                    <CldImage width="400" height="250" src={`/Blog/${blog.Image_B}`} alt={blog.Image_B}/>
+                    <CardContent>
+                      <Typography gutterBottom variant="h5" component="div">
+                        Titre: {blog.Titre}
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        Content: {blog.Content}
+                      </Typography>
+                    </CardContent>
+                    <CardActions style={{ marginTop: 'auto' }}>
+                    </CardActions>
+                  </Card>
+              </Grid>
 
           </ProfileContainer>
           <FormContainer>

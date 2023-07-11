@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer } from 'react-toastify';
 import { useAuth } from '@/context/AuthContext';
 import { z } from 'zod';
 import { Button, Grid , TextField, Paper, Typography, FormLabel, InputLabel, Select, MenuItem, SelectChangeEvent } from '@mui/material';
@@ -111,7 +113,8 @@ export default function Register() {
 
         // Update your register function to handle file upload (you'll need to modify this on your server side too)
         await register(nom, prenom, dateN, email, password, confirmPassword, imageName, id_post);
-        toast('Welcome Back!');
+        toast.success('User updated successfully');
+        router.push('/Tables/Users/user');
       } catch (error) {
         if (error instanceof z.ZodError) {
           const emailError = error.issues.find((issue) => issue.path[0] === 'email');
@@ -142,6 +145,7 @@ export default function Register() {
   
   return (
     <>
+    <ToastContainer />
           <Grid item xs={12} sm={6} md={4}>
             <Paper elevation={6} sx={{ p: 4 }}>
               <Typography variant="h4" sx={{ mb: 2, textAlign: 'center' }}>
@@ -254,8 +258,8 @@ export default function Register() {
                     </Button>
                   </Grid>
                   <Grid item xs={12}>
-                    <Button fullWidth variant="text" onClick={() => router.push('/auth/login')}>
-                      Login
+                    <Button fullWidth variant="text" onClick={() => router.push('/Tables/Users/user')}>
+                      Go back
                     </Button>
                   </Grid>
                 </Grid>

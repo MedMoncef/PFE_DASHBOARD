@@ -1,6 +1,6 @@
 import React from 'react';
 import { styled } from '@mui/system';
-import { Typography, Box, InputLabel, Button, TextField } from '@mui/material';
+import { Typography, Box, InputLabel, Button, TextField, Grid } from '@mui/material';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { CldImage } from 'next-cloudinary';
@@ -171,6 +171,12 @@ const AddSliderPage = () => {
               <Button type="submit" variant="outlined" color="primary">
                 Add Slider
               </Button>
+              <Grid item xs={12}>
+                <Button fullWidth variant="text" onClick={() => router.push('/Tables/Sliders/slider')}>
+                  Go back
+                </Button>
+              </Grid>
+
             </Box>
           </FormContainer>
         </>

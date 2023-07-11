@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { styled } from '@mui/system';
-import { Typography, Box, Button, TextField } from '@mui/material';
+import { Typography, Box, Button, TextField, Grid } from '@mui/material';
 import { toast } from 'react-toastify';
 import { useTable } from '@/context/TableContext';
 import 'react-toastify/dist/ReactToastify.css';
@@ -101,6 +101,12 @@ const AddRoomTypePage = () => {
           <Button type="submit" variant="outlined" color="primary">
             Add Room
           </Button>
+          <Grid item xs={12}>
+            <Button fullWidth variant="text" onClick={() => router.push('/Tables/RoomTypes/roomType')}>
+              Go back
+            </Button>
+          </Grid>
+
         </Box>
       </FormContainer>
     </OuterContainer>

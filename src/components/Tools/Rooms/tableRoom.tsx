@@ -17,12 +17,14 @@ import {
   Box,
   Link,
   Grid,
+  TextField,
 } from '@mui/material';
 import { useRouter } from 'next/router';
 import styles from '@/styles/Title.module.css';
 import { CldImage } from 'next-cloudinary';
 
 const API_URL = 'http://localhost:7000/rooms';
+
 
 interface Room {
   _id: string;
@@ -62,7 +64,9 @@ const RoomsTable = () => {
   const [sortState, setSortState] = useState<SortState>(initialSortState);
   const [open, setOpen] = useState(false);
   const [roomToDelete, setRoomToDelete] = useState<Room | null>(null);
+  const [searchString, setSearchString] = useState('');
   const router = useRouter();
+
 
   const AscArrow = () => <span> &#9650; </span>; // Upwards arrow
   const DescArrow = () => <span> &#9660; </span>; // Downwards arrow
@@ -80,6 +84,14 @@ const RoomsTable = () => {
       console.error(error);
     }
   };
+
+  useEffect(() => {
+    if (searchString === '') {
+      setRooms(initialRooms);
+    } else {
+      setRooms(initialRooms.filter(room => room.Name.toLowerCase().includes(searchString.toLowerCase())));
+    }
+  }, [searchString, initialRooms]);
 
   const handleClickOpen = (room: Room) => {
     setRoomToDelete(room);
@@ -151,11 +163,20 @@ const RoomsTable = () => {
         <h2>Room List</h2>
       </div>
 
-      <Grid container justifyContent="center" alignItems="center" sx={{ marginBottom: 2 }}>
-        <Grid item>
+      <Grid container direction="column" justifyContent="center" alignItems="center">
+        <Grid item xs={4} sx={{ marginBottom: 2 }}>
           <Button variant="outlined" onClick={() => router.push('/Tables/Rooms/createRoom')}>
             Create a Room
           </Button>
+        </Grid>
+        <Grid item xs={8} sx={{ marginBottom: 2 }}>
+          <TextField 
+            fullWidth
+            id="search"
+            label="Search Name"
+            value={searchString}
+            onChange={(e) => setSearchString(e.target.value)}
+          />
         </Grid>
       </Grid>
 

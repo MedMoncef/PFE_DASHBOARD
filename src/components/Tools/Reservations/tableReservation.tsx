@@ -17,6 +17,7 @@ import {
   Box,
   Link,
   Grid,
+  TextField
 } from '@mui/material';
 import { useRouter } from 'next/router';
 import styles from '@/styles/Title.module.css';
@@ -59,14 +60,25 @@ const ReservationsTable = () => {
   const [sortState, setSortState] = useState<SortState>(initialSortState);
   const [open, setOpen] = useState(false);
   const [reservationToDelete, setReservationToDelete] = useState<Reservation | null>(null);
+  const [searchString, setSearchString] = useState('');
   const router = useRouter();
 
+
+  
   const AscArrow = () => <span> &#9650; </span>; // Upwards arrow
   const DescArrow = () => <span> &#9660; </span>; // Downwards arrow
 
   useEffect(() => {
     fetchData();
   }, []);
+
+  useEffect(() => {
+    if (searchString === '') {
+      setReservations(initialReservations);
+    } else {
+      setReservations(initialReservations.filter(r => r.Email.toLowerCase().includes(searchString.toLowerCase())));
+    }
+  }, [searchString]);
 
   const fetchData = async () => {
     try {
@@ -154,11 +166,20 @@ const ReservationsTable = () => {
         <h2>Reservation List</h2>
       </div>
 
-      <Grid container justifyContent="center" alignItems="center" sx={{ marginBottom: 2 }}>
-        <Grid item>
+      <Grid container direction="column" justifyContent="center" alignItems="center">
+        <Grid item xs={4} sx={{ marginBottom: 2 }}>
           <Button variant="outlined" onClick={() => router.push('/Tables/Reservations/createReservation')}>
             Create a Reservation
           </Button>
+        </Grid>
+        <Grid item xs={8} sx={{ marginBottom: 2 }}>
+          <TextField 
+            fullWidth
+            id="search"
+            label="Search Email"
+            value={searchString}
+            onChange={(e) => setSearchString(e.target.value)}
+          />
         </Grid>
       </Grid>
 

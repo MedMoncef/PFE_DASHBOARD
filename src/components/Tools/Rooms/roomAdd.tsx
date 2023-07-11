@@ -1,6 +1,6 @@
 import React from 'react';
 import { styled } from '@mui/system';
-import { Typography, Box, Button, TextField, InputLabel, MenuItem } from '@mui/material';
+import { Typography, Box, Button, TextField, InputLabel, MenuItem, Grid } from '@mui/material';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useRouter } from 'next/router';
@@ -318,6 +318,11 @@ const handleFormSubmit = async (event) => {
           <Button type="submit" variant="outlined" color="primary">
             Add Room
           </Button>
+          <Grid item xs={12}>
+            <Button fullWidth variant="text" onClick={() => router.push('/Tables/Rooms/room')}>
+              Go back
+            </Button>
+          </Grid>
         </Box>
       </FormContainer>
     </OuterContainer>

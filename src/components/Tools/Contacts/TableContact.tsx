@@ -17,9 +17,11 @@ import {
   Box,
   Link,
   Grid,
+  TextField,
 } from '@mui/material';
 import { useRouter } from 'next/router';
 import styles from '@/styles/Title.module.css';
+
 
 const API_URL = 'http://localhost:7000/contacts';
 
@@ -53,6 +55,7 @@ const ContactTable = () => {
   const [sortState, setSortState] = useState<SortState>(initialSortState);
   const [open, setOpen] = useState(false);
   const [contactToDelete, setContactToDelete] = useState<Contact | null>(null);
+  const [searchString, setSearchString] = useState<string>(''); // Added this line for search
   const router = useRouter();
 
   const AscArrow = () => <span> &#9650; </span>; // Upwards arrow
@@ -71,6 +74,18 @@ const ContactTable = () => {
       console.error(error);
     }
   };
+
+  useEffect(() => {
+    if (!searchString) {
+      setContacts(initialContacts);
+    } else {
+      setContacts(
+        initialContacts.filter(contact =>
+          contact.Email.toLowerCase().includes(searchString.toLowerCase())
+        )
+      );
+    }
+  }, [searchString, initialContacts]);
 
   const handleClickOpen = (contact: Contact) => {
     setContactToDelete(contact);
@@ -144,11 +159,20 @@ const ContactTable = () => {
         <h2>Contact List</h2>
       </div>
 
-      <Grid container justifyContent="center" alignItems="center" sx={{ marginBottom: 2 }}>
-        <Grid item>
+      <Grid container direction="column" justifyContent="center" alignItems="center">
+        <Grid item xs={4} sx={{ marginBottom: 2 }}>
           <Button variant="outlined" onClick={() => router.push('/Tables/Contacts/createContact')}>
             Create a Contact
           </Button>
+        </Grid>
+        <Grid item xs={8} sx={{ marginBottom: 2 }}>
+          <TextField
+            fullWidth
+            id="search"
+            label="Search Email"
+            value={searchString}
+            onChange={(e) => setSearchString(e.target.value)}
+          />
         </Grid>
       </Grid>
 
