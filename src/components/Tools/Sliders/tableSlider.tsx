@@ -18,6 +18,7 @@ import {
   Link,
   Grid,
   Avatar,
+  TextField,
 } from '@mui/material';
 import { useRouter } from 'next/router';
 import styles from '@/styles/Title.module.css';
@@ -63,6 +64,7 @@ const SlidersTable = () => {
   const [sortState, setSortState] = useState<SortState>(initialSortState);
   const [open, setOpen] = useState(false);
   const [sliderToDelete, setSliderToDelete] = useState<Slider | null>(null);
+  const [searchString, setSearchString] = useState("");
   const router = useRouter();
 
   const AscArrow = () => <span> &#9650; </span>; // Upwards arrow
@@ -71,6 +73,17 @@ const SlidersTable = () => {
   useEffect(() => {
     fetchData();
   }, []);
+
+  useEffect(() => {
+    if (searchString === "") {
+      setSliders(initialSliders);
+    } else {
+      const filteredSliders = initialSliders.filter((slider) =>
+        slider.Titre.toLowerCase().includes(searchString.toLowerCase())
+      );
+      setSliders(filteredSliders);
+    }
+  }, [searchString, initialSliders]);
 
   const fetchData = async () => {
     try {
@@ -152,11 +165,20 @@ const SlidersTable = () => {
         <h2>Slider List</h2>
       </div>
 
-      <Grid container justifyContent="center" alignItems="center" sx={{ marginBottom: 2 }}>
-        <Grid item>
+      <Grid container direction="column" justifyContent="center" alignItems="center">
+        <Grid item xs={4} sx={{ marginBottom: 2 }}>
           <Button variant="outlined" onClick={() => router.push('/Tables/Sliders/createSlider')}>
             Create a Slider
           </Button>
+        </Grid>
+        <Grid item xs={8} sx={{ marginBottom: 2 }}>
+          <TextField 
+            fullWidth
+            id="search"
+            label="Search Title"
+            value={searchString}
+            onChange={(e) => setSearchString(e.target.value)}
+          />
         </Grid>
       </Grid>
 

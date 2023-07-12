@@ -19,31 +19,13 @@ const OuterContainer = styled('div')({
   backgroundSize: 'cover',
 });
 
-
 const FormContainer = styled('div')({
   display: 'flex',
   flexDirection: 'column',
   padding: '20px',
-  marginLeft: '20%',
   background: '#ffffff',
   borderRadius: '10px',
   boxShadow: '0px 0px 20px rgba(0, 0, 0, 0.25)',
-});
-
-const ProfileContainer = styled('div')({
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'center',
-  justifyContent: 'center',
-  minHeight: '50%',
-  boxShadow: '0px 0px 20px rgba(0, 0, 0, 0.25)',
-  background: '#ffffff',
-  color: 'black',
-  borderRadius: '10px',
-});
-
-const UserInfo = styled(Typography)({
-  textAlign: 'left',
 });
 
 const RoomTypePage = () => {
@@ -93,22 +75,6 @@ const RoomTypePage = () => {
       <ToastContainer />
       {roomType && (
         <>
-          <ProfileContainer>
-            <Box
-              key={roomType._id}
-              sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                padding: '32px',
-                marginBottom: '32px',
-              }}
-            >
-              <UserInfo variant="h4" align="center" sx={{ marginTop: '16px' }}>
-                {roomType.Name}
-              </UserInfo>
-            </Box>
-          </ProfileContainer>
           <FormContainer>
             <Box
               component="form"

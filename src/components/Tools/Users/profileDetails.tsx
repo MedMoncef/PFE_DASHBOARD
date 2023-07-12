@@ -97,10 +97,6 @@ const ProfilePage = () => {
         fetchData();
       }, []);
 
-      const handleChange = (event: SelectChangeEvent) => {
-        setIdPost(event.target.value as string);
-      };
-
       const handleFileChange = (e) => {
         const selectedFile = e.target.files[0];
         setFile(selectedFile);
@@ -214,9 +210,9 @@ const ProfilePage = () => {
                           <InputLabel id="demo-simple-select-label">Image</InputLabel>
                           <input type="file" onChange={handleFileChange} />
 
-                        <Button type="submit" variant="outlined" color="primary" style={{ marginTop: '20px' }}>
+                          <Button type="submit" variant="outlined" color="primary" style={{ marginTop: '20px' }}>
                             Modify
-                        </Button>
+                          </Button>
                         <Grid item xs={12}>
                           <Button fullWidth variant="text" onClick={() => router.push('/Tables/Users/user')}>
                             Go back 

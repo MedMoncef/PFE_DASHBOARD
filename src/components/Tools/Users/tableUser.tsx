@@ -17,7 +17,7 @@ import {
   Box,
   Link,
   Grid,
-  Avatar,
+  TextField,
 } from '@mui/material';
 import { useRouter } from 'next/router';
 import styles from '@/styles/Title.module.css';
@@ -58,6 +58,7 @@ const UsersTable = () => {
   const [sortState, setSortState] = useState<SortState>(initialSortState);
   const [open, setOpen] = useState(false);
   const [userToDelete, setUserToDelete] = useState<User | null>(null);
+  const [searchEmail, setSearchEmail] = useState('');
   const router = useRouter();
 
   const AscArrow = () => <span> &#9650; </span>; // Upwards arrow
@@ -76,6 +77,13 @@ const UsersTable = () => {
   useEffect(() => {
     fetchData();
   }, []);
+
+  useEffect(() => {
+    const filteredUsers = initialUsers.filter((user) =>
+      user.email.toLowerCase().includes(searchEmail.toLowerCase())
+    );
+    setUsers(filteredUsers);
+  }, [searchEmail]);
 
   const handleClickOpen = (user: User) => {
     setUserToDelete(user);
@@ -143,11 +151,20 @@ const UsersTable = () => {
         <h2>User List</h2>
       </div>
 
-      <Grid container justifyContent="center" alignItems="center" sx={{ marginBottom: 2 }}>
-        <Grid item>
+      <Grid container direction="column" justifyContent="center" alignItems="center">
+        <Grid item xs={4} sx={{ marginBottom: 2 }}>
           <Button variant="outlined" onClick={() => router.push('/auth/register')}>
             Create a User
           </Button>
+        </Grid>
+        <Grid item xs={8} sx={{ marginBottom: 2 }}>
+          <TextField 
+            fullWidth
+            id="search"
+            label="Search Email"
+            value={searchEmail}
+            onChange={(e) => setSearchEmail(e.target.value)}
+          />
         </Grid>
       </Grid>
 

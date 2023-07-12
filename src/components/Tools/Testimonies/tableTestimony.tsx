@@ -17,7 +17,7 @@ import {
   Box,
   Link,
   Grid,
-  Avatar,
+  TextField,
 } from '@mui/material';
 import { useRouter } from 'next/router';
 import styles from '@/styles/Title.module.css';
@@ -57,6 +57,7 @@ const TestimoniesTable = () => {
   const [open, setOpen] = useState(false);
   const [testimonyToDelete, setTestimonyToDelete] = useState<Testimony | null>(null);
   const router = useRouter();
+  const [searchString, setSearchString] = useState('');
 
   const AscArrow = () => <span> &#9650; </span>; // Upwards arrow
   const DescArrow = () => <span> &#9660; </span>; // Downwards arrow
@@ -98,6 +99,17 @@ const TestimoniesTable = () => {
       setOpen(false);
     }
   };
+
+  useEffect(() => {
+    if (searchString === '') {
+      setTestimonies(initialTestimonies);
+    } else {
+      const filteredTestimonies = initialTestimonies.filter(testimony =>
+        testimony.name.toLowerCase().includes(searchString.toLowerCase())
+      );
+      setTestimonies(filteredTestimonies);
+    }
+  }, [searchString, initialTestimonies]);
 
   const sortData = (field: keyof Testimony) => {
     let order = sortState.order;
@@ -143,11 +155,20 @@ const TestimoniesTable = () => {
         <h2>Testimony List</h2>
       </div>
 
-      <Grid container justifyContent="center" alignItems="center" sx={{ marginBottom: 2 }}>
-        <Grid item>
+      <Grid container direction="column" justifyContent="center" alignItems="center" sx={{ marginBottom: 2 }}>
+        <Grid item xs={4} sx={{ marginBottom: 2 }}>
           <Button variant="outlined" onClick={() => router.push('/Tables/Testimonies/createTestimony')}>
             Create a Testimony
           </Button>
+        </Grid>
+        <Grid item xs={8} sx={{ marginBottom: 2 }}>
+          <TextField 
+            fullWidth
+            id="search"
+            label="Search Name"
+            value={searchString}
+            onChange={(e) => setSearchString(e.target.value)}
+          />
         </Grid>
       </Grid>
 

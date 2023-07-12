@@ -21,22 +21,9 @@ const FormContainer = styled('div')({
   display: 'flex',
   flexDirection: 'column',
   padding: '20px',
-  marginLeft: '20%',
   background: '#ffffff',
   borderRadius: '10px',
   boxShadow: '0px 0px 20px rgba(0, 0, 0, 0.25)',
-});
-
-const ProfileContainer = styled('div')({
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'center',
-  justifyContent: 'center',
-  minHeight: '100vh',
-});
-
-const UserInfo = styled(Typography)({
-  textAlign: 'center',
 });
 
 const AddRoomTypePage = () => {

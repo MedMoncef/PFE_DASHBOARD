@@ -1,6 +1,6 @@
 import React from 'react';
 import { styled } from '@mui/system';
-import { Typography, Box, Grid, Button, TextField, InputLabel, MenuItem } from '@mui/material';
+import { Typography, Box, Grid, Button, TextField, InputLabel, MenuItem, Card, CardContent, CardActions } from '@mui/material';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useRouter } from 'next/router';
@@ -10,6 +10,7 @@ import { useTable } from '@/context/TableContext';
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer } from 'react-toastify';
 import { toast } from 'react-toastify';
+import styles from '@/styles/Home.module.css';
 
 const API_URL_ROOM = 'http://localhost:7000/rooms';
 const API_URL_ROOMTYPES = 'http://localhost:7000/roomTypes';
@@ -41,10 +42,6 @@ const ProfileContainer = styled('div')({
   alignItems: 'center',
   justifyContent: 'center',
   minHeight: '100vh',
-});
-
-const UserInfo = styled(Typography)({
-  textAlign: 'center',
 });
 
 const RoomPage = () => {
@@ -80,6 +77,7 @@ const RoomPage = () => {
         setBedNumber(res.data.Bed_Number);
         setType(res.data.Type);
         setPrice(res.data.Price);
+        setImage(res.data.image);
       });
     }
   }, [roomId]);
@@ -117,7 +115,6 @@ const uploadImage = async (): Promise<string> => {
         formData.append('upload_preset', 'HarborHotel');
         const filenameWithoutExtension = file.name.replace(/\.[^/.]+$/, ""); // Remove file extension
         formData.append('public_id', `Rooms/${filenameWithoutExtension}`);
-        setImage(String(file.name));
 
         await axios.post('https://api.cloudinary.com/v1_1/dv5o7w2aw/upload', formData);
 
@@ -139,7 +136,7 @@ const handleFormSubmit = async (event) => {
   event.preventDefault();
 
   try {
-    let imageName = '';
+    let imageName = image;
     if (file) {
       imageName = await uploadImage();
     }
@@ -182,8 +179,8 @@ const handleFormSubmit = async (event) => {
       {room && (
         <>
           <ProfileContainer>
-            <Box
-              key={room._id}
+
+          <Box
               sx={{
                 display: 'flex',
                 flexDirection: 'column',
@@ -192,32 +189,27 @@ const handleFormSubmit = async (event) => {
                 marginBottom: '32px'
               }}
             >
-              <CldImage width="500" height="500" src={`/Rooms/${room.Image}`} alt={room.Image}/>
-              <UserInfo variant="h4" align="center" sx={{ marginTop: '16px' }}>
-                Name: {room.Name}
-              </UserInfo>
-              <UserInfo variant="h5" align="center" sx={{ marginTop: '16px' }}>
-                Type: {room.Type.Name}
-              </UserInfo>
-              <UserInfo variant="body1" align="center" sx={{ marginTop: '16px' }}>
-                Room Number: {room.Room_Number}
-              </UserInfo>
-              <UserInfo variant="body1" align="center" sx={{ marginTop: '16px' }}>
-                Floor Number: {room.Floor_Number}
-              </UserInfo>
-              <UserInfo variant="body1" align="center" sx={{ marginTop: '16px' }}>
-                Room Description: {room.Description}
-              </UserInfo>
-              <UserInfo variant="body2" align="center" sx={{ marginTop: '16px' }}>
-                Price: {room.Price} $
-              </UserInfo>
-              <UserInfo variant="body2" align="center" sx={{ marginTop: '16px' }}>
-                Max Capacity: {room.Max} People
-              </UserInfo>
-              <UserInfo variant="body2" align="center" sx={{ marginTop: '16px' }}>
-                View: {room.View}
-              </UserInfo>
-            </Box>
+          <Grid container spacing={2} style={{ margin: '2% 0', display: 'flex', justifyContent: 'center' }}>
+            <Card sx={{ maxWidth: 350, margin: '2% 2%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }} key={room.ID_Rooms}>
+              <CldImage width="350" height="250" src={`/Rooms/${room.Image}`} alt={room.Image}/>
+              <CardContent>
+                <div  className={styles.rooms}>
+                  <h1>{room.Name}</h1>
+                  <h2>{room.Price}$ per night</h2>
+                  <h4>{room.Bed_Number}</h4>
+                  <h4>Room Number: {room.Room_Number}</h4>
+                  <h4>Floor Number: {room.Floor_Number}</h4>
+                  <h4>Max Capacity: {room.Max} People</h4>
+                  <h4>View: {room.View}</h4>
+                </div>
+                <Typography variant="body2" color="text.secondary">
+                  {room.Description}
+                </Typography>
+              </CardContent>
+            </Card>
+        </Grid>
+        </Box>
+
           </ProfileContainer>
           <FormContainer sx={{ m: '1% 0' }}>
             <Box component="form" onSubmit={handleFormSubmit} sx={{ display: 'flex', flexDirection: 'column', '& .MuiTextField-root': { m: 1, width: '30ch' }, }}>

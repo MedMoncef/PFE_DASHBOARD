@@ -59,6 +59,7 @@ const TestimonyPage = () => {
         setComment(res.data.comment);
         setName(res.data.name);
         setTitle(res.data.title);
+        setImage(res.data.image);
       });
     }
   }, [testimonyId]);
@@ -77,7 +78,6 @@ const TestimonyPage = () => {
           formData.append('upload_preset', 'HarborHotel');
           const filenameWithoutExtension = file.name.replace(/\.[^/.]+$/, ""); // Remove file extension
           formData.append('public_id', `Users/${filenameWithoutExtension}`);
-          setImage(String(file.name));
   
           await axios.post('https://api.cloudinary.com/v1_1/dv5o7w2aw/upload', formData);
   
@@ -94,12 +94,14 @@ const TestimonyPage = () => {
       }
     });
   };
+
+  console.log(image);
   
   const handleFormSubmit = async (event) => {
     event.preventDefault();
   
     try {
-      let imageName = '';
+      let imageName = image;
       if (file) {
         imageName = await uploadImage();
       }

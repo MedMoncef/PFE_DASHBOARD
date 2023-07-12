@@ -62,6 +62,7 @@ const SliderPage = () => {
         setSlider(res.data);
         setTitre(res.data.Titre);
         setText(res.data.Text);
+        setImage(res.data.image);
       });
     }
   }, [sliderId]);
@@ -80,7 +81,6 @@ const SliderPage = () => {
           formData.append('upload_preset', 'HarborHotel');
           const filenameWithoutExtension = file.name.replace(/\.[^/.]+$/, ""); // Remove file extension
           formData.append('public_id', `Background/${filenameWithoutExtension}`);
-          setImage(String(file.name));
   
           await axios.post('https://api.cloudinary.com/v1_1/dv5o7w2aw/upload', formData);
   
@@ -102,7 +102,7 @@ const SliderPage = () => {
     event.preventDefault();
   
     try {
-      let imageName = '';
+      let imageName = image;
       if (file) {
         imageName = await uploadImage();
       }

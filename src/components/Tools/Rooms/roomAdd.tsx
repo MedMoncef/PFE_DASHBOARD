@@ -1,6 +1,6 @@
 import React from 'react';
 import { styled } from '@mui/system';
-import { Typography, Box, Button, TextField, InputLabel, MenuItem, Grid } from '@mui/material';
+import { Typography, Box, Button, TextField, InputLabel, MenuItem, Grid, Card, CardContent } from '@mui/material';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useRouter } from 'next/router';
@@ -9,6 +9,8 @@ import { useTable } from '@/context/TableContext';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer } from 'react-toastify';
+import { CldImage } from 'next-cloudinary';
+import styles from '@/styles/Home.module.css';
 
 const API_URL_ROOMTYPES = 'http://localhost:7000/roomTypes';
 
@@ -158,46 +160,36 @@ const handleFormSubmit = async (event) => {
     >
       <ToastContainer />
       <ProfileContainer>
-        <Box
-          sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            padding: '32px',
-            marginBottom: '32px'
-          }}
-        >
-          <UserInfo variant="h4" align="center" sx={{ marginTop: '16px' }}>
-            Room Number: {roomNumber}
-          </UserInfo>
-          <UserInfo variant="body1" align="center" sx={{ marginTop: '16px' }}>
-            Floor Number: {floorNumber}
-          </UserInfo>
-          <UserInfo variant="body1" align="center" sx={{ marginTop: '16px' }}>
-            Name: {name}
-          </UserInfo>
-          <UserInfo variant="body1" align="center" sx={{ marginTop: '16px' }}>
-            Description: {description}
-          </UserInfo>
-          <UserInfo variant="body1" align="center" sx={{ marginTop: '16px' }}>
-            Max: {max}
-          </UserInfo>
-          <UserInfo variant="body1" align="center" sx={{ marginTop: '16px' }}>
-            View: {view}
-          </UserInfo>
-          <UserInfo variant="body1" align="center" sx={{ marginTop: '16px' }}>
-            Size: {size}
-          </UserInfo>
-          <UserInfo variant="body1" align="center" sx={{ marginTop: '16px' }}>
-            Bed Number: {bedNumber}
-          </UserInfo>
-          <UserInfo variant="body1" align="center" sx={{ marginTop: '16px' }}>
-            Type: {type}
-          </UserInfo>
-          <UserInfo variant="body1" align="center" sx={{ marginTop: '16px' }}>
-            Price: {price}
-          </UserInfo>
+      <Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                padding: '32px',
+                marginBottom: '32px'
+              }}
+            >
+          <Grid container spacing={2} style={{ margin: '2% 0', display: 'flex', justifyContent: 'center' }}>
+            <Card sx={{ maxWidth: 350, margin: '2% 2%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+              <CldImage width="350" height="250" src={`/Rooms/${image}`} alt={image}/>
+              <CardContent>
+                <div  className={styles.rooms}>
+                  <h1>{name}</h1>
+                  <h2>{price}$ per night</h2>
+                  <h4>{bedNumber}</h4>
+                  <h4>Room Number: {roomNumber}</h4>
+                  <h4>Floor Number: {floorNumber}</h4>
+                  <h4>Max Capacity: {max} People</h4>
+                  <h4>View: {view}</h4>
+                </div>
+                <Typography variant="body2" color="text.secondary">
+                  {description}
+                </Typography>
+              </CardContent>
+            </Card>
+        </Grid>
         </Box>
+
       </ProfileContainer>
       <FormContainer>
         <Box component="form" onSubmit={handleFormSubmit} sx={{ display: 'flex', flexDirection: 'column', '& .MuiTextField-root': { m: 1, width: '30ch' }, }}>

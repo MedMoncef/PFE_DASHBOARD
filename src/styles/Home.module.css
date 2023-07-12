@@ -1,0 +1,17 @@
+.rooms h2 {
+    font-size: 14px;
+    font-family: "Nunito Sans", Arial, sans-serif;
+    position: relative;
+    letter-spacing: 4px;
+    color: rgb(21, 101, 192);
+    text-transform: uppercase;
+    margin-bottom: 5px;
+  }
+  
+  .rooms h1 {
+    font-size: 25px;
+    font-weight: 700;
+    position: relative;
+    line-height: 1.5;
+    font-family: "Nunito Sans", Arial, sans-serif;
+  }

@@ -63,7 +63,7 @@ const MenuPage = () => {
         setNom(res.data.Nom);
         setDescription(res.data.Description);
         setPrix(res.data.Prix);
-        setType(res.data.Type.Name);
+        setType(res.data.Type);
       });
     }
     console.log(router.query);
@@ -173,7 +173,7 @@ const MenuPage = () => {
                       <Typography component="div" variant="h5">
                           {menu.Nom}
                           <div style={{ display: 'flex', width: '80px', color: '#2f89fc', textAlign: 'right', fontSize: '20px', fontWeight: '600' }}>
-                          $ {menu.Prix}
+                            {menu.Prix} $
                           </div>
                       </Typography>
                       <Typography variant="subtitle1" color="text.secondary" component="div">

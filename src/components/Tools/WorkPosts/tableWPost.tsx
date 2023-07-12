@@ -166,7 +166,7 @@ const WorkPostsTable = () => {
         </Grid>
         <Grid item xs={12} md={6} sx={{ marginBottom: 2 }}>
           <TextField // New: TextField for search
-            label="Search"
+            label="Search Name"
             variant="outlined"
             value={search}
             onChange={e => setSearch(e.target.value)}
