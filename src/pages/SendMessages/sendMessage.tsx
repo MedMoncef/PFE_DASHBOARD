@@ -10,6 +10,7 @@ import MessageIcon from '@mui/icons-material/Message';
 import MessageOptions from '@/components/Messages/MessageOptions';
 import GroupIcon from '@mui/icons-material/Group';
 import { SpeedDial, Avatar, ListItemAvatar } from '@mui/material';
+import Badge from '@mui/material/Badge';
 
 
 const MessagesPage = () => {
@@ -24,9 +25,24 @@ const MessagesPage = () => {
     const [selectedUser, setSelectedUser] = useState(null);
     const [open, setOpen] = useState(false);
     const [currentUser, setCurrentUser] = useState(null);
-    const [id_Post_Details, setId_Post_Details] = useState("");
+    const [allMessages, setAllMessages] = useState([]);
+    const [unreadMessageGroup, setUnreadMessageGroup] = useState(0);
 
 
+    const fetchAllMessages = async () => {
+      try {
+        const response = await axios.get(`http://localhost:7000/messages`);
+        setAllMessages(response.data);
+      } catch (error) {
+        console.error('Failed to fetch messages:', error);
+      }
+    };
+
+    useEffect(() => {
+      fetchAllMessages();
+    }, []);
+    
+    
     const handleOpen = () => {
         setOpen(true);
       };
@@ -35,8 +51,8 @@ const MessagesPage = () => {
         setOpen(false);
       };
       
-
-      const handleUserClick = (userId) => {
+      
+      const handleUserClick = async (userId) => {
         setSelectedUser(userId);
         const user = userList.find(user => user._id === userId);
         setCurrentUser(user);
@@ -46,10 +62,25 @@ const MessagesPage = () => {
         } else {
             fetchMessages(userId);
         }
-    };
+      
+        // update the view of the messages
+        const unreadMessages = allMessages.filter(
+          message => message.View === false && (message.ID_Sent === userId || message.ID_SentTo === userId)
+        );
+        for (let message of unreadMessages) {
+          try {
+            await axios.put(`http://localhost:7000/messages/${message._id}`, { View: true });
+          } catch (error) {
+            console.error('Failed to update message:', error);
+          }
+        }
+      
+        // refetch all messages to get the updated ones
+        fetchAllMessages();
+      };
+      
     
     
-
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
     }
@@ -63,22 +94,26 @@ const MessagesPage = () => {
         const decodedToken = jwt_decode(token);
         setMyID(decodedToken.user_id);
         setMyID_Post(decodedToken.id_post);
+        console.log(typeof(decodedToken.id_post));  // log the id_post of the current user
+        console.log(decodedToken.id_post);
       }
     }, [isLoggedIn]);
+    
 
     useEffect(() => {
-        const fetchUsers = async () => {
-          try {
-            const response = await axios.get('http://localhost:7000/users');
-            setUserList(response.data);
-            setId_Post_Details(response.data.id_post);
-          } catch (error) {
-            console.error('Failed to fetch users:', error);
-          }
-        };
-  
-        fetchUsers();
-      }, []);
+      const fetchUsers = async () => {
+        try {
+          const response = await axios.get('http://localhost:7000/users');
+          console.log(response.data);
+          setUserList(response.data);
+
+        } catch (error) {
+          console.error('Failed to fetch users:', error);
+        }
+      };
+      fetchUsers();
+    }, []);
+    
 
 
       const fetchMessages = async (selectedUser) => {
@@ -119,6 +154,28 @@ const MessagesPage = () => {
           }
         }
       };
+
+      useEffect(() => {
+        // Fetch messages immediately on component mount
+        if (selectedUser === "Group") {
+          fetchGroupMessages();
+        } else {
+          fetchMessages(selectedUser);
+        }
+      
+        // Then fetch every 5 seconds
+        const intervalId = setInterval(() => {
+          if (selectedUser === "Group") {
+            fetchGroupMessages();
+          } else {
+            fetchMessages(selectedUser);
+          }
+        }, 2000);
+      
+        // Clear interval on component unmount
+        return () => clearInterval(intervalId);
+      }, [selectedUser]);
+      
       
       
       const deleteMessages = async () => {
@@ -146,6 +203,31 @@ const MessagesPage = () => {
           console.error('Failed to delete message:', error);
         }
       };
+
+      async function fetchUnreadMessages() {
+        try {
+          const response = await axios.get('http://localhost:7000/messages');
+          
+          if (response.status === 200) {
+      
+            const groupMessages = response.data.filter(
+              message => message.ID_SentTo === 'Group' && message.ID_PostSent === myID_Post && message.View === false && message.ID_Sent != myID
+            );
+      
+            const totalUnread = groupMessages.length;
+      
+            setUnreadMessageGroup(totalUnread);
+          }
+        } catch (error) {
+          console.error('Error fetching unread messages', error);
+        }
+      }
+
+      useEffect(() => {
+        if (myID && myID_Post) {
+          fetchUnreadMessages();
+        }
+      }, [myID, myID_Post]);
     
   return (
       <div className={styles.container}>
@@ -168,35 +250,49 @@ const MessagesPage = () => {
 
           <div className={styles.floatingButtonContainer}>
           <SpeedDial
-                ariaLabel="SpeedDial openIcon example"
-                open={open}
-                onOpen={handleOpen}
-                onClose={handleClose}
-                icon={<MessageIcon />}
-                direction="right"
+              ariaLabel="SpeedDial openIcon example"
+              open={open}
+              onOpen={handleOpen}
+              onClose={handleClose}
+              icon={<MessageIcon />}
+              direction="right"
             >
-                  {userList.filter(user => user._id !== myID).map((user) => (
-                      <SpeedDialAction
-                          key={user._id}
-                          icon={
-                              <Avatar variant="rounded">
-                                  <CldImage width="50" height="50" src={`/Users/${user.image}`} alt={user.image}/>
-                              </Avatar>
-                              }
-                          tooltipTitle={user.name}
-                          onClick={() => handleUserClick(user._id)}
-                      />
-                  ))}
-                  <SpeedDialAction
+              {userList
+                .filter(user => user._id !== myID && user.id_post._id === myID_Post)
+                .map((user) => {
+                  const unreadMessageCount = allMessages.filter(
+                    message => message.View === false && message.ID_Sent === user._id && message.ID_SentTo != "Group"
+                  ).length;
+
+                  return (
+                    <SpeedDialAction
+                      key={user._id}
                       icon={
+                        <Badge badgeContent={unreadMessageCount} color="primary">
                           <Avatar variant="rounded">
-                              <GroupIcon width="50" height="50"/>
+                            <CldImage width="50" height="50" src={`/Users/${user.image}`} alt={user.image}/>
                           </Avatar>
-                          }
-                      tooltipTitle="Group Chat"
-                      onClick={() => handleUserClick("Group")}
-                  />
-              </SpeedDial>
+                        </Badge>
+                      }
+                      tooltipTitle={user.name}
+                      onClick={() => handleUserClick(user._id)}
+                    />
+                  );
+                })}
+
+              <SpeedDialAction
+                icon={
+                  <Badge badgeContent={unreadMessageGroup} color="primary">
+                    <Avatar variant="rounded">
+                      <GroupIcon width="50" height="50"/>
+                    </Avatar>
+                  </Badge>
+                }
+                tooltipTitle="Group Chat"
+                onClick={() => handleUserClick("Group")}
+              />
+            </SpeedDial>
+
           </div>
 
           <div className={styles.messagesContainer}>
@@ -209,23 +305,34 @@ const MessagesPage = () => {
                           <div className={styles.options}>
                               <MessageOptions messageId={message._id} deleteMessage={deleteMessageById} />
                           </div>
-                          {sender && <div className={styles.senderName}>{sender.nom} {sender.prenom}</div>}
+                          {sender && 
+                              <div className={styles.senderName} style={{ display: "flex", alignItems: "center" }}>
+                                  <CldImage width="25" height="25" src={`/Users/${sender.image}`} alt={sender.image} style={{ borderRadius: "50%" }} /> 
+                                  <span style={{ marginLeft: "10px" }}>{sender.nom} {sender.prenom}</span>
+                              </div>
+                          }
                           <div className={styles.content}>{message.Message}</div>
                       </div>
                   );
               })}
 
           </div>
-          <div className={styles.inputContainer}>
+          <form 
+            onSubmit={(e) => {
+              e.preventDefault();
+              sendMessage();
+            }}
+            className={styles.inputContainer}
+          >
               <input
-              type="text"
-              className={styles.messageInput}
-              value={newMessage}
-              onChange={(e) => setNewMessage(e.target.value)}
-              placeholder="Type your message..."
+                type="text"
+                className={styles.messageInput}
+                value={newMessage}
+                onChange={(e) => setNewMessage(e.target.value)}
+                placeholder="Type your message..."
               />
-              <button className={styles.sendButton} onClick={sendMessage}>Send</button>
-          </div>
+              <button className={styles.sendButton} type="submit">Send</button>
+          </form>
           </div>
   );
 };

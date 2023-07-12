@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Box, List, ListItemText, ListItemIcon, ListItemButton, Fade, ListItem } from '@mui/material';
+import { Box, List, ListItemText, ListItemIcon, ListItemButton, Fade, ListItem, Badge, Notifications } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import PieChartIcon from '@mui/icons-material/PieChart';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
-import ConnectWithoutContactIcon from '@mui/icons-material/ConnectWithoutContact';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import Collapse from '@mui/material/Collapse';
@@ -23,21 +22,28 @@ import NightShelterIcon from '@mui/icons-material/NightShelter';
 import { useRouter } from 'next/router';
 import { useAuth } from '@/context/AuthContext';
 import jwt_decode from 'jwt-decode';
+import MessageIcon from '@mui/icons-material/Message';
+import axios from 'axios';
+
 
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [open, setOpen] = useState(false);
   const [user_ID, setUser_ID] = useState("");
+  const [post_ID, setPost_ID] = useState("");
   const router = useRouter();
   const { isLoggedIn } = useAuth();
 
+
   useEffect(() => {
-    if(isLoggedIn) {
+    if (isLoggedIn) {
       const token = localStorage.getItem('token');
       const decodedToken = jwt_decode(token);
-      setUser_ID(decodedToken.user_id); // Replace 'sub' with the actual property name for user id in your decoded token
+      setUser_ID(decodedToken.user_id);
+      setPost_ID(decodedToken.id_post);
     }
   }, [isLoggedIn]);
+
 
   const handleClick = () => {
     setOpen(!open);
@@ -101,10 +107,6 @@ const Sidebar = () => {
 
   const handleUserProfileClick = () => {
     router.push(`/Tables/Users/pofileID`);
-  };
-
-  const handleSendMessageClick = () => {
-    router.push('/SendMessages/sendMessage');
   };
 
   return (
@@ -276,14 +278,6 @@ const Sidebar = () => {
                       </ListItemButton>
                     </ListItem>
 
-                    <ListItem>
-                      <ListItemButton onClick={handleSendMessageClick}>
-                        <ListItemIcon sx={{ color: 'white' }}>
-                          <ConnectWithoutContactIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Send a Message" />
-                      </ListItemButton>
-                    </ListItem>
                   </List>
                 </Fade>
               </>
@@ -326,13 +320,6 @@ const Sidebar = () => {
                 </ListItemButton>
               </ListItem>
 
-              <ListItem>
-                <ListItemButton onClick={handleSendMessageClick}>
-                  <ListItemIcon sx={{ color: 'white' }}>
-                    <ConnectWithoutContactIcon />
-                  </ListItemIcon>
-                </ListItemButton>
-              </ListItem>
               </>
             ) : (
               <ListItem>
