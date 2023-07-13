@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import MessageIcon from '@mui/icons-material/Message';
-import { AppBar, Toolbar, Typography, Box, IconButton, Avatar, Button, ListItemButton, ListItemIcon } from '@mui/material';
+import { AppBar, Toolbar, Typography, Box, IconButton, InputLabel, Button, ListItemButton, ListItemIcon } from '@mui/material';
 import { useAuth } from '@/context/AuthContext';
 import { useRouter } from 'next/router';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
@@ -117,6 +117,7 @@ const Navbar = () => {
 
         {isLoggedIn ? (
           <>
+            <InputLabel sx={{color: 'white'}}>{role.Name}</InputLabel>
             <ListItemButton onClick={handleSendMessageClick}>
               <ListItemIcon sx={{ color: 'white' }}>
                 <Badge badgeContent={unreadMessagesCount} color="error" invisible={unreadMessagesCount === 0}>

@@ -5,8 +5,19 @@ import Navbar from '@/components/Partials/Navbar';
 import Sidebar from '@/components/Partials/Sidebar';
 import { AuthProvider } from '@/context/AuthContext';
 import { TableProvider } from '@/context/TableContext';
+import { useAuth } from '@/context/AuthContext';
+import React, { useEffect } from 'react';
+import { useRouter } from 'next/router';
 
 export default function App({ Component, pageProps }: AppProps) {
+  const { isLoggedIn } = useAuth();
+  const Router = useRouter();
+  
+  useEffect(() => {
+    if (!isLoggedIn) {
+      Router.replace("/auth/login");
+    }
+  }, [isLoggedIn]);
 
   return (
     <ThemeProvider>
