@@ -41,10 +41,6 @@ const ProfileContainer = styled('div')({
   minHeight: '100vh',
 });
 
-const UserInfo = styled(Typography)({
-  textAlign: 'center',
-});
-
 const SliderPage = () => {
   const [slider, setSlider] = useState(null);
   const router = useRouter();

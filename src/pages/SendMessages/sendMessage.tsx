@@ -213,6 +213,8 @@ const MessagesPage = () => {
             const groupMessages = response.data.filter(
               message => message.ID_SentTo === 'Group' && message.ID_PostSent === myID_Post && message.View === false && message.ID_Sent != myID
             );
+
+            
       
             const totalUnread = groupMessages.length;
       
@@ -226,6 +228,11 @@ const MessagesPage = () => {
       useEffect(() => {
         if (myID && myID_Post) {
           fetchUnreadMessages();
+
+          const intervalId = setInterval(fetchUnreadMessages, 1000);
+    
+          // Clear interval on component unmount or if user_ID and post_ID change
+          return () => clearInterval(intervalId);
         }
       }, [myID, myID_Post]);
     

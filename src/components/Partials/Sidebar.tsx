@@ -82,7 +82,7 @@ const Sidebar = () => {
   };
 
   const handleReviewClick = () => {
-    router.push('/Tables/Reviews/review');
+    router.push('/Tables/TimeTables/timeTable');
   };
 
   const handleRoomClick = () => {
@@ -218,7 +218,7 @@ const Sidebar = () => {
                             <ListItemIcon sx={{ color: 'white' }}>
                               <PreviewIcon />
                             </ListItemIcon>
-                            <ListItemText primary="Reviews" />
+                            <ListItemText primary="Time Tables" />
                           </ListItemButton>
                         </ListItem>
 

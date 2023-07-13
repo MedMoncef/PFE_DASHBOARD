@@ -1,7 +1,7 @@
-import ReviewsTable from '@/components/Tools/Reviews/tableReview';
+import TimeTablePage from '@/components/Tools/TimeTables/timeTableDetail';
 import Head from 'next/head';
 
-const review = () => {
+const timeTableDetails = () => {
   return (
   <>
       <Head>
@@ -11,9 +11,9 @@ const review = () => {
       <link rel="icon" href="/favicon.ico" />
     </Head>
 
-      <ReviewsTable />
+      <TimeTablePage />
   </>
   );
 };
 
-export default review;
+export default timeTableDetails;
