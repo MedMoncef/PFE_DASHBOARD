@@ -21,7 +21,8 @@ const Navbar = () => {
   const [user_ID, setUser_ID] = useState("");
   const [post_ID, setPost_ID] = useState("");
   const [unreadMessagesCount, setUnreadMessagesCount] = useState(0);
-
+  const Router = useRouter();
+  
   useEffect(() => {
     if(isLoggedIn) {
       const token = localStorage.getItem('token');

@@ -1,11 +1,14 @@
 import { Box, Card, CardContent, Typography, LinearProgress, Grid } from '@mui/material';
 import PeopleIcon from '@mui/icons-material/People';
-import TableTime from '@/components/Tools/TableTime';
+import TimeTablesTable from '@/components/Tools/TableTime';
+import MessagesPage from '@/components/Tools/chat';
 import styles from '@/styles/Title.module.css';
 import KingBedIcon from '@mui/icons-material/KingBed';
 import BookmarksIcon from '@mui/icons-material/Bookmarks';
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useAuth } from '@/context/AuthContext';
+import jwt_decode from 'jwt-decode';
 
 const API_URL_USER = 'http://localhost:7000/users';
 const API_URL_ROOM = 'http://localhost:7000/rooms';
@@ -15,6 +18,18 @@ const Dashboard = () => {
   const [users, setUsers] = useState([]);
   const [rooms, setRooms] = useState([]);
   const [reservations, setReservations] = useState([]);
+  const [user_ID, setUser_ID] = useState("");
+  const [post_ID, setPost_ID] = useState("");
+  const { isLoggedIn } = useAuth();
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      const token = localStorage.getItem('token');
+      const decodedToken = jwt_decode(token);
+      setUser_ID(decodedToken.user_id);
+      setPost_ID(decodedToken.id_post);
+    }
+  }, [isLoggedIn]);
   
   const fetchData = async () => {
     try {
@@ -112,11 +127,11 @@ const Dashboard = () => {
         </Grid>
       </Box>
 
-      <div className={styles.title}>
-        <h2>Time Table</h2>
-      </div>
 
-        <TableTime />
+        <TimeTablesTable />
+
+        {post_ID !== "64b1b83d75bcad49499889db" && <MessagesPage />}
+
     </Box>
   );
 };

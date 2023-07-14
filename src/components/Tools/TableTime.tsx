@@ -1,139 +1,233 @@
-import * as React from 'react';
-import Box from '@mui/material/Box';
-import Collapse from '@mui/material/Collapse';
-import IconButton from '@mui/material/IconButton';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import Typography from '@mui/material/Typography';
-import Paper from '@mui/material/Paper';
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Box,
+  Grid,
+  TextField,  // added TextField
+} from '@mui/material';
+import { useRouter } from 'next/router';
+import styles from '@/styles/Title.module.css';
+import { useAuth } from '@/context/AuthContext';
+import jwt_decode from 'jwt-decode';
 
-function createData(
-  name: string,
-  calories: number,
-  fat: number,
-  carbs: number,
-  protein: number,
-  price: number,
-) {
-  return {
-    name,
-    calories,
-    fat,
-    carbs,
-    protein,
-    price,
-    history: [
-      {
-        date: '2020-01-05',
-        customerId: '11091700',
-        amount: 3,
-      },
-      {
-        date: '2020-01-02',
-        customerId: 'Anonymous',
-        amount: 1,
-      },
-    ],
+const API_URL = 'http://localhost:7000/timetables';
+
+interface TimeTable {
+  _id: string;
+  user: string;
+  loginTime: string;
+  loginDate: string;
+  isLate: boolean;
+}
+
+enum SortOrder {
+  ASC,
+  DESC,
+  NONE,
+}
+
+interface SortState {
+  field: keyof TimeTable | '';
+  order: SortOrder;
+}
+
+const initialSortState: SortState = {
+  field: '',
+  order: SortOrder.NONE,
+};
+
+const TimeTablesTable = () => {
+  const [timetables, setTimetables] = useState<TimeTable[]>([]);
+  const [initialTimetables, setInitialTimetables] = useState<TimeTable[]>([]);
+  const [sortState, setSortState] = useState<SortState>(initialSortState);
+  const [open, setOpen] = useState(false);
+  const [timetableToDelete, setTimeTableToDelete] = useState<TimeTable | null>(null);
+  const [searchString, setSearchString] = useState('');  // added searchString state
+  const router = useRouter();
+  const { isLoggedIn } = useAuth();
+  const [user_ID, setUser_ID] = useState("");
+  const [post_ID, setPost_ID] = useState("");
+
+  const AscArrow = () => <span> &#9650; </span>; // Upwards arrow
+  const DescArrow = () => <span> &#9660; </span>; // Downwards arrow
+
+  useEffect(() => {
+    const filteredTimetables = initialTimetables.filter((timetable) =>
+      timetable.user.nom.toLowerCase().includes(searchString.toLowerCase())
+    );
+    setTimetables(filteredTimetables);
+  }, [searchString, initialTimetables]);
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      const token = localStorage.getItem('token');
+      const decodedToken = jwt_decode(token);
+      setUser_ID(decodedToken.user_id);
+      setPost_ID(decodedToken.id_post);
+      console.log(decodedToken.id_post);
+    }
+  }, [isLoggedIn]);
+
+  const fetchData = async () => {
+    if (!user_ID) {
+      return;  // Return early if user_ID is not set
+    }
+  
+    try {
+      const response = await axios.get(`${API_URL}/get/${user_ID}`);
+      setTimetables(response.data);
+      setInitialTimetables(response.data);
+    } catch (error) {
+      console.error(error);
+    }
   };
-}
+  
 
-function Row(props: { row: ReturnType<typeof createData> }) {
-  const { row } = props;
-  const [open, setOpen] = React.useState(false);
+  const handleClickOpen = (timetable: TimeTable) => {
+    setTimeTableToDelete(timetable);
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const deleteTimeTable = async () => {
+    try {
+      if (timetableToDelete) {
+        await axios.delete(`${API_URL}/delete/${timetableToDelete._id}`);
+        setTimetables(prevTimetables =>
+          prevTimetables.filter(timetable => timetable._id !== timetableToDelete._id)
+        );
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setOpen(false);
+    }
+  };
+
+  const sortData = (field: keyof TimeTable) => {
+    let order = sortState.order;
+    let sortedTimetables = [...timetables];
+
+    if (sortState.field !== field) {
+      order = SortOrder.ASC;
+    } else {
+      order = sortState.order === SortOrder.ASC ? SortOrder.DESC : SortOrder.ASC;
+    }
+
+    sortedTimetables.sort((a, b) => {
+      const valA = a[field];
+      const valB = b[field];
+
+      if (valA < valB) {
+        return order === SortOrder.ASC ? -1 : 1;
+      }
+      if (valA > valB) {
+        return order === SortOrder.ASC ? 1 : -1;
+      }
+      return 0;
+    });
+
+    setTimetables(sortedTimetables);
+    setSortState({ field, order });
+  };
+
+    useEffect(() => {
+      fetchData();
+      console.log(user_ID);
+  }, [user_ID]);
 
   return (
-    <React.Fragment>
-      <TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
-        <TableCell>
-          <IconButton
-            aria-label="expand row"
-            size="small"
-            onClick={() => setOpen(!open)}
-          >
-            {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-          </IconButton>
-        </TableCell>
-        <TableCell component="th" scope="row">
-          {row.name}
-        </TableCell>
-        <TableCell align="right">{row.calories}</TableCell>
-        <TableCell align="right">{row.fat}</TableCell>
-        <TableCell align="right">{row.carbs}</TableCell>
-        <TableCell align="right">{row.protein}</TableCell>
-      </TableRow>
-      <TableRow>
-        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
-          <Collapse in={open} timeout="auto" unmountOnExit>
-            <Box sx={{ margin: 1 }}>
-              <Typography variant="h6" gutterBottom component="div">
-                History
-              </Typography>
-              <Table size="small" aria-label="purchases">
-                <TableHead>
-                  <TableRow>
-                    <TableCell>Date</TableCell>
-                    <TableCell>Customer</TableCell>
-                    <TableCell align="right">Amount</TableCell>
-                    <TableCell align="right">Total price ($)</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {row.history.map((historyRow) => (
-                    <TableRow key={historyRow.date}>
-                      <TableCell component="th" scope="row">
-                        {historyRow.date}
-                      </TableCell>
-                      <TableCell>{historyRow.customerId}</TableCell>
-                      <TableCell align="right">{historyRow.amount}</TableCell>
-                      <TableCell align="right">
-                        {Math.round(historyRow.amount * row.price * 100) / 100}
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </Box>
-          </Collapse>
-        </TableCell>
-      </TableRow>
-    </React.Fragment>
-  );
-}
+    <Box
+      sx={{
+        flexGrow: 1,
+        backgroundColor: 'white',
+        p: 3,
+        overflow: 'auto',
+        maxHeight: 'auto',
+      }}
+    >
+      <div className={styles.title}>
+        <h2>Time Table</h2>
+      </div>
 
-const rows = [
-  createData('Frozen yoghurt', 159, 6.0, 24, 4.0, 3.99),
-  createData('Ice cream sandwich', 237, 9.0, 37, 4.3, 4.99),
-  createData('Eclair', 262, 16.0, 24, 6.0, 3.79),
-  createData('Cupcake', 305, 3.7, 67, 4.3, 2.5),
-  createData('Gingerbread', 356, 16.0, 49, 3.9, 1.5),
-];
+      <Grid container direction="column" justifyContent="center" alignItems="center" sx={{ marginBottom: 2 }}>
+        <Grid item xs={8} sx={{ marginBottom: 2 }}>
+          <TextField 
+            fullWidth
+            id="search"
+            label="Search User"
+            value={searchString}
+            onChange={(e) => setSearchString(e.target.value)}
+          />
+        </Grid>
+      </Grid>
 
-export default function CollapsibleTable() {
-  return (
-    <TableContainer component={Paper}>
-      <Table aria-label="collapsible table">
-        <TableHead>
-          <TableRow>
-            <TableCell />
-            <TableCell>Dessert (100g serving)</TableCell>
-            <TableCell align="right">Calories</TableCell>
-            <TableCell align="right">Fat&nbsp;(g)</TableCell>
-            <TableCell align="right">Carbs&nbsp;(g)</TableCell>
-            <TableCell align="right">Protein&nbsp;(g)</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {rows.map((row) => (
-            <Row key={row.name} row={row} />
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+      <TableContainer component={Paper} sx={{ maxWidth: '100%', overflow: 'auto' }}>
+        <Table stickyHeader aria-label="collapsible table">
+          <TableHead>
+            <TableRow>
+              <TableCell onClick={() => sortData('user')}>User</TableCell>
+              <TableCell onClick={() => sortData('user')}>User Email</TableCell>
+              <TableCell onClick={() => sortData('loginTime')}>Login Time {sortState.field === 'loginTime' && (sortState.order === SortOrder.ASC ? <AscArrow /> : <DescArrow />)}</TableCell>
+              <TableCell onClick={() => sortData('loginDate')}>Login Date {sortState.field === 'loginDate' && (sortState.order === SortOrder.ASC ? <AscArrow /> : <DescArrow />)}</TableCell>
+              <TableCell onClick={() => sortData('isLate')}>Is Late {sortState.field === 'isLate' && (sortState.order === SortOrder.ASC ? <AscArrow /> : <DescArrow />)}</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {timetables.map((timetable, index) => (
+              <TableRow key={index}>
+                <TableCell component="th" scope="row">
+                  {timetable.user.nom} {timetable.user.prenom}
+                </TableCell>
+                <TableCell>{timetable.user.email}</TableCell>
+                <TableCell>{new Date(timetable.loginTime).toLocaleTimeString()}</TableCell>
+                <TableCell>{new Date(timetable.loginDate).toLocaleDateString()}</TableCell>
+                <TableCell className={timetable.isLate === true ? styles.invalidPaid : styles.validPaid} >{timetable.isLate ? 'Yes' : 'No'}</TableCell>
+
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">
+          {"Are you sure you want to delete this timetable?"}
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Deleting a timetable is irreversible.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>Cancel</Button>
+          <Button onClick={deleteTimeTable} autoFocus>
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </Box>
   );
-}
+};
+
+export default TimeTablesTable;

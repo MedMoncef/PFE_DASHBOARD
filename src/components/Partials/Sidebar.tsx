@@ -138,6 +138,7 @@ const Sidebar = () => {
               <>
                 <Fade in={isOpen} timeout={500}>
                   <List sx={{ position: 'relative', zIndex: 1 }}>
+                    
                     <ListItem>
                       <ListItemButton onClick={handleHomePageClick}>
                         <ListItemIcon sx={{ color: 'white' }}>
@@ -159,7 +160,7 @@ const Sidebar = () => {
 
                     <Collapse in={open} timeout="auto" unmountOnExit>
                       <List component="div" disablePadding>
-                        {post_ID === "648b6a60da83ae0520b76ec3" && (
+                        {(post_ID === "648b6a60da83ae0520b76ec3" || post_ID === "64b1b83d75bcad49499889db") && (
                           <>
                             <ListItem>
                               <ListItemButton sx={{ pl: 4 }} onClick={handleMenuClick}>
@@ -181,7 +182,7 @@ const Sidebar = () => {
                           </>
                         )}
 
-                        {post_ID === "64ada81f04bf47db3a44b9eb" && (
+                        {(post_ID === "64ada81f04bf47db3a44b9eb" || post_ID === "64b1b83d75bcad49499889db") && (
                           <>
                             <ListItem>
                               <ListItemButton sx={{ pl: 4 }} onClick={handleContactClick}>
@@ -203,7 +204,7 @@ const Sidebar = () => {
                           </>
                         )}
 
-                        {post_ID === "64ada83a04bf47db3a44b9f7" && (
+                        {(post_ID === "64ada83a04bf47db3a44b9f7" || post_ID === "64b1b83d75bcad49499889db") && (
                           <>
                             <ListItem>
                               <ListItemButton sx={{ pl: 4 }} onClick={handleRoomClick}>
@@ -225,7 +226,7 @@ const Sidebar = () => {
                           </>
                         )}
 
-                        {post_ID === "64ada84d04bf47db3a44b9ff" && (
+                        {(post_ID === "64ada84d04bf47db3a44b9ff" || post_ID === "64b1b83d75bcad49499889db") && (
                           <>
                             <ListItem>
                               <ListItemButton sx={{ pl: 4 }} onClick={handleBlogClick}>
@@ -256,7 +257,7 @@ const Sidebar = () => {
                           </>
                         )}
 
-                        {post_ID === "64ada85804bf47db3a44ba03" && (
+                        {(post_ID === "64ada85804bf47db3a44ba03" || post_ID === "64b1b83d75bcad49499889db") && (
                           <>
                             <ListItem>
                               <ListItemButton sx={{ pl: 4 }} onClick={handleWorkPostClick}>

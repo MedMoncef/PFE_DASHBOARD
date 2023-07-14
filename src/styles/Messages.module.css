@@ -141,3 +141,32 @@
     color: #000000;
     font-weight: 500;
 }
+
+.title {
+  text-align: center;
+  margin-top: 1%;
+  margin-bottom: 1%;
+}
+
+.title h2 {
+  font-size: 14px;
+  font-family: "Nunito Sans", Arial, sans-serif;
+  position: relative;
+  letter-spacing: 4px;
+  color: rgb(21, 101, 192);
+  text-transform: uppercase;
+}
+
+.invalidPaid {
+  background-color: rgba(255, 0, 0, 0.5);
+  text-align: center !important;
+  vertical-align: center !important;
+  font-weight: bold !important;
+}
+
+.validPaid {
+  background-color: rgba(0, 128, 0, 0.5);
+  text-align: center !important;
+  vertical-align: center !important;
+  font-weight: bold !important;
+}
