@@ -79,11 +79,6 @@ const ProfilePage = () => {
             setUserDetails(res.data);
             setNom(res.data.nom);
             setPrenom(res.data.prenom);
-            setDateN(res.data.dateN);
-            setEmail(res.data.email);
-            setPassword(res.data.password);
-            setIdPost(res.data.id_post);
-            setOldImage(res.data.image);
           });
         }
       }, [profileID]);

@@ -16,12 +16,10 @@ import {
   DialogTitle,
   Box,
   Grid,
-  Avatar,
   TextField,
 } from '@mui/material';
 import { useRouter } from 'next/router';
 import styles from '@/styles/Title.module.css';
-import { styled } from '@mui/system';
 
 const API_URL = 'http://localhost:7000/announcements';
 
@@ -29,6 +27,8 @@ interface Announcement {
   _id: string;
   Message: string;
   ID_Sent: string;
+  ID_SentTo: string;
+  Date_Uploaded: Date | string;
 }
 
 enum SortOrder {
@@ -58,7 +58,6 @@ const AnnouncementsTable = () => {
 
   const AscArrow = () => <span> &#9650; </span>; // Upwards arrow
   const DescArrow = () => <span> &#9660; </span>; // Downwards arrow
-
 
   useEffect(() => {
     if (searchString === "") {
@@ -190,8 +189,14 @@ const AnnouncementsTable = () => {
                   (sortState.order === SortOrder.ASC ? <AscArrow /> : <DescArrow />)}
               </TableCell>
               <TableCell sx={{ cursor: 'pointer' }} onClick={() => sortData('ID_Sent')}>
-              ID_Sent
+              Sent By
                 {sortState.field === 'ID_Sent' &&
+                  sortState.order !== SortOrder.NONE &&
+                  (sortState.order === SortOrder.ASC ? <AscArrow /> : <DescArrow />)}
+              </TableCell>
+              <TableCell sx={{ cursor: 'pointer' }} onClick={() => sortData('Date_Uploaded')}>
+                Date Uploaded
+                {sortState.field === 'Date_Uploaded' &&
                   sortState.order !== SortOrder.NONE &&
                   (sortState.order === SortOrder.ASC ? <AscArrow /> : <DescArrow />)}
               </TableCell>
@@ -204,32 +209,32 @@ const AnnouncementsTable = () => {
                 <TableCell>{announcement._id}</TableCell>
                 <TableCell>{announcement.Message}</TableCell>
                 <TableCell>{announcement.ID_Sent.nom} {announcement.ID_Sent.prenom}</TableCell>
+                <TableCell>{new Date(announcement.Date_Uploaded).toLocaleDateString()}</TableCell>
                 <TableCell>
                   <Button onClick={() => router.push(`/Tables/Announcements/${announcement._id}`)}>
                     Edit
                   </Button>
-                  <Button onClick={() => handleClickOpen(announcement)} color="secondary">Delete</Button>
+                  <Button onClick={() => handleClickOpen(announcement)}>Delete</Button>
+                  <Dialog open={open} onClose={handleClose}>
+                    <DialogTitle>Delete Announcement</DialogTitle>
+                    <DialogContent>
+                      <DialogContentText>
+                        Are you sure you want to delete this announcement?
+                      </DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                      <Button onClick={handleClose}>No</Button>
+                      <Button onClick={deleteAnnouncement} autoFocus>
+                        Yes
+                      </Button>
+                    </DialogActions>
+                  </Dialog>
                 </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
       </TableContainer>
-
-      <Dialog open={open} onClose={handleClose} aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description">
-        <DialogTitle id="alert-dialog-title">{"Are you sure you want to delete this announcement?"}</DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            Are you sure you want to delete the announcement with ID: {announcementToDelete?._id}?
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose}>Disagree</Button>
-          <Button onClick={deleteAnnouncement} autoFocus>
-            Agree
-          </Button>
-        </DialogActions>
-      </Dialog>
     </Box>
   );
 };

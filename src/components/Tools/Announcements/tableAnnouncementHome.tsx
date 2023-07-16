@@ -12,6 +12,7 @@ import { useAuth } from '@/context/AuthContext';
 import jwt_decode from 'jwt-decode';
 
 const API_URL = 'http://localhost:7000/announcements';
+const API_URL_USER = 'http://localhost:7000/users';
 
 interface Announcement {
   _id: string;
@@ -25,6 +26,8 @@ const AnnouncementsTable = () => {
   const router = useRouter();
   const { isLoggedIn } = useAuth();
   const [user_ID, setUser_ID] = useState("");
+  const [nom, setNom] = useState("");
+  const [prenom, setPrenom] = useState("");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -47,6 +50,15 @@ const AnnouncementsTable = () => {
     }
   }, [isLoggedIn]);
 
+  useEffect(() => {
+    if (user_ID) {
+      axios.get(`${API_URL_USER}/${user_ID}`).then((res) => {
+        setNom(res.data.nom);
+        setPrenom(res.data.prenom);
+      });
+    }
+  }, [user_ID]);
+
   return (
     <Box
       sx={{
@@ -67,7 +79,7 @@ const AnnouncementsTable = () => {
           <Card key={announcement._id} sx={{ marginBottom: 2 }}>
             <CardContent>
               <Typography color="text.secondary">
-                To {announcement.ID_SentTo}
+                To {announcement.ID_SentTo === "All" ? "All" : `${nom} ${prenom}`}
               </Typography>
               <Typography variant="h5" component="div">
                 {announcement.Message}
