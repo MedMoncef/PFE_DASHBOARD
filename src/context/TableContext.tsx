@@ -94,6 +94,11 @@ interface ContactFormData {
     image: string;
     title: string;
   }
+
+  interface AnnouncementFormData {
+    Message: string;
+    ID_Sent: string;
+  }
   
   interface AuthContextType {
     submitBlogForm: (formData: BlogFormData) => void;
@@ -108,6 +113,7 @@ interface ContactFormData {
     submitRoomTypeForm: (formData: RoomTypeFormData) => void;
     submitSliderForm: (formData: SliderFormData) => void;
     submitTestimonyForm: (formData: TestimonyFormData) => void;
+    submitAnnouncementForm: (formData: AnnouncementFormData) => void;
     updateById: (endpoint: string, id: string, updateData: any) => void;
   }
   
@@ -124,6 +130,7 @@ interface ContactFormData {
     submitRoomTypeForm: () => {},
     submitSliderForm: () => {},
     submitTestimonyForm: () => {},
+    submitAnnouncementForm: () => {},
     updateById: () => {},
   });
   
@@ -276,6 +283,18 @@ interface ContactFormData {
       }
     };
 
+    const submitAnnouncementForm = async (formData: AnnouncementFormData) => {
+      try {
+        // Make an HTTP request to submit the testimony form data
+        await axios.post('http://localhost:7000/announcements', formData);
+        console.log('Testimony form submitted successfully');
+        // Handle success, show confirmation message, etc.
+      } catch (error) {
+        console.error('Testimony form submission failed:', error);
+        // Handle submission failure, show error message, etc.
+      }
+    };
+
     const updateById = async (endpoint: string, id: string, updateData: {}) => {
       try {
         // Make an HTTP request to update the data by ID
@@ -303,6 +322,7 @@ interface ContactFormData {
           submitRoomTypeForm,
           submitSliderForm,
           submitTestimonyForm,
+          submitAnnouncementForm,
           updateById,
       }}
     >

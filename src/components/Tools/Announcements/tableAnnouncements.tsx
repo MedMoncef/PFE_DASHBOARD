@@ -15,19 +15,20 @@ import {
   DialogContentText,
   DialogTitle,
   Box,
-  Link,
   Grid,
+  Avatar,
   TextField,
 } from '@mui/material';
 import { useRouter } from 'next/router';
 import styles from '@/styles/Title.module.css';
+import { styled } from '@mui/system';
 
 const API_URL = 'http://localhost:7000/announcements';
 
 interface Announcement {
   _id: string;
-  Title: string;
-  Text: string;
+  Message: string;
+  ID_Sent: string;
 }
 
 enum SortOrder {
@@ -52,20 +53,29 @@ const AnnouncementsTable = () => {
   const [sortState, setSortState] = useState<SortState>(initialSortState);
   const [open, setOpen] = useState(false);
   const [announcementToDelete, setAnnouncementToDelete] = useState<Announcement | null>(null);
-  const [searchString, setSearchString] = useState('');
+  const [searchString, setSearchString] = useState("");
   const router = useRouter();
 
   const AscArrow = () => <span> &#9650; </span>; // Upwards arrow
   const DescArrow = () => <span> &#9660; </span>; // Downwards arrow
 
+
   useEffect(() => {
-    fetchData();
-  }, []);
+    if (searchString === "") {
+      setAnnouncements(initialAnnouncements);
+    } else {
+      const filteredAnnouncements = initialAnnouncements.filter((announcement) =>
+        announcement.Titre.toLowerCase().includes(searchString.toLowerCase())
+      );
+      setAnnouncements(filteredAnnouncements);
+    }
+  }, [searchString, initialAnnouncements]);
 
   const fetchData = async () => {
     try {
       const response = await axios.get(API_URL);
       setAnnouncements(response.data);
+      console.log(announcements.Message);
       setInitialAnnouncements(response.data);
     } catch (error) {
       console.error(error);
@@ -73,11 +83,8 @@ const AnnouncementsTable = () => {
   };
 
   useEffect(() => {
-    const filteredAnnouncements = initialAnnouncements.filter((announcement) =>
-      announcement.Title.toLowerCase().includes(searchString.toLowerCase())
-    );
-    setAnnouncements(filteredAnnouncements);
-  }, [searchString, initialAnnouncements]);
+    fetchData();
+  }, []);
 
   const handleClickOpen = (announcement: Announcement) => {
     setAnnouncementToDelete(announcement);
@@ -92,9 +99,7 @@ const AnnouncementsTable = () => {
     try {
       if (announcementToDelete) {
         await axios.delete(`${API_URL}/${announcementToDelete._id}`);
-        setAnnouncements(prevAnnouncements =>
-          prevAnnouncements.filter(announcement => announcement._id !== announcementToDelete._id)
-        );
+        setAnnouncements(prevAnnouncements => prevAnnouncements.filter(announcement => announcement._id !== announcementToDelete._id));
       }
     } catch (error) {
       console.error(error);
@@ -124,6 +129,10 @@ const AnnouncementsTable = () => {
           return order === SortOrder.ASC ? valA.localeCompare(valB) : valB.localeCompare(valA);
         }
 
+        if (valA instanceof Date && valB instanceof Date) {
+          return order === SortOrder.ASC ? valA.getTime() - valB.getTime() : valB.getTime() - valA.getTime();
+        }
+
         return 0;
       });
 
@@ -144,7 +153,7 @@ const AnnouncementsTable = () => {
       }}
     >
       <div className={styles.title}>
-        <h2>Announcements List</h2>
+        <h2>Announcement List</h2>
       </div>
 
       <Grid container direction="column" justifyContent="center" alignItems="center">
@@ -174,31 +183,32 @@ const AnnouncementsTable = () => {
                   sortState.order !== SortOrder.NONE &&
                   (sortState.order === SortOrder.ASC ? <AscArrow /> : <DescArrow />)}
               </TableCell>
-              <TableCell sx={{ cursor: 'pointer' }} onClick={() => sortData('Title')}>
-                Title
-                {sortState.field === 'Title' &&
+              <TableCell sx={{ cursor: 'pointer' }} onClick={() => sortData('Message')}>
+              Message
+                {sortState.field === 'Message' &&
                   sortState.order !== SortOrder.NONE &&
                   (sortState.order === SortOrder.ASC ? <AscArrow /> : <DescArrow />)}
               </TableCell>
-              <TableCell>Text</TableCell>
+              <TableCell sx={{ cursor: 'pointer' }} onClick={() => sortData('ID_Sent')}>
+              ID_Sent
+                {sortState.field === 'ID_Sent' &&
+                  sortState.order !== SortOrder.NONE &&
+                  (sortState.order === SortOrder.ASC ? <AscArrow /> : <DescArrow />)}
+              </TableCell>
               <TableCell>Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {announcements.map(announcement => (
+            {announcements.map((announcement) => (
               <TableRow key={announcement._id}>
-                <TableCell sx={{ Width: 200, overflow: 'auto' }}>{announcement._id}</TableCell>
-                <TableCell sx={{ Width: 200, overflow: 'auto' }}>{announcement.Title}</TableCell>
-                <TableCell sx={{ Width: 200, overflow: 'auto' }}>{announcement.Text}</TableCell>
-                <TableCell sx={{ Width: 120, overflow: 'auto' }}>
-                  <Button onClick={() => handleClickOpen(announcement)} color="secondary">
-                    Delete
+                <TableCell>{announcement._id}</TableCell>
+                <TableCell>{announcement.Message}</TableCell>
+                <TableCell>{announcement.ID_Sent.nom} {announcement.ID_Sent.prenom}</TableCell>
+                <TableCell>
+                  <Button onClick={() => router.push(`/Tables/Announcements/${announcement._id}`)}>
+                    Edit
                   </Button>
-                  <Link href={`/Tables/Announcements/${announcement._id}`} passHref>
-                    <Button component="a" color="primary">
-                      Detail
-                    </Button>
-                  </Link>
+                  <Button onClick={() => handleClickOpen(announcement)} color="secondary">Delete</Button>
                 </TableCell>
               </TableRow>
             ))}
@@ -206,19 +216,17 @@ const AnnouncementsTable = () => {
         </Table>
       </TableContainer>
 
-      <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>Delete announcement?</DialogTitle>
+      <Dialog open={open} onClose={handleClose} aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description">
+        <DialogTitle id="alert-dialog-title">{"Are you sure you want to delete this announcement?"}</DialogTitle>
         <DialogContent>
-          <DialogContentText>
+          <DialogContentText id="alert-dialog-description">
             Are you sure you want to delete the announcement with ID: {announcementToDelete?._id}?
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose} color="primary">
-            Cancel
-          </Button>
-          <Button onClick={deleteAnnouncement} color="secondary" autoFocus>
-            Delete
+          <Button onClick={handleClose}>Disagree</Button>
+          <Button onClick={deleteAnnouncement} autoFocus>
+            Agree
           </Button>
         </DialogActions>
       </Dialog>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Box, List, ListItemText, ListItemIcon, ListItemButton, Fade, ListItem, Badge, Notifications } from '@mui/material';
+import { Box, List, ListItemText, ListItemIcon, ListItemButton, Fade, ListItem } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import PieChartIcon from '@mui/icons-material/PieChart';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
@@ -22,7 +22,7 @@ import NightShelterIcon from '@mui/icons-material/NightShelter';
 import { useRouter } from 'next/router';
 import { useAuth } from '@/context/AuthContext';
 import jwt_decode from 'jwt-decode';
-import MessageIcon from '@mui/icons-material/Message';
+import CampaignIcon from '@mui/icons-material/Campaign';
 import axios from 'axios';
 
 
@@ -103,6 +103,10 @@ const Sidebar = () => {
 
   const handleUserClick = () => {
     router.push('/Tables/Users/user');
+  };
+
+  const handleAnnonClick = () => {
+    router.push('/Tables/Announcements/announcement');
   };
 
   const handleUserProfileClick = () => {
@@ -283,6 +287,15 @@ const Sidebar = () => {
                                   <PersonIcon />
                                 </ListItemIcon>
                                 <ListItemText primary="Users" />
+                              </ListItemButton>
+                            </ListItem>
+
+                            <ListItem>
+                              <ListItemButton sx={{ pl: 4 }} onClick={handleAnnonClick}>
+                                <ListItemIcon sx={{ color: 'white' }}>
+                                  <CampaignIcon />
+                                </ListItemIcon>
+                                <ListItemText primary="Announcements" />
                               </ListItemButton>
                             </ListItem>
                           </>
