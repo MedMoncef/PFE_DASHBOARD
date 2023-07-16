@@ -98,6 +98,7 @@ interface ContactFormData {
   interface AnnouncementFormData {
     Message: string;
     ID_Sent: string;
+    ID_SentTo: string;
   }
   
   interface AuthContextType {

@@ -1,6 +1,7 @@
 import { Box, Card, CardContent, Typography, LinearProgress, Grid } from '@mui/material';
 import PeopleIcon from '@mui/icons-material/People';
 import TimeTablesTable from '@/components/Tools/TableTime';
+import AnnouncementsTable from '@/components/Tools/Announcements/tableAnnouncementHome';
 import MessagesPage from '@/components/Tools/chat';
 import styles from '@/styles/Title.module.css';
 import KingBedIcon from '@mui/icons-material/KingBed';
@@ -127,6 +128,7 @@ const Dashboard = () => {
         </Grid>
       </Box>
 
+        <AnnouncementsTable />
 
         <TimeTablesTable />
 
