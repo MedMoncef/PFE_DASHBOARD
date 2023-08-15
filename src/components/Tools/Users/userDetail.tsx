@@ -215,7 +215,7 @@ const ProfilePage = () => {
                     <Box component="form" onSubmit={handleFormSubmit} sx={{ display: 'flex', flexDirection: 'column', '& .MuiTextField-root': { m: 1, width: '30ch' }, }}>
                             <TextField required id="firstName" label="First Name" variant="outlined" value={nom} onChange={(e) => setNom(e.target.value)}/>
                             <TextField required id="lastName" label="Last Name" variant="outlined" value={prenom} onChange={(e) => setPrenom(e.target.value)}/>
-                            <TextField required id="dateOfBirth" label="Date of Birth" variant="outlined" value={dateN} onChange={(e) => setDateN(e.target.value)}/>
+                            <TextField required type="Date" id="dateOfBirth" label="Date of Birth" variant="outlined" value={dateN} onChange={(e) => setDateN(e.target.value)}/>
                             <TextField required id="email" label="Email" variant="outlined" value={email} onChange={(e) => setEmail(e.target.value)}/>
                             <TextField required id="password" label="Password" variant="outlined" type="password" onChange={(e) => setPassword(e.target.value)}/>
                         

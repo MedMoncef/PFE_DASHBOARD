@@ -22,12 +22,11 @@ import {
 import { useRouter } from 'next/router';
 import styles from '@/styles/Title.module.css';
 
-const API_URL = 'http://localhost:7000/announcements';
+const API_URL = 'http://localhost:7000/menuTypes';
 
-interface Announcement {
+interface MenuType {
   _id: string;
-  Title: string;
-  Text: string;
+  Name: string;
 }
 
 enum SortOrder {
@@ -37,7 +36,7 @@ enum SortOrder {
 }
 
 interface SortState {
-  field: keyof Announcement | '';
+  field: keyof MenuType | '';
   order: SortOrder;
 }
 
@@ -46,12 +45,12 @@ const initialSortState: SortState = {
   order: SortOrder.NONE,
 };
 
-const AnnouncementsTable = () => {
-  const [announcements, setAnnouncements] = useState<Announcement[]>([]);
-  const [initialAnnouncements, setInitialAnnouncements] = useState<Announcement[]>([]);
+const MenuTypesTable = () => {
+  const [menuTypes, setMenuTypes] = useState<MenuType[]>([]);
+  const [initialMenuTypes, setInitialMenuTypes] = useState<MenuType[]>([]);
   const [sortState, setSortState] = useState<SortState>(initialSortState);
   const [open, setOpen] = useState(false);
-  const [announcementToDelete, setAnnouncementToDelete] = useState<Announcement | null>(null);
+  const [menuTypeToDelete, setMenuTypeToDelete] = useState<MenuType | null>(null);
   const [searchString, setSearchString] = useState('');
   const router = useRouter();
 
@@ -65,22 +64,22 @@ const AnnouncementsTable = () => {
   const fetchData = async () => {
     try {
       const response = await axios.get(API_URL);
-      setAnnouncements(response.data);
-      setInitialAnnouncements(response.data);
+      setMenuTypes(response.data);
+      setInitialMenuTypes(response.data);
     } catch (error) {
       console.error(error);
     }
   };
 
   useEffect(() => {
-    const filteredAnnouncements = initialAnnouncements.filter((announcement) =>
-      announcement.Title.toLowerCase().includes(searchString.toLowerCase())
+    const filteredMenuTypes = initialMenuTypes.filter((menuType) =>
+      menuType.Name.toLowerCase().includes(searchString.toLowerCase())
     );
-    setAnnouncements(filteredAnnouncements);
-  }, [searchString, initialAnnouncements]);
+    setMenuTypes(filteredMenuTypes);
+  }, [searchString, initialMenuTypes]);
 
-  const handleClickOpen = (announcement: Announcement) => {
-    setAnnouncementToDelete(announcement);
+  const handleClickOpen = (menuType: MenuType) => {
+    setMenuTypeToDelete(menuType);
     setOpen(true);
   };
 
@@ -88,12 +87,12 @@ const AnnouncementsTable = () => {
     setOpen(false);
   };
 
-  const deleteAnnouncement = async () => {
+  const deleteMenuType = async () => {
     try {
-      if (announcementToDelete) {
-        await axios.delete(`${API_URL}/${announcementToDelete._id}`);
-        setAnnouncements(prevAnnouncements =>
-          prevAnnouncements.filter(announcement => announcement._id !== announcementToDelete._id)
+      if (menuTypeToDelete) {
+        await axios.delete(`${API_URL}/${menuTypeToDelete._id}`);
+        setMenuTypes(prevMenuTypes =>
+          prevMenuTypes.filter(menuType => menuType._id !== menuTypeToDelete._id)
         );
       }
     } catch (error) {
@@ -103,9 +102,9 @@ const AnnouncementsTable = () => {
     }
   };
 
-  const sortData = (field: keyof Announcement) => {
+  const sortData = (field: keyof MenuType) => {
     let order = sortState.order;
-    let sortedAnnouncements = [...announcements];
+    let sortedMenuTypes = [...menuTypes];
 
     if (sortState.field !== field) {
       order = SortOrder.ASC;
@@ -114,9 +113,9 @@ const AnnouncementsTable = () => {
     }
 
     if (order === SortOrder.NONE) {
-      setAnnouncements(initialAnnouncements);
+      setMenuTypes(initialMenuTypes);
     } else {
-      sortedAnnouncements.sort((a, b) => {
+      sortedMenuTypes.sort((a, b) => {
         const valA = a[field];
         const valB = b[field];
 
@@ -127,7 +126,7 @@ const AnnouncementsTable = () => {
         return 0;
       });
 
-      setAnnouncements(sortedAnnouncements);
+      setMenuTypes(sortedMenuTypes);
     }
 
     setSortState({ field, order });
@@ -144,20 +143,20 @@ const AnnouncementsTable = () => {
       }}
     >
       <div className={styles.title}>
-        <h2>Announcements List</h2>
+        <h2>Menu Type List</h2>
       </div>
 
       <Grid container direction="column" justifyContent="center" alignItems="center">
         <Grid item xs={4} sx={{ marginBottom: 2 }}>
-          <Button variant="outlined" onClick={() => router.push('/Tables/Announcements/createAnnouncement')}>
-            Create an Announcement
+          <Button variant="outlined" onClick={() => router.push('/Tables/MenuTypes/createMenuType')}>
+            Create a Menu Type
           </Button>
         </Grid>
         <Grid item xs={8} sx={{ marginBottom: 2 }}>
           <TextField 
             fullWidth
             id="search"
-            label="Search Title"
+            label="Search Name"
             value={searchString}
             onChange={(e) => setSearchString(e.target.value)}
           />
@@ -174,27 +173,25 @@ const AnnouncementsTable = () => {
                   sortState.order !== SortOrder.NONE &&
                   (sortState.order === SortOrder.ASC ? <AscArrow /> : <DescArrow />)}
               </TableCell>
-              <TableCell sx={{ cursor: 'pointer' }} onClick={() => sortData('Title')}>
-                Title
-                {sortState.field === 'Title' &&
+              <TableCell sx={{ cursor: 'pointer' }} onClick={() => sortData('Name')}>
+                Name
+                {sortState.field === 'Name' &&
                   sortState.order !== SortOrder.NONE &&
                   (sortState.order === SortOrder.ASC ? <AscArrow /> : <DescArrow />)}
               </TableCell>
-              <TableCell>Text</TableCell>
               <TableCell>Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {announcements.map(announcement => (
-              <TableRow key={announcement._id}>
-                <TableCell sx={{ Width: 200, overflow: 'auto' }}>{announcement._id}</TableCell>
-                <TableCell sx={{ Width: 200, overflow: 'auto' }}>{announcement.Title}</TableCell>
-                <TableCell sx={{ Width: 200, overflow: 'auto' }}>{announcement.Text}</TableCell>
+            {menuTypes.map(menuType => (
+              <TableRow key={menuType._id}>
+                <TableCell sx={{ Width: 200, overflow: 'auto' }}>{menuType._id}</TableCell>
+                <TableCell sx={{ Width: 200, overflow: 'auto' }}>{menuType.Name}</TableCell>
                 <TableCell sx={{ Width: 120, overflow: 'auto' }}>
-                  <Button onClick={() => handleClickOpen(announcement)} color="secondary">
+                  <Button onClick={() => handleClickOpen(menuType)} color="secondary">
                     Delete
                   </Button>
-                  <Link href={`/Tables/Announcements/${announcement._id}`} passHref>
+                  <Link href={`/Tables/MenuTypes/${menuType._id}`} passHref>
                     <Button component="a" color="primary">
                       Detail
                     </Button>
@@ -207,17 +204,17 @@ const AnnouncementsTable = () => {
       </TableContainer>
 
       <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>Delete announcement?</DialogTitle>
+        <DialogTitle>Delete menu type?</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            Are you sure you want to delete the announcement with ID: {announcementToDelete?._id}?
+            Are you sure you want to delete the menu type with ID: {menuTypeToDelete?._id}?
           </DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose} color="primary">
             Cancel
           </Button>
-          <Button onClick={deleteAnnouncement} color="secondary" autoFocus>
+          <Button onClick={deleteMenuType} color="secondary" autoFocus>
             Delete
           </Button>
         </DialogActions>
@@ -226,4 +223,4 @@ const AnnouncementsTable = () => {
   );
 };
 
-export default AnnouncementsTable;
+export default MenuTypesTable;
