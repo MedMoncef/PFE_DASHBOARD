@@ -14,6 +14,7 @@ const loginSchema = z.object({
 export default function Login() {
   const { login, isLoggedIn } = useAuth();
   const router = useRouter();
+  
   const [formState, setFormState] = useState({
     title: 'Welcome, please login!',
     email: '',

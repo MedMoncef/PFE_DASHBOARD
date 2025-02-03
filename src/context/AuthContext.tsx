@@ -1,7 +1,6 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import axios from 'axios';
 
-const TOKEN_KEY = 'Altair123456';
 interface AuthContextType {
   isLoggedIn: boolean;
   token: string | null;
